@@ -322,7 +322,7 @@ function dressFrame(doc, frame){
  if(doc.documentElement) doc.documentElement.style.setProperty('background',__bg,'important');
  doc.documentElement.style.setProperty('background',__bg,'important');
  if(doc.body) doc.body.style.setProperty('background',__bg,'important');
- if((frame&&frame.dataset.sec)==='week') st.textContent+='html body.locked>#gate,html body.locked #gate{position:relative!important;inset:auto!important;min-height:520px!important;height:auto!important;display:flex!important;visibility:visible!important}html body.locked>.wrap{display:none!important}html body #zg-stack #weeks .wl{display:none!important}html body #zg-stack #weeks{position:relative!important;z-index:80!important;pointer-events:auto!important}html body #zg-stack #weeks [data-w0]{pointer-events:auto!important;cursor:pointer!important}html body #zg-stack #weeks [aria-current]{background:#b7cd00!important;color:#1d1d1b!important;border-color:#1d1d1b!important;box-shadow:none!important}';
+ if((frame&&frame.dataset.sec)==='week') st.textContent+='html body.locked>#gate,html body.locked #gate{position:relative!important;inset:auto!important;min-height:520px!important;height:auto!important;display:flex!important;visibility:visible!important}html body.locked>.wrap{display:none!important}html body #zg-stack #weeks .wl{display:none!important}html body #zg-stack #weeks{position:relative!important;z-index:80!important;pointer-events:auto!important}html body #zg-stack #weeks [data-w0]{pointer-events:auto!important;cursor:pointer!important}html body #zg-stack #weeks [aria-current]{background:#b7cd00!important;color:#1d1d1b!important;border-color:#1d1d1b!important;box-shadow:none!important}html body .ins,html body .ins h3,html body .ins p,html body .ins .ik{color:#1d1d1b!important}';
  if(doc.body) doc.body.appendChild(st);
  const COPY={
   pult:['Пульт ПланФикса','Контракты, дебиторка, часы и просрочки по отчётам ПланФикса. В сводке только карточки мастер-проектов, без этапов, завершённых и отменённых.'],
@@ -832,7 +832,7 @@ function watchFrame(frame){
   const doc=frame.contentDocument;
   if(!doc||!doc.body) return;
   if(frame.__zgMo){ try{frame.__zgMo.disconnect()}catch(e){} }
-  frame.__zgMo=new MutationObserver(()=>{ if(frame.hidden) return; if((typeof performance!=='undefined'?performance.now():Date.now())<(frame.__zgMuteUntil||0)) return; const d=frame.contentDocument; if(d) d.__zgInkFresh=0; clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },80); });
+  frame.__zgMo=new MutationObserver(()=>{ if(frame.hidden) return; const d=frame.contentDocument; if(d) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
   frame.__zgMo.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','aria-current','aria-selected']});
  };
  if(again){ if(!frame.hidden&&!frame.__zgMo&&frame.contentDocument&&frame.contentDocument.body) go(); return; }
@@ -877,8 +877,8 @@ const GROUND_PICK={};
 window.GUIDE_GROUNDS=GUIDE_GROUNDS;
 window.zgPick=GROUND_PICK;
 function applyGround(k){
- const pick=k!=='home'&&GROUND_PICK[k];
- const base=PAGE_GROUND[k]||PAGE_GROUND.home;
+ const pick=GROUND_PICK[k];
+ const base=['#73b3c3','#1d1d1b'];
  const g=pick&&pick.bw?['#f3f3f1','#1d1d1b']:(pick&&pick.bg?[pick.bg,pick.on]:base);
  const root=document.documentElement;
  root.style.setProperty('--ground',g[0]);

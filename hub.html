@@ -318,7 +318,7 @@ function dressFrame(doc, frame){
  const __bg=(__gs.getPropertyValue('--ground')||'#73b3c3').trim();
  const __on=document.documentElement.dataset.on==='light'?'#fff':'#1d1d1b';
  st.textContent+='html,html body{background:'+__bg+'!important;color:'+__on+'!important}html body #zg-stack .zg-sub button,html body #zg-stack .zg-sub a{color:'+__on+'!important;border-color:'+__on+'!important}html body #zg-stack .zg-sub button[aria-selected="true"],html body #zg-stack .zg-sub button[aria-pressed="true"],html body #zg-stack .zg-sub button.on,html body #zg-stack .zg-sub button.active,html body #zg-stack .zg-sub button[aria-current],html body #zg-stack .zg-sub a[aria-current]{color:'+__on+'!important;box-shadow:inset 0 -3px 0 '+__on+'!important}html body #zg-stack .zg-plaque,html body #zg-stack .zg-plaque h1,html body #zg-stack .zg-plaque .lead,html body #zg-stack .zg-plaque .meta,html body #zg-stack .zg-plaque .zg-stamp{color:'+__on+'!important;border-color:'+__on+'!important}';
- st.textContent+='html body nav.side,html body main,html body section.doc,html body section.doc.on,html body .tldr,html body .figlist{background:transparent!important;color:'+__on+'!important}html body section.doc,html body section.doc.on{border:0!important;overflow:visible!important}html body nav.side a,html body nav.side .grp{color:'+__on+'!important}html body nav.side a.on,html body nav.side a.on *{background:#b7cd00!important;color:#1d1d1b!important}html body .lcstep:not(.key),html body .pcard,html body .ccard,html body .ptable,html body .psearch,html body .pfilt:not(.on),html body .pvol:not(.on),html body .pv:not(.on),html body .pexp,html body input,html body select,html body textarea{color:#1d1d1b}html body .foldall{color:'+__on+'!important;border-color:'+__on+'!important}html body section.doc :is(h1,h2,h3,h4,h5,h6,p,li){color:'+__on+'!important}html body :is(.lcstep:not(.key),.pcard,.ccard,.ptable,.rulebox,.pt,.note,.years,.callout,.card,.checklist,.quote,.pan) :is(h1,h2,h3,h4,h5,h6,p,li,b,td,span){color:#1d1d1b!important}html body [data-prod-pane]>h2{display:none!important}';
+ st.textContent+='html body nav.side,html body main,html body section.doc,html body section.doc.on,html body .tldr,html body .figlist{background:transparent!important;color:'+__on+'!important}html body section.doc,html body section.doc.on{border:0!important;overflow:visible!important}html body nav.side a,html body nav.side .grp{color:'+__on+'!important}html body nav.side a.on,html body nav.side a.on *{background:#b7cd00!important;color:#1d1d1b!important}html body .lcstep:not(.key),html body .pcard,html body .ccard,html body .ptable,html body .psearch,html body .pfilt:not(.on),html body .pvol:not(.on),html body .pv:not(.on),html body .pexp,html body input,html body select,html body textarea{color:#1d1d1b}html body .foldall{color:'+__on+'!important;border-color:'+__on+'!important}html body section.doc :is(h1,h2,h3,h4,h5,h6,p,li){color:'+__on+'!important}html body :is(.lcstep:not(.key),.pcard,.ccard,.ptable,.rulebox,.pt,.note,.years,.callout,.card,.checklist,.quote,.pan) :is(h1,h2,h3,h4,h5,h6,p,li,b,td,span){color:#1d1d1b!important}html body [data-prod-pane]>h2{display:none!important}html body h5.idgrp.open button,html body h5.idgrp.open button *{color:#1d1d1b!important}html body nav.side a:hover{background:#f3f3f1!important;color:#1d1d1b!important}html body nav.side .extmark{color:'+__on+'!important}';
  if(doc.documentElement) doc.documentElement.style.setProperty('background',__bg,'important');
  doc.documentElement.style.setProperty('background',__bg,'important');
  if(doc.body) doc.body.style.setProperty('background',__bg,'important');
@@ -521,7 +521,7 @@ function dressFrame(doc, frame){
   if(h.closest('#zg-stack')) return;
   h.classList.add('zg-src-title');
  });
- if((frame&&frame.dataset.sec)!=='regs') paintInk(doc, __on, __bg);
+ paintInk(doc, __on, __bg);
  hoistSearch(frame);
 }
 function zgRgb(c){
@@ -568,6 +568,7 @@ function paintInk(doc, on, bgHex){
    const tag=ch.tagName;
    if(tag==='SCRIPT'||tag==='STYLE'||tag==='NOSCRIPT'||tag==='LINK'||tag==='SVG') continue;
    if(ch.classList&&ch.classList.contains('zg-swatch')) continue;
+   if(ch.closest&&ch.closest('nav.side')) continue;
    let cs;
    try{ cs=view.getComputedStyle(ch); }catch(e){ continue; }
    const img=cs.backgroundImage;
@@ -576,22 +577,23 @@ function paintInk(doc, on, bgHex){
    if(img&&img!=='none') own='img';
    else if(b&&b.a>0.55&&!zgNear(b,page)) own=b;
    const next=own==='img'?'img':(own||base);
-   if(own&&own!=='img'){
+   const behind=own==='img'||base==='img'?null:(own||base||null);
+   let text=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
+   if(!text){
+    const nodes=ch.childNodes;
+    for(let k=0;k<nodes.length;k++){
+     const n=nodes[k];
+     if(n.nodeType===3&&n.nodeValue&&n.nodeValue.trim()){ text=true; break; }
+    }
+   }
+   if(text&&behind){
     const cur=zgRgb(cs.color);
-    if(!cur||ratio(cur, own)<2.4) put(ch, ratio(black, own)>=ratio(white, own)?'#1d1d1b':'#ffffff');
-   }else if(!next){
-    let text=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
-    if(!text){
-     const nodes=ch.childNodes;
-     for(let k=0;k<nodes.length;k++){
-      const n=nodes[k];
-      if(n.nodeType===3&&n.nodeValue&&n.nodeValue.trim()){ text=true; break; }
-     }
-    }
-    if(text){
-     const cur=zgRgb(cs.color);
-     if(!cur||ratio(cur, page)<4.5) put(ch, on);
-    }
+    const need=parseFloat(cs.fontSize)>=24?3:4.5;
+    if(!cur||ratio(cur, behind)<need) put(ch, ratio(black, behind)>=ratio(white, behind)?'#1d1d1b':'#ffffff');
+   }else if(text&&!own&&base!=='img'){
+    const cur=zgRgb(cs.color);
+    const need=parseFloat(cs.fontSize)>=24?3:4.5;
+    if(!cur||ratio(cur, page)<need) put(ch, on);
    }
    if(ch.children.length){ surf.set(ch, next==='img'?'img':next); stack.push(ch); }
   }

@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Хроники проектирования и производства</title>
+<script>
+(function(){
+  var p=new URLSearchParams(location.search).get('part');
+  if(p==='chron'||p==='ovd'||p==='hours'){
+    document.documentElement.classList.add('zg-embed');
+    document.documentElement.dataset.part=p;
+  }
+})();
+</script>
+<style>html.zg-embed header{display:none!important}html.zg-embed body{margin:0;background:transparent}</style>
 </head>
 <body>
 <style>
@@ -1622,7 +1632,7 @@ function viewOvd() {
 
 const VTABS = [{ id: 'chron', t: 'Хроника совещаний' }, { id: 'ovd', t: 'Просрочки' },
   { id: 'hours', t: 'Этапы и часы' }];
-let VIEW = 'chron';
+let VIEW = (document.documentElement.dataset.part==='ovd'||document.documentElement.dataset.part==='hours'||document.documentElement.dataset.part==='chron') ? document.documentElement.dataset.part : 'chron';
 function render() {
   document.getElementById('tabs').innerHTML = VTABS.map(t =>
     `<button role="tab" data-view="${t.id}" aria-selected="${t.id === VIEW}">${esc(t.t)}</button>`).join('');
@@ -2987,6 +2997,20 @@ function KEEPWB() {
     afterRender: view => { if (view === 'people' || view === 'hours') mountCharts();
       if (view === 'hours' && window.ZH) ZH.init(); },
   };
+})();
+if (document.documentElement.dataset.part) render();
+</script>
+<script>
+(function(){
+  if(!document.documentElement.classList.contains('zg-embed')) return;
+  const ping=()=>{
+    const h=Math.max(document.body.scrollHeight||0, document.documentElement.scrollHeight||0);
+    try{ parent.postMessage({zgHronH:h}, '*'); }catch(e){}
+  };
+  if(window.ResizeObserver) new ResizeObserver(ping).observe(document.body);
+  window.addEventListener('load', ping);
+  setTimeout(ping, 300);
+  setTimeout(ping, 1200);
 })();
 </script>
 

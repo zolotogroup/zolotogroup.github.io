@@ -775,7 +775,7 @@ function fitFrame(frame){
  if(!frame||frame.hidden||!doc||!doc.body||!doc.defaultView||frame.__zgBusy) return;
  frame.__zgBusy=1;
  frame.__zgMuteUntil=(typeof performance!=='undefined'?performance.now():Date.now())+120;
- try{ dressFrame(doc, frame); }catch(e){ frame.__zgBusy=0; return; }
+ try{ dressFrame(doc, frame); fillHronFrame(doc); }catch(e){ frame.__zgBusy=0; return; }
  if((frame.dataset.sec||'')==='hroniki'){
   const py=window.scrollY;
   setFrameH(frame, Math.max(1, natH(frame,doc)+32), py);
@@ -860,6 +860,19 @@ function settleFrame(frame){
  requestAnimationFrame(tick);
  try{ const fonts=frame.contentDocument&&frame.contentDocument.fonts; if(fonts&&fonts.ready) fonts.ready.then(()=>{ if(frame.isConnected&&!frame.hidden) fitFrame(frame); }); }catch(e){}
 }
+function fillHronFrame(doc){
+ if(!doc||typeof window.__zgHron!=='function') return;
+ doc.querySelectorAll('iframe.zg-hron').forEach(f=>{
+  if(f.srcdoc) return;
+  const src=f.getAttribute('src')||'';
+  const m=src.match(/[?&]part=(chron|ovd|hours)/);
+  if(!m) return;
+  const page=window.__zgHron(m[1]);
+  if(!page) return;
+  f.removeAttribute('src');
+  f.srcdoc=page;
+ });
+}
 function watchFrame(frame){
  const again=!!frame.__zgWatch;
  if(!again) frame.__zgWatch=1;
@@ -868,10 +881,11 @@ function watchFrame(frame){
  const go=()=>{
   if((frame.dataset.sec||'')==='hroniki') frame.__zgSettle=0;
   foldPage(frame);settleFrame(frame);
+  try{ fillHronFrame(frame.contentDocument); }catch(e){}
   const doc=frame.contentDocument;
   if(!doc||!doc.body) return;
   if(frame.__zgMo){ try{frame.__zgMo.disconnect()}catch(e){} }
-  frame.__zgMo=new MutationObserver(()=>{ if(frame.hidden) return; const d=frame.contentDocument; if(d) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
+  frame.__zgMo=new MutationObserver(()=>{ if(frame.hidden) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
   frame.__zgMo.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','aria-current','aria-selected']});
  };
  if(again){ if(!frame.hidden&&!frame.__zgMo&&frame.contentDocument&&frame.contentDocument.body) go(); return; }

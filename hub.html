@@ -993,7 +993,10 @@ function show(k){
   if(document.documentElement.classList.contains('guest')){ showLock(k); return; }
   k='home';
  }
- if(k!=='home'&&!PAGES[src]) k='home';
+ if(k!=='home'&&!PAGES[src]){
+  if((PUB.n||[]).indexOf(src)>=0&&window.__zgPubReady){ window.__zgPubReady.then(()=>{ if(PAGES[src]) show(k); }); return; }
+  k='home';
+ }
  if(k==='week'&&window.__zgLetters==='own'&&window.__zgRoleId) window.__zgWeekRole=window.__zgRoleId;
  applyGround(k);
  document.documentElement.dataset.mode=k==='home'?'home':(k==='pult'?'pult':(FINSEC.indexOf(k)>=0?'fin':(GRPSEC.indexOf(k)>=0?'grp':'solo')));
@@ -1227,14 +1230,17 @@ window.addEventListener('hashchange',()=>{
  show(dest);
 });
 (async()=>{
- try{ await loadPublic(); }catch(e){}
+ window.__zgPubReady=loadPublic();
+ enterGuest();
+ try{ await window.__zgPubReady; }catch(e){}
  let saved='';
  try{saved=sessionStorage.getItem('zltpw3')||''}catch(e){}
- if(saved){ try{ await unlock(saved); return; }catch(e){ try{sessionStorage.removeItem('zltpw3')}catch(e2){} } }
+ if(saved){ try{ await unlock(saved); return; }catch(e){ try{sessionStorage.removeItem('zltpw3')}catch(e2){} enterGuest(); } }
  const dest=readHash();
  const n=LVLSEC[dest];
+ if(!document.documentElement.classList.contains('guest')) return;
  if(dest!=='home'&&n&&[4,5,6].indexOf(n)<0){ showLock(dest); return; }
- enterGuest();
+ show(!n||[4,5,6].indexOf(n)>=0?dest:'home');
 })();
 </script>
 

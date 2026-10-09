@@ -13,7 +13,7 @@
   }
 })();
 </script>
-<style>html.zg-embed header{display:none!important}html.zg-embed body{margin:0;background:transparent}</style>
+<style>html.zg-embed body>header{display:none!important}html.zg-embed body{margin:0;background:transparent}html.zg-embed main.wrap{padding-left:0;padding-right:0}</style>
 </head>
 <body>
 <style>
@@ -35,7 +35,7 @@
   --fdisp:"Zoloto Display","Aeroport",system-ui,sans-serif;
   --fm:"Aeroport Mono","Aeroport",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+@media not all{:root:not([data-theme="light"]){
   color-scheme: dark;
   --page:#0d0518; --surface:#130030; --surface-2:#160b26; --raise:#1d0b36;
   --ink:#ece7f5; --ink-2:#c3b9d6; --muted:#9b93ac;
@@ -238,7 +238,7 @@ footer{border-top:1px solid var(--border);padding:22px 0 40px;color:var(--muted)
   --fdisp:"Zoloto Display","Stratos",sans-serif;
   --fm:"Aeroport Mono","Aeroport",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media not all{:root:not([data-theme="light"]){
   color-scheme:dark;
   --page:#151513; --surface:#1d1d1b; --surface-2:#232321; --raise:#262624;
   --ink:#f3f3f1; --ink-2:#cfcfca; --muted:#9a9a95;
@@ -271,7 +271,7 @@ footer{border-top:1px solid var(--border);padding:22px 0 40px;color:var(--muted)
   --z-work:#295faa; --z-rev:#e74310; --z-other:#b7b7b2; --z-other-soft:#e0e0db;
   --z-ink-3:var(--muted);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .z-root{
+@media not all{:root:not([data-theme="light"]) .z-root{
   --work:#8fc0f0; --rev:#ff6a3c; --other:#5c5c57; --other-soft:#3a3a36;
   --ok:#3fb8b0; --warn:#ff8a3c; --danger:#ff6161;
   --z-work:#8fc0f0; --z-rev:#ff6a3c; --z-other:#5c5c57; --z-other-soft:#3a3a36;}}
@@ -349,7 +349,7 @@ details.lcard>summary{list-style:none;cursor:pointer}details.lcard>summary::-web
 .bars{display:flex;flex-direction:column;gap:9px}
 /* «Часы по отделам»: карточка во всю ширину — полосы и подписи крупнее */
 .wbacc{--ppl:#6f7f96}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .wbacc{--ppl:#8b9ab0}}
+@media not all{:root:not([data-theme="light"]) .wbacc{--ppl:#8b9ab0}}
 :root[data-theme="dark"] .wbacc{--ppl:#8b9ab0}
 /* «Над чем работали» и «Часы по отделам» — одинаковые крупные полосы и подписи */
 /* колонка значений фиксированной ширины — иначе шапка и строки считают её по своему тексту и не совпадают */
@@ -399,22 +399,22 @@ table.tbl th:hover .ar.dim{opacity:.6}
 .z-root{--z-ground:var(--surface); --z-panel:var(--surface-2); --z-panel-2:var(--brand-soft);
   --z-ink:var(--ink); --z-ink-2:var(--ink-2); --z-ink-3:var(--muted);
   --z-rule:var(--border); --z-rule-soft:var(--grid);
-  --z-work:var(--brand); --z-rev:#eb6834; --z-other:#b9b2c8; --z-other-soft:#d8d3e2;
+  --z-work:var(--brand); --z-rev:#e74310; --z-other:#b7b7b2; --z-other-soft:#e0e0db;
   --z-ok:var(--good); --z-warn:var(--warn); --z-danger:var(--crit);
   --z-r:10px; --z-shadow:var(--shadow); font-family:var(--fd); color:var(--ink);}
-:root[data-theme="dark"] .z-root{--z-rev:#e0702a;--z-other:#6a6083;--z-other-soft:#443768}
+:root[data-theme="dark"] .z-root{--z-rev:#ff6a3c;--z-other:#5c5c57;--z-other-soft:#3a3a36}
 .z-root,.z-root *{box-sizing:border-box}
-.z-root{--ground:#ffffff; --panel:#faf7fe; --panel-2:#f4ebfe; --ink:#16062e; --ink-2:#6d6580; --ink-3:#8f88a1;
-  --rule:#e7e2ee; --rule-soft:#f0ecf6;
-  --work:#7a22d4; --rev:#eb6834; --other:#b9b2c8; --other-soft:#d8d3e2;
-  --ok:#0ca30c; --warn:#e0a13f; --danger:#d1554f;
-  --r:10px; --shadow:0 1px 2px rgba(22,6,46,.05);
+.z-root{--ground:#ffffff; --panel:#f3f3f1; --panel-2:#eef2f8; --ink:#1d1d1b; --ink-2:#4b4b48; --ink-3:#6f6f6c;
+  --rule:#dedad9; --rule-soft:#e8e8e4;
+  --work:#295faa; --rev:#e74310; --other:#b7b7b2; --other-soft:#e0e0db;
+  --ok:#009295; --warn:#e74310; --danger:#e30c13;
+  --r:0; --shadow:none;
   color-scheme:light;}
-[data-theme="dark"] .z-root{--ground:#130030; --panel:#1b0640; --panel-2:#251050; --ink:#f5f0fb; --ink-2:#b8aecd; --ink-3:#8d84a3;
-  --rule:#33205c; --rule-soft:#26134b;
-  --work:#b055f6; --rev:#e0702a; --other:#6a6083; --other-soft:#443768;
-  --ok:#4fc44f; --warn:#e0a13f; --danger:#e8756f;
-  --shadow:0 1px 2px rgba(0,0,0,.35);
+[data-theme="dark"] .z-root{--ground:#1d1d1b; --panel:#232321; --panel-2:#22262b; --ink:#f3f3f1; --ink-2:#cfcfca; --ink-3:#9a9a95;
+  --rule:#383835; --rule-soft:#2e2e2b;
+  --work:#8fc0f0; --rev:#ff6a3c; --other:#5c5c57; --other-soft:#3a3a36;
+  --ok:#3fb8b0; --warn:#ff8a3c; --danger:#ff6161;
+  --shadow:none;
   color-scheme:dark;}
 .z-root,.z-root *{box-sizing:border-box}
 .z-root{margin:0;background:var(--ground);color:var(--ink);
@@ -610,7 +610,7 @@ table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
 /* --- явная кликабельность строк диаграмм --- */
 .bdet:not(.plain)>summary{border-radius:8px}
 .bdet:not(.plain)>summary .bl{color:var(--brand);text-decoration:underline dotted;
-  text-decoration-color:rgba(122,34,212,.45);text-underline-offset:3px}
+  text-decoration-color:rgba(41,95,170,.45);text-underline-offset:3px}
 .bdet:not(.plain)>summary:hover{background:var(--brand-soft)}
 .bdet:not(.plain)>summary:hover .bl{text-decoration-style:solid;text-decoration-color:var(--brand)}
 .bdet .bar{padding-right:0!important}
@@ -641,8 +641,8 @@ table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
 /* --- полосы диаграмм: без скруглений, плотнее --- */
 .bt,.bf,.track,.seg-b,.pbar,.pbar i,.z-track,.z-seg-b{border-radius:0!important}
 @media(max-width:640px){.bar{grid-template-columns:minmax(0,1fr) 92px;grid-template-areas:"l v" "t t";row-gap:5px}.bar .bl{grid-area:l}.bar .bv{grid-area:v}.bar .bt{grid-area:t}}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .z-root{--z-rev:#e0702a;--z-other:#6a6083;--z-other-soft:#443768}}
-@media (prefers-color-scheme:dark){.z-root{--ground:#130030; --panel:#1b0640; --panel-2:#251050; --ink:#f5f0fb; --ink-2:#b8aecd; --ink-3:#8d84a3;
+@media not all{:root:not([data-theme="light"]) .z-root{--z-rev:#e0702a;--z-other:#6a6083;--z-other-soft:#443768}}
+@media not all{.z-root{--ground:#130030; --panel:#1b0640; --panel-2:#251050; --ink:#f5f0fb; --ink-2:#b8aecd; --ink-3:#8d84a3;
   --rule:#33205c; --rule-soft:#26134b;
   --work:#b055f6; --rev:#e0702a; --other:#6a6083; --other-soft:#443768;
   --ok:#4fc44f; --warn:#e0a13f; --danger:#e8756f;
@@ -664,9 +664,9 @@ table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
 @media(max-width:640px){.seg.thsw button span{display:none}}
 @container (max-width:520px){.bar .bv .bv2{min-width:0}}
 @media (max-width:900px){.bdet .oit,.odet .oit{grid-template-columns:minmax(0,1fr)}.bdet .oit .dd,.odet .oit .dd{align-items:flex-start;text-align:left;flex-direction:row;flex-wrap:wrap;gap:4px 10px;margin-top:2px}}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .z-root{--work:#8fc0f0; --rev:#ff6a3c; --other:#5c5c57; --other-soft:#3a3a36;
+@media not all{:root:not([data-theme="light"]) .z-root{--work:#8fc0f0; --rev:#ff6a3c; --other:#5c5c57; --other-soft:#3a3a36;
   --ok:#3fb8b0; --warn:#ff8a3c; --danger:#ff6161;
-  --z-work:#8fc0f0; --z-rev:#ff6a3c; --z-other:#5c5c57; --z-other-soft:#3a3a36;}}.c5{grid-column:span 5}.c7{grid-column:span 7}@media(max-width:760px){.c5,.c7{grid-column:span 12}}:root{--h-work:#b7cd00;--h-rev:#f28c28;--bad:var(--crit)}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--h-work:#c3d82a;--h-rev:#ffa347}}:root[data-theme="dark"]{--h-work:#c3d82a;--h-rev:#ffa347}
+  --z-work:#8fc0f0; --z-rev:#ff6a3c; --z-other:#5c5c57; --z-other-soft:#3a3a36;}}.c5{grid-column:span 5}.c7{grid-column:span 7}@media(max-width:760px){.c5,.c7{grid-column:span 12}}:root{--h-work:#b7cd00;--h-rev:#f28c28;--bad:var(--crit)}@media not all{:root:not([data-theme="light"]){--h-work:#c3d82a;--h-rev:#ffa347}}:root[data-theme="dark"]{--h-work:#c3d82a;--h-rev:#ffa347}
 .wbhint{font-size:11.5px;color:var(--muted);margin-left:10px;align-self:center}
 .ovsub .seg button[data-wbmon]{font-variant-numeric:tabular-nums}
 
@@ -790,6 +790,15 @@ table.tbl tbody tr:hover td:first-child{background:var(--surface-2)}
   table.tbl td{padding:8px 9px}
   .mtr .t{width:36px}
 }
+.grid{gap:20px}
+.grid>.card{background:var(--surface-2)}
+.z-root{background:transparent}
+.z-root .z-bar,.z-root .z-wrap>section{background:var(--surface);border:1px solid var(--edge)}
+.z-root .z-bar{padding:12px 18px;margin:0 0 14px}
+.z-root .z-wrap>section{padding:16px 18px 18px;margin:14px 0 0}
+.z-root .z-shead{margin-bottom:12px}
+.z-root footer{margin-top:14px;padding:12px 18px 0;border-top:0}
+@media (max-width:760px){.z-root .z-bar{padding:12px 14px}.z-root .z-wrap>section{padding:14px 14px 16px}.z-root footer{padding:10px 14px 0}.z-root .z-shead>*{min-width:0;max-width:100%}.z-root #z-projSearch{width:100%;min-width:0}}
 </style>
 <header>
   <div class="wrap">

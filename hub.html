@@ -127,8 +127,9 @@ html.open.pub:not([data-mode="home"]) .homebtn{display:none}
 .home .card.wide .tags{padding-left:22px}
 @media(max-width:880px){.home .card.wide{flex-direction:column;gap:20px}.home .card.wide .rt{min-width:0}.home .card.wide .go{border-left:0;border-top:1px solid var(--ink);padding:16px 0 0;align-items:center}.home .card.wide .tags{padding-left:0}}
 .home .cards.three{grid-template-columns:repeat(3,1fr)}
-.home .cards.three .card{aspect-ratio:auto;min-height:0;padding:22px 24px 18px;gap:12px;justify-content:space-between}
+.home .cards.three .card{aspect-ratio:auto;min-height:0;min-width:0;container-type:inline-size;padding:22px 24px 18px;gap:12px;justify-content:space-between}
 .home .cards.three .t{font:400 clamp(32px,3.4vw,48px)/1 "Stratos",sans-serif;letter-spacing:-.02em;margin:0}
+.home .card[data-go="hroniki"] .t{font-size:clamp(32px,12.4cqi,48px)}
 .home .cards.three .d{font-size:18px;margin:14px 0 0}
 .home .cards.three .go{font-size:18px;padding-top:17px}
 .home .cards.three .go b{font-size:30px}

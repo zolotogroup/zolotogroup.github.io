@@ -281,6 +281,9 @@ function flushEmbed(f){
   d.head.appendChild(s);
  }catch(e){}
 }
+function keepClass(el, name){
+ if(el && !el.classList.contains(name)) el.classList.add(name);
+}
 function dressFrame(doc, frame){
  doc.querySelectorAll('iframe').forEach(flushEmbed);
  if(!doc.zgFlushHook){ doc.zgFlushHook=true; doc.addEventListener('load',e=>{ if(e.target&&e.target.tagName==='IFRAME') flushEmbed(e.target); },true); }
@@ -346,7 +349,7 @@ function dressFrame(doc, frame){
  doc.documentElement.style.setProperty('background',__bg,'important');
  if(doc.body) doc.body.style.setProperty('background',__bg,'important');
  if((frame&&frame.dataset.sec)==='week') st.textContent+='html body.locked>#gate,html body.locked #gate{position:relative!important;inset:auto!important;min-height:520px!important;height:auto!important;display:flex!important;visibility:visible!important}html body.locked>.wrap{display:none!important}html body #zg-stack #weeks .wl{display:none!important}html body #zg-stack #weeks{position:relative!important;z-index:80!important;pointer-events:auto!important}html body #zg-stack #weeks [data-w0]{pointer-events:auto!important;cursor:pointer!important}html body #zg-stack #weeks [aria-current]{background:#b7cd00!important;color:#1d1d1b!important;border-color:#1d1d1b!important;box-shadow:none!important}html body .ins,html body .ins h3,html body .ins p,html body .ins .ik{color:#1d1d1b!important}';
- if(doc.body) doc.body.appendChild(st);
+ if(!st.isConnected) (doc.head||doc.documentElement).appendChild(st);
  const COPY={
   pult:['Пульт ПланФикса','Контракты, дебиторка, часы и просрочки по отчётам ПланФикса. В сводке только карточки мастер-проектов, без этапов, завершённых и отменённых.'],
   fin:['Финансы','Поступления и выплаты по счетам ЗОЛОТОГРУПП, ЗЭТ и кассы. Переводы между своими счетами и пополнение кассы в эти суммы не входят.'],
@@ -389,7 +392,7 @@ function dressFrame(doc, frame){
  let stack=doc.getElementById('zg-stack');
  if(!stack){ stack=doc.createElement('div'); stack.id='zg-stack'; }
  if(stack.parentElement!==slot||slot.firstElementChild!==stack) slot.insertBefore(stack, slot.firstChild);
- menus.forEach(m=>{ m.classList.add('zg-sub'); if(m.parentElement!==stack) stack.appendChild(m); });
+ menus.forEach(m=>{ keepClass(m,'zg-sub'); if(m.parentElement!==stack) stack.appendChild(m); });
  stack.querySelectorAll('.home-btn,button.home-btn').forEach(el=>el.remove());
  const FINNAV=[['fin','Финансы'],['fot','ФОТ'],['kassa','Касса'],['taxi','Такси'],['lic','Лицензии'],['org','Оргструктура']];
  const sec=(frame&&frame.dataset.sec)||'';
@@ -422,12 +425,14 @@ function dressFrame(doc, frame){
  let box=stack.querySelector('.zg-plaque');
  if(!box){ box=doc.createElement('div'); box.className='zg-plaque'; box.innerHTML='<h1></h1><p class="lead"></p><div class="zg-corner"></div>'; }
  if(box.parentElement!==stack) stack.appendChild(box);
- box.querySelector('h1').textContent=pair[0];
- box.querySelector('.lead').textContent=pair[1];
+ const h1=box.querySelector('h1'), lead=box.querySelector('.lead');
+ if(h1.textContent!==pair[0]) h1.textContent=pair[0];
+ if(lead.textContent!==pair[1]) lead.textContent=pair[1];
  let stamp=box.querySelector('.zg-stamp');
  if(sec==='pult'||sec==='fin'||sec==='week'){
   if(!stamp){ stamp=doc.createElement('p'); stamp.className='zg-stamp'; box.querySelector('.lead').insertAdjacentElement('afterend', stamp); }
-  stamp.textContent=NOTE[sec]||'';
+  const stampText=NOTE[sec]||'';
+  if(stamp.textContent!==stampText) stamp.textContent=stampText;
  }else if(stamp) stamp.remove();
  let corner=box.querySelector('.zg-corner');
  if(!corner){ corner=doc.createElement('div'); corner.className='zg-corner'; box.appendChild(corner); }
@@ -477,12 +482,12 @@ function dressFrame(doc, frame){
  setAttr(mode.querySelector('[data-zg="color"]'),'aria-expanded', pick.open?'true':'false');
  setAttr(mode.querySelector('[data-zg="bw"]'),'aria-pressed', pick.bw?'true':'false');
  const picks=mode.querySelector('.zg-picks');
- if(picks) picks.classList.toggle('on', !!pick.open);
+ if(picks && picks.classList.contains('on')!==!!pick.open) picks.classList.toggle('on', !!pick.open);
  mode.querySelectorAll('.zg-swatch').forEach(s=>{
   setAttr(s,'aria-pressed', !pick.bw && s.dataset.bg.toLowerCase()===now ? 'true':'false');
  });
  doc.querySelectorAll('.topbar,.hero,.sec-crumb,.sec-crumb-row').forEach(el=>{
-  if(!el.closest('#zg-stack')) el.classList.add('zg-src-title');
+  if(!el.closest('#zg-stack')) keepClass(el,'zg-src-title');
  });
  stack.style.width='100%';
  stack.style.minWidth='0';
@@ -499,7 +504,7 @@ function dressFrame(doc, frame){
   const columnParent=parent.matches('.wrap,.tt-wrap')&&cs.maxWidth&&cs.maxWidth!=='none';
   inset=(parseFloat(cs.paddingLeft)||0)<20 && !doc.querySelector('nav.side') && !columnParent;
  }
- stack.classList.toggle('zg-inset', inset);
+ if(stack.classList.contains('zg-inset')!==inset) stack.classList.toggle('zg-inset', inset);
  const column=[...host.querySelectorAll('.page.on > .wrap')].find(el=>shown(el)&&!stack.contains(el)&&!el.contains(stack));
  if(column&&doc.defaultView){
   const ccs=doc.defaultView.getComputedStyle(column);
@@ -534,16 +539,16 @@ function dressFrame(doc, frame){
    stack.style.setProperty('padding-right','0','important');
   }
  }
- host.querySelectorAll('.blockhead').forEach(el=>{ if(!el.closest('#zg-stack')) el.classList.add('zg-src-title'); });
- host.querySelectorAll('h1').forEach(h=>{ if(!h.closest('#zg-stack')) h.classList.add('zg-src-title'); });
+ host.querySelectorAll('.blockhead').forEach(el=>{ if(!el.closest('#zg-stack')) keepClass(el,'zg-src-title'); });
+ host.querySelectorAll('h1').forEach(h=>{ if(!h.closest('#zg-stack')) keepClass(h,'zg-src-title'); });
  host.querySelectorAll('p.lead, p.eyebrow, .eyebrow').forEach(p=>{
   if(p.closest('#zg-stack')||p.closest('.strip,.tiles,.plate,table,.cards')) return;
   const parent=p.parentElement;
-  if(parent&&(parent.matches('.subpanel,.hero,.hd,.tabpane,.stack,section,.wrap,main')||parent.querySelector(':scope > h1'))) p.classList.add('zg-src-title');
+  if(parent&&(parent.matches('.subpanel,.hero,.hd,.tabpane,.stack,section,.wrap,main')||parent.querySelector(':scope > h1'))) keepClass(p,'zg-src-title');
  });
  doc.querySelectorAll('body > header, body > .wrap > header, header.mast, header .hd, .mast').forEach(h=>{
   if(h.closest('#zg-stack')) return;
-  h.classList.add('zg-src-title');
+  keepClass(h,'zg-src-title');
  });
  paintInk(doc, __on, __bg);
  hoistSearch(frame);
@@ -765,9 +770,11 @@ window.addEventListener('resize',()=>{
 /* Высоту меряем на сжатой до 1px рамке: иначе scrollHeight не бывает меньше текущей высоты рамки, а блоки на 100vh растягивают её с каждым замером. */
 function natH(frame,doc){
  const old=frame.style.height;
+ const y=window.scrollY;
  frame.style.height='1px';
  const h=Math.max(doc.body.scrollHeight||0, doc.documentElement.scrollHeight||0);
  frame.style.height=old;
+ if(window.scrollY!==y) window.scrollTo(window.scrollX,y);
  return h;
 }
 function setFrameH(frame,next,y){
@@ -884,14 +891,13 @@ function watchFrame(frame){
  frame.setAttribute('scrolling','no');
  let timer=null;
  const go=()=>{
-  if((frame.dataset.sec||'')==='hroniki') frame.__zgSettle=0;
   foldPage(frame);settleFrame(frame);
   const doc=frame.contentDocument;
   if(!doc||!doc.body) return;
   try{ fillHronFrame(doc); }catch(e){}
   if(frame.__zgMo){ try{frame.__zgMo.disconnect()}catch(e){} }
-  frame.__zgMo=new MutationObserver(()=>{ if(frame.hidden) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
-  frame.__zgMo.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','aria-current','aria-selected']});
+  frame.__zgMo=new MutationObserver(recs=>{ if(frame.hidden||frame.__zgBusy) return; recs=recs.filter(r=>!(r.type==='attributes'&&r.attributeName==='class'&&r.oldValue===(typeof r.target.className==='string'?r.target.className:''))); if(!recs.length) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d&&recs.some(r=>r.type==='childList'&&r.addedNodes.length&&!(r.target&&(r.target.id==='zg-tight'||r.target.id==='zg-fold')))) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
+  frame.__zgMo.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeOldValue:true,attributeFilter:['class','hidden','aria-current','aria-selected']});
  };
  if(again){ if(!frame.hidden&&!frame.__zgMo&&frame.contentDocument&&frame.contentDocument.body) go(); return; }
  frame.addEventListener('load', go);

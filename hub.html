@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta http-equiv="Cache-Control" content="no-cache"><link rel="icon" href="favicon.ico?v=3" sizes="32x32"><link rel="icon" type="image/png" href="favicon-32.png?v=3" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html class="booting"><head><meta charset=utf8><meta http-equiv="Cache-Control" content="no-cache"><link rel="icon" href="favicon.ico?v=3" sizes="32x32"><link rel="icon" type="image/png" href="favicon-32.png?v=3" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Пульт и финансы ZG</title>
 <meta name="description" content="Пульт ПланФикса и финансы ЗОЛОТОГРУПП 2026 — по паролю">
 <style>
@@ -32,6 +32,9 @@ html:not(.open) .top .sw,html:not(.open) .top .note,html:not(.open) .top .exitbt
 .lock .pub button:hover{color:var(--brand)}
 .lock .pub i{display:block;margin-top:5px;font-style:normal;font-size:12.5px;color:var(--ink-3)}
 html:not(.open) .lock{display:flex;flex:1;align-items:center;justify-content:center;padding:24px 16px}
+html.booting .lock form{background:transparent;border:0;padding:0}
+html.booting .lock h1,html.booting .lock .row,html.booting .lock .err,html.booting .lock .pub{display:none}
+html.booting .lock #lksub{margin:0}
 .lock form{background:#46c1c3;border:1px solid var(--ink);padding:32px;width:100%;max-width:420px;box-sizing:border-box}
 .lock h1{margin:0 0 6px;font:400 30px/1.05 "Stratos",sans-serif;letter-spacing:-.01em}
 .lock p{margin:0 0 22px;font:400 11.5px/1.4 "Aeroport Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}
@@ -203,7 +206,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 </div>
 <div class="lock"><form id="lk" autocomplete="off">
 <h1>Пульт и финансы</h1>
-<p id="lksub">Свой пароль — свои разделы</p>
+<p id="lksub">Открываю</p>
 <div class="row"><input id="pw" type="text" name="zg-gate" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Пароль" placeholder="Пароль"><button id="peek" type="button" aria-label="Показать пароль">Aa</button><button id="lkb" type="submit">Открыть</button></div>
 <div class="err" id="lkerr" role="alert"></div>
 <p class="pub"><button type="button" id="pubback">Открытые разделы</button><i>Регламенты, промты и названия файлов</i></p>
@@ -972,7 +975,8 @@ window.addEventListener('resize',()=>{clearTimeout(evenCards.t);evenCards.t=setT
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(evenCards);
 function showLock(back){
  window.__zgBack=back||'';
- document.documentElement.classList.remove('open');
+ document.documentElement.classList.remove('open','booting');
+ const sub=document.getElementById('lksub'); if(sub) sub.textContent='Свой пароль — свои разделы';
  const err=document.getElementById('lkerr'); if(err) err.textContent=back?'Этот раздел закрыт паролем':'';
  const b=document.getElementById('lkb'); if(b) b.disabled=false;
 }
@@ -1092,6 +1096,7 @@ function enterGuest(){
  LVL='guest'; MAXLVL=[4,5,6];
  window.__zgLetters=''; window.__zgRoleId=''; window.__zgWeekPw=''; window.__zgWeekRole='';
  document.documentElement.classList.add('open','guest');
+ document.documentElement.classList.remove('booting');
  paintAccess(MAXLVL);
  const eb=document.getElementById('exitbtn');
  eb.textContent='Войти';
@@ -1147,7 +1152,7 @@ async function unlock(pw){
  }
  if(!AL||AL.indexOf(12)>=0) await pubTen();
  document.documentElement.classList.add('open');
- document.documentElement.classList.remove('guest');
+ document.documentElement.classList.remove('guest','booting');
  paintAccess(AL);
  const eb=document.getElementById('exitbtn');
  eb.textContent='Выйти';
@@ -1189,10 +1194,7 @@ window.addEventListener('hashchange',()=>{
  show(dest);
 });
 (async()=>{
- const sub=document.getElementById('lksub');
- if(sub) sub.textContent='Открываю';
  try{ await loadPublic(); }catch(e){}
- if(sub) sub.textContent='Свой пароль — свои разделы';
  let saved='';
  try{saved=sessionStorage.getItem('zltpw3')||''}catch(e){}
  if(saved){ try{ await unlock(saved); return; }catch(e){ try{sessionStorage.removeItem('zltpw3')}catch(e2){} } }

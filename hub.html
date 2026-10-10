@@ -166,6 +166,10 @@ html.zg-list .home .card .go span{display:none}
 html.zg-list .home .card .go b,html.zg-list .home .cards.three .go b{font-size:26px!important}
 @media(hover:none){html.zg-list .home .card:hover{background:var(--paper);transform:none;box-shadow:none}html.zg-list .home .card:active{background:var(--accent)}}
 @media(max-width:760px){html.zg-list .home .card{min-height:64px!important;padding:12px 14px!important}html.zg-list .home .card>div:first-child{grid-template-columns:minmax(0,1fr);grid-template-areas:"title" "meta"}html.zg-list .home .card .d{display:none}}
+.home .gh{display:none;margin:0}
+html.zg-groups .home{gap:28px}
+html.zg-groups .home .cards{row-gap:14px;column-gap:26px}
+html.zg-groups .home .gh{display:block;grid-column:1/-1;margin:0;font:400 13px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--on)}
 @media(max-width:480px){html.open[data-mode="home"] .viewsw{height:30px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 
 /* телефон: разделы одной строкой с прокруткой */
@@ -227,7 +231,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 </div>
 <span class="note" id="swn"></span>
 <div class="pagebar" id="pagebar"></div>
-<div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
+<div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="groups" aria-pressed="false">Группы</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
 <button class="exitbtn" id="exitbtn" type="button" title="Закрыть доступ и вернуться к вводу пароля">Выйти</button>
 <div class="zg-head-search" id="zg-head-search" hidden></div>
 </div>
@@ -241,31 +245,37 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <section class="home" aria-label="Разделы">
 <div class="hd"><p class="eb">ЗОЛОТОГРУПП · управленческие данные 2026</p><h1>Что открыть?</h1><p class="lead">Пульт ПланФикса — проекты, люди и деньги по договорам. Финансы — движение денег по счетам ЗОЛОТОГРУПП, ЗЭТ и кассы из ПланФакта. Рядом — копия недельной рассылки по ролям, свод регламентов, реестр промтов и генератор названий файлов.</p></div>
 <div class="cards three">
+<p class="gh">Сводка</p>
 <button class="card" type="button" data-go="pult"><div><div class="k"><span>ПланФикс</span><span id="h-pult"></span></div><p class="t">Пульт<br>ПланФикса</p><p class="d">Контракты, дебиторка, люди и часы, производство, просрочки — всё по отчётам ПланФикса.</p></div><div><div class="tags"><span>Сводка</span><span>BD воронка</span><span>Дебиторка</span><span>Этапы и часы</span><span>Производство</span><span>Просрочки</span><span>Хроники</span></div><div class="go" style="margin-top:18px"><span>Открыть пульт</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="fin"><div><div class="k"><span>ПланФакт</span><span id="h-fin"></span></div><p class="t">Финансы<br>2026</p><p class="d">Поступления и выплаты по всем счетам, ФОТ, наличные и комиссия за пополнение кассы, оргструктура.</p></div><div><div class="tags"><span>Финансы</span><span>ФОТ</span><span>Касса</span><span>Такси</span><span>Лицензии</span><span>Оргструктура</span></div><div class="go" style="margin-top:18px"><span>Открыть финансы</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="week"><div><div class="k"><span>Рассылка</span><span id="h-week">Неделя 40</span></div><p class="t">Недельная<br>рассылка</p><p class="d">Письмо по своей роли в начале недели: задачи, сроки, просрочки, ссылки в ПланФикс. Письма по ролям за закрытую неделю.</p></div><div><div class="tags"><span>10 ролей</span><span>Архив недель</span></div><div class="go" style="margin-top:18px"><span>Открыть рассылку</span><b>→</b></div></div></button>
 </div>
 <div class="cards three">
+<p class="gh">Документы</p>
 <button class="card" type="button" data-go="regs"><div><div class="k"><span>Документы</span></div><p class="t">Регламенты</p><p class="d">Свод регламентов ЗОЛОТОГРУПП: зоны ответственности, дизайн, делопроизводство, именование файлов.</p></div><div><div class="tags"><span>Свод</span><span>Аттестация</span><span>Номер сборки</span></div><div class="go" style="margin-top:18px"><span>Открыть регламенты</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="prompts"><div><div class="k"><span>Реестры</span></div><p class="t">Реестр<br>промтов</p><p class="d">Промты и шаблоны ЗОЛОТОГРУПП — что и как просить у Claude, чтобы результат был в наших форматах.</p></div><div><div class="tags"><span>Промты</span><span>Шаблоны</span></div><div class="go" style="margin-top:18px"><span>Открыть реестр</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="names"><div><div class="k"><span>Инструменты</span></div><p class="t">Названия<br>файлов</p><p class="d">Генератор имён по регламенту REG_CORP_file-naming: собирает имя по формуле, рядом шпаргалка по кодам.</p></div><div><div class="tags"><span>Генератор</span><span>Шпаргалка</span></div><div class="go" style="margin-top:18px"><span>Открыть генератор</span><b>→</b></div></div></button>
 </div>
 <div class="cards three">
+<p class="gh">Люди</p>
 <button class="card" type="button" data-go="orgdoc"><div><div class="k"><span>ПланФикс</span><span>Обновлено 24.09</span></div><p class="t">Оргструктура</p><p class="d">9 подразделений, 67 человек: руководство, департаменты и численность по оргдереву ПланФикса, до последнего сотрудника.</p></div><div><div class="tags"><span>Отделы</span><span>Численность</span><span>Бэк-офис</span></div><div class="go" style="margin-top:18px"><span>Открыть оргструктуру</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="lessons"><div><div class="k"><span>Курс по ИИ</span><span>Рейтинг 02.10</span></div><p class="t">Уроки ИИ</p><p class="d">Внутренний курс по работе с ИИ целиком, как выдан сотрудникам, плюс разбор и рейтинг выполненных заданий.</p></div><div><div class="tags"><span>Урок 1</span><span>Урок 2</span><span>Урок 3</span><span>Разбор</span></div><div class="go" style="margin-top:18px"><span>Открыть уроки</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="tests"><div><div class="k"><span>Регламенты</span><span>Ответили 47 из 55</span></div><p class="t">Тесты</p><p class="d">Опрос по регламентам с эталонными ответами и полные итоги проверки знаний по компании, по каждому сотруднику.</p></div><div><div class="tags"><span>Тест</span><span>Эталонные ответы</span><span>Итоги</span><span>Матрица</span></div><div class="go" style="margin-top:18px"><span>Открыть тесты</span><b>→</b></div></div></button>
 </div>
 <div class="cards three" id="row-rp" style="display:none">
+<p class="gh">Команда</p>
 <button class="card" type="button" data-go="rp" id="card-rp" style="display:none"><div><div class="k"><span>Проектный департамент</span><span>26.09</span></div><p class="t">Руководители<br>проектов</p><p class="d">Семь РП: ставка, активные мастер-проекты, портфель в деньгах и коэффициент «деньги / ФОТ». Списком — что у кого в работе.</p></div><div><div class="tags"><span>Сводка</span><span>Проекты по РП</span><span>Метод</span></div><div class="go" style="margin-top:18px"><span>Открыть разбор</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="prem" id="card-prem" style="display:none"><div><div class="k"><span>Мотивация</span><span>27.09</span></div><p class="t">Премии и<br>переработки</p><p class="d">Премии по KPI ПланФикса: кому, за какие мастер-проекты и в каком квартале. План и факт выплат по отделам. Рядом — переработки по людям.</p></div><div><div class="tags"><span>KPI</span><span>План и факт</span><span>Переработки</span></div><div class="go" style="margin-top:18px"><span>Открыть разбор</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="ten" id="card-ten" style="display:none"><div><div class="k"><span>Люди</span><span>28.09</span></div><p class="t">Длительность<br>работы</p><p class="d">Сколько кто работает в компании: медианный стаж, состав отделов по стажу, приходы и уходы по годам. Источник — помесячная ведомость ЗП с января 2023.</p></div><div><div class="tags"><span>Стаж</span><span>Отделы</span><span>Текучесть</span></div><div class="go" style="margin-top:18px"><span>Открыть разбор</span><b>→</b></div></div></button>
 </div>
 <div class="cards three">
+<p class="gh">Проекты</p>
 <button class="card" type="button" data-go="kp"><div><div class="k"><span>Инструменты</span></div><p class="t">Калькулятор<br>КП</p><p class="d">Расчёт коммерческого предложения на проектирование по прошлым проектам.</p></div><div><div class="tags"><span>Проектирование</span><span>Смета</span></div><div class="go" style="margin-top:18px"><span>Открыть калькулятор</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="navsum"><div><div class="k"><span>Инструменты</span></div><p class="t">Свод<br>навигации</p><p class="d">Свод навигационных проектов: статусы, составы и карточки в одном месте.</p></div><div><div class="tags"><span>Навигация</span><span>Проекты</span></div><div class="go" style="margin-top:18px"><span>Открыть свод</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="prod"><div><div class="k"><span>Регламенты</span></div><p class="t">Производства</p><p class="d">База подрядчиков: что умеют, как держат сроки и качество. Контакты, сроки и качество.</p></div><div><div class="tags"><span>Подрядчики</span><span>Сроки</span><span>Качество</span></div><div class="go" style="margin-top:18px"><span>Открыть базу</span><b>→</b></div></div></button>
 </div>
 <div class="cards three">
+<p class="gh">Хроники и подписки</p>
 <button class="card" type="button" data-go="hroniki"><div><div class="k"><span>ПланФикс</span></div><p class="t">Хроники<br>проектирования и производства</p><p class="d">Хроника совещаний, просрочки и этапы с часами по мастер-проектам. Снимок отчётов ПланФикса.</p></div><div><div class="tags"><span>Совещания</span><span>Просрочки</span><span>Этапы и часы</span></div><div class="go" style="margin-top:18px"><span>Открыть хроники</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="subs"><div><div class="k"><span>Документы</span></div><p class="t">Подписки<br>и техника</p><p class="d">Действующие подписки, регулярные платежи и техника, закреплённая за сотрудниками.</p></div><div><div class="tags"><span>Подписки</span><span>Платежи</span><span>Техника</span></div><div class="go" style="margin-top:18px"><span>Открыть раздел</span><b>→</b></div></div></button>
 </div>
@@ -1025,22 +1035,23 @@ function listBreaks(on){
  });
 }
 function applyHomeView(mode, save){
- const list=mode==='list';
- document.documentElement.classList.toggle('zg-list', list);
- listBreaks(list);
- if(save){ try{localStorage.setItem('zgHomeView', list?'list':'cards')}catch(e){} }
+ const view=mode==='list'||mode==='groups'?mode:'cards';
+ document.documentElement.classList.toggle('zg-list', view==='list');
+ document.documentElement.classList.toggle('zg-groups', view==='groups');
+ listBreaks(view==='list');
+ if(save){ try{localStorage.setItem('zgHomeView', view)}catch(e){} }
  const box=document.getElementById('viewsw');
  if(box) box.querySelectorAll('button').forEach(b=>{
-  const on=b.dataset.view===(list?'list':'cards');
+  const on=b.dataset.view===view;
   b.classList.toggle('on', on);
   if(b.getAttribute('aria-pressed')!==(on?'true':'false')) b.setAttribute('aria-pressed', on?'true':'false');
  });
- if(list) document.querySelectorAll('.home .card').forEach(c=>{ if(c.style.minHeight) c.style.minHeight=''; });
+ if(view==='list') document.querySelectorAll('.home .card').forEach(c=>{ if(c.style.minHeight) c.style.minHeight=''; });
  else if(document.documentElement.classList.contains('open')&&document.documentElement.dataset.mode==='home') evenCards();
 }
 (function(){
  let mode='cards';
- try{ if(localStorage.getItem('zgHomeView')==='list') mode='list'; }catch(e){}
+ try{ const saved=localStorage.getItem('zgHomeView'); if(saved==='list'||saved==='groups') mode=saved; }catch(e){}
  applyHomeView(mode, false);
  const box=document.getElementById('viewsw');
  if(box) box.addEventListener('click', ev=>{

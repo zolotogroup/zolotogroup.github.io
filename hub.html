@@ -149,21 +149,23 @@ html.open.pub:not([data-mode="home"]) .homebtn{display:none}
 @media(max-width:880px){.home .card{aspect-ratio:auto}}
 @media(hover:none){.home .card:hover{background:var(--paper);transform:none;box-shadow:none}.home .card:active{background:var(--accent)}}
 @media(max-width:760px){.home{padding:14px 16px 28px;gap:16px}.home .hd{padding:22px 20px}.home h1{font-size:38px}.home .cards{grid-template-columns:1fr}.home .card{aspect-ratio:auto;padding:24px;gap:20px}}
-html.zg-list .home{gap:8px}
-html.zg-list .home .cards{display:flex;flex-direction:column;gap:6px}
-html.zg-list .home .card{aspect-ratio:auto!important;min-height:0!important;height:auto!important;container-type:normal;display:grid;grid-template-columns:minmax(132px,190px) minmax(168px,320px) minmax(0,1fr) auto;align-items:center;gap:6px 18px;padding:11px 16px!important;transform:none!important;box-shadow:none!important}
+html.zg-list .home{gap:10px}
+html.zg-list .home .cards{display:flex;flex-direction:column;gap:8px}
+html.zg-list .home .card{aspect-ratio:auto!important;min-height:72px!important;height:auto!important;container-type:normal;display:flex;flex-direction:row;align-items:center;gap:20px;padding:12px 18px 12px 22px!important;transform:none!important;box-shadow:none!important}
 html.zg-list .home .card:hover{transform:none!important;box-shadow:none!important;background:var(--accent)}
-html.zg-list .home .card>div:first-child{display:contents}
-html.zg-list .home .card>div:last-child{display:flex;align-items:center;justify-content:flex-end}
-html.zg-list .home .card .k{margin:0;font-size:12px;letter-spacing:.06em}
-html.zg-list .home .card .t,html.zg-list .home .cards.three .t,html.zg-list .home .card[data-go="hroniki"] .t{font:400 22px/1.15 "Stratos",sans-serif!important;letter-spacing:-.02em;margin:0}
-html.zg-list .home .card .d,html.zg-list .home .cards.three .d{margin:0!important;font-size:15px!important;line-height:1.35;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.zg-list .home .card>div:first-child{display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);grid-template-areas:"title desc" "meta desc";column-gap:28px;row-gap:3px;align-items:center;flex:1 1 auto;min-width:0}
+html.zg-list .home .card>div:last-child{display:flex;align-items:center;justify-content:flex-end;flex:none}
+html.zg-list .home .card .k{grid-area:meta;display:flex;justify-content:flex-start;align-items:baseline;gap:12px;flex-wrap:nowrap;min-width:0;margin:0;font-size:12px;letter-spacing:.08em;white-space:nowrap;overflow:hidden}
+html.zg-list .home .card .k span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+html.zg-list .home .card .k span:first-child{flex:none}
+html.zg-list .home .card .t,html.zg-list .home .cards.three .t,html.zg-list .home .card[data-go="hroniki"] .t{grid-area:title;font:400 22px/1.15 "Stratos",sans-serif!important;letter-spacing:-.02em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.zg-list .home .card .d,html.zg-list .home .cards.three .d{grid-area:desc;margin:0!important;font-size:16px!important;line-height:1.35;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html.zg-list .home .card .tags{display:none}
 html.zg-list .home .card .go,html.zg-list .home .cards.three .go{border:0!important;padding:0!important;margin:0;width:auto;justify-content:flex-end}
 html.zg-list .home .card .go span{display:none}
-html.zg-list .home .card .go b,html.zg-list .home .cards.three .go b{font-size:24px!important}
+html.zg-list .home .card .go b,html.zg-list .home .cards.three .go b{font-size:26px!important}
 @media(hover:none){html.zg-list .home .card:hover{background:var(--paper);transform:none;box-shadow:none}html.zg-list .home .card:active{background:var(--accent)}}
-@media(max-width:760px){html.zg-list .home .card{grid-template-columns:minmax(0,1fr) auto;padding:12px 14px!important}html.zg-list .home .card .k,html.zg-list .home .card .d{display:none}}
+@media(max-width:760px){html.zg-list .home .card{min-height:64px!important;padding:12px 14px!important}html.zg-list .home .card>div:first-child{grid-template-columns:minmax(0,1fr);grid-template-areas:"title" "meta"}html.zg-list .home .card .d{display:none}}
 @media(max-width:480px){html.open[data-mode="home"] .viewsw{height:30px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 
 /* телефон: разделы одной строкой с прокруткой */
@@ -1006,9 +1008,26 @@ window.zgPaint=function(sec,opt){
  const f=frames[sec];
  if(f) fitFrame(f);
 };
+function listBreaks(on){
+ document.querySelectorAll('.home .card .t br').forEach(br=>{
+  let sp=br.nextSibling;
+  if(on){
+   if(!(sp&&sp.nodeType===3&&sp.__zgSp)){
+    sp=document.createTextNode(' ');
+    sp.__zgSp=1;
+    br.after(sp);
+   }
+   if(br.style.display!=='none') br.style.display='none';
+  }else{
+   if(sp&&sp.nodeType===3&&sp.__zgSp) sp.remove();
+   if(br.style.display) br.style.display='';
+  }
+ });
+}
 function applyHomeView(mode, save){
  const list=mode==='list';
  document.documentElement.classList.toggle('zg-list', list);
+ listBreaks(list);
  if(save){ try{localStorage.setItem('zgHomeView', list?'list':'cards')}catch(e){} }
  const box=document.getElementById('viewsw');
  if(box) box.querySelectorAll('button').forEach(b=>{

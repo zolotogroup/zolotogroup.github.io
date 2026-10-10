@@ -169,11 +169,16 @@ html.zg-list .home .card .go b,html.zg-list .home .cards.three .go b{font-size:2
 .home .gh{display:none;margin:0}
 html.zg-groups .home{gap:36px}
 html.zg-groups .home .cards{row-gap:16px;column-gap:26px}
-html.zg-groups .home .gh{display:flex;align-items:center;gap:18px;grid-column:1/-1;margin:6px 0 2px;font:400 44px/1 "Stratos",sans-serif;letter-spacing:-.03em;text-transform:none;color:var(--on)}
-html.zg-groups .home .gh::after{content:"";flex:1 1 auto;height:2px;background:var(--on)}
+html.zg-groups .home .gh{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"icon title" "bar bar";align-items:center;column-gap:18px;row-gap:16px;grid-column:1/-1;margin:0;font:400 48px/1 "Stratos",sans-serif;letter-spacing:-.03em;text-transform:none;color:var(--on)}
+html.zg-groups .home .gh .gh-t{grid-area:title}
+html.zg-groups .home .gh::after{content:"";grid-area:bar;height:12px;background:var(--on)}
+.zg-pico{display:none}
+.zg-pico svg{display:block;width:100%;height:100%}
+html.zg-groups .home .gh .zg-pico{display:block;grid-area:icon;width:80px;height:80px;color:var(--on)}
+html.zg-groups .home .card .zg-pico{display:block;width:64px;height:64px;margin:0 0 16px;color:var(--ink)}
 #gsets{display:none}
-html.zg-groups #gsets{display:flex;flex-direction:column;gap:36px}
-@media(max-width:760px){html.zg-groups .home .gh{font-size:32px;gap:12px}}
+html.zg-groups #gsets{display:flex;flex-direction:column;gap:40px}
+@media(max-width:760px){html.zg-groups .home .gh{font-size:32px;column-gap:12px;row-gap:12px}html.zg-groups .home .gh .zg-pico{width:56px;height:56px}html.zg-groups .home .gh::after{height:8px}html.zg-groups .home .card .zg-pico{width:48px;height:48px}}
 html.zg-groups .home>.cards{display:none!important}
 @media(max-width:480px){html.open[data-mode="home"] .viewsw{height:30px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 
@@ -279,11 +284,11 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <button class="card" type="button" data-go="subs"><div><div class="k"><span>Документы</span></div><p class="t">Подписки<br>и техника</p><p class="d">Действующие подписки, регулярные платежи и техника, закреплённая за сотрудниками.</p></div><div><div class="tags"><span>Подписки</span><span>Платежи</span><span>Техника</span></div><div class="go" style="margin-top:18px"><span>Открыть раздел</span><b>→</b></div></div></button>
 </div>
 <div class="gsets" id="gsets">
-<div class="cards three" data-set="week"><p class="gh">На неделю</p></div>
-<div class="cards three" data-set="people"><p class="gh">Люди</p></div>
-<div class="cards three" data-set="rules"><p class="gh">Стандарты</p></div>
-<div class="cards three" data-set="work"><p class="gh">Проекты</p></div>
-<div class="cards three" data-set="office"><p class="gh">Офис</p></div>
+<div class="cards three" data-set="week"><p class="gh"><span class="zg-pico" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="currentColor" d="M12 2h6v8h-6zm18 0h6v8h-6z"/><path fill="currentColor" fill-rule="evenodd" d="M4 12h40v32H4V12zm6 12h8v6h-8zm12 0h8v6h-8zM10 32h8v6h-8zm12 0h8v6h-8z"/></svg></span><span class="gh-t">На неделю</span></p></div>
+<div class="cards three" data-set="people"><p class="gh"><span class="zg-pico" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="16" cy="12" r="6" fill="currentColor"/><circle cx="32" cy="12" r="6" fill="currentColor"/><path fill="currentColor" d="M4 40c1.4-10 6.5-14 12-14s10.6 4 12 14H4zm16 0c1.2-8 5.4-12 10-12s8.8 4 10 12H20z"/></svg></span><span class="gh-t">Люди</span></p></div>
+<div class="cards three" data-set="rules"><p class="gh"><span class="zg-pico" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="currentColor" fill-rule="evenodd" d="M8 4h22l10 10v30H8V4zm20 2v8h8M16 22h16v4H16zm0 8h16v4H16zm0 8h10v4H16z"/></svg></span><span class="gh-t">Стандарты</span></p></div>
+<div class="cards three" data-set="work"><p class="gh"><span class="zg-pico" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="currentColor" d="M4 34h40v8H4zm6-12h28v8H10zM16 10h16v8H16z"/></svg></span><span class="gh-t">Проекты</span></p></div>
+<div class="cards three" data-set="office"><p class="gh"><span class="zg-pico" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="currentColor" fill-rule="evenodd" d="M10 44V18l14-10 14 10v26H10zm6-16h6v6h-6zm10 0h6v6h-6zM16 36h6v8h-6z"/></svg></span><span class="gh-t">Офис</span></p></div>
 </div>
 </section>
 <div class="fr" id="fr"></div>
@@ -1096,7 +1101,40 @@ function applyHomeView(mode, save){
  if(view==='list') document.querySelectorAll('.home .card').forEach(c=>{ if(c.style.minHeight) c.style.minHeight=''; });
  else if(document.documentElement.classList.contains('open')&&document.documentElement.dataset.mode==='home') evenCards();
 }
+const PICO={
+ week:'<path fill="currentColor" d="M12 2h6v8h-6zm18 0h6v8h-6z"/><path fill="currentColor" fill-rule="evenodd" d="M4 12h40v32H4V12zm6 10h8v6h-8zm12 0h8v6h-8zM10 30h8v6h-8zm12 0h8v6h-8z"/>',
+ pult:'<path fill="currentColor" d="M4 4h18v18H4zM26 4h18v18H26zM4 26h18v18H4zM26 26h18v18H26z"/>',
+ fin:'<path fill="currentColor" d="M6 26h8v16H6zm14-12h8v28h-8zm14-8h8v36h-8z"/>',
+ orgdoc:'<path fill="currentColor" d="M18 4h12v10H18zM4 30h12v10H4zm14 0h12v10H18zm14 0h12v10H32zM22 14h4v8h-4zM8 24h4v6H8zm28 0h4v6h-4zM8 22h32v4H8z"/>',
+ rp:'<circle cx="24" cy="12" r="8" fill="currentColor"/><path fill="currentColor" d="M8 42c2-12 8-16 16-16s14 4 16 16H8z"/>',
+ ten:'<path fill="currentColor" fill-rule="evenodd" d="M24 4a20 20 0 1 0 .1 0zM22 12h4v14l8 4-2 4-10-5V12z"/>',
+ prem:'<path fill="currentColor" d="M16 2h5l3 12h-11zm11 0h5l-3 12H24z"/><circle cx="24" cy="30" r="14" fill="currentColor"/>',
+ lessons:'<path fill="currentColor" fill-rule="evenodd" d="M8 8h24l8 8v28H8V8zm22 2v8h8M16 24h16v4H16zm0 8h12v4H16z"/>',
+ tests:'<path fill="currentColor" fill-rule="evenodd" d="M6 6h36v36H6V6zm8 8h20v20H14V14z"/><path fill="currentColor" d="M18 24l5 5 12-13 3 3-15 16-8-8z"/>',
+ regs:'<path fill="currentColor" fill-rule="evenodd" d="M10 4h20l10 10v30H10V4zm18 2v8h8M16 24h16v4H16zm0 8h12v4H16z"/>',
+ prompts:'<path fill="currentColor" d="M4 8h18v14h-6l-6 8v-8H4V8zm22 8h18v14h-6l-6 8v-8h-6V16z"/>',
+ names:'<path fill="currentColor" fill-rule="evenodd" d="M4 12h22l16 16-14 14L6 26V12zm8 6h6v6h-6z"/>',
+ hroniki:'<path fill="currentColor" d="M8 22h32v4H8z"/><circle cx="10" cy="24" r="6" fill="currentColor"/><circle cx="24" cy="24" r="6" fill="currentColor"/><circle cx="38" cy="24" r="6" fill="currentColor"/>',
+ navsum:'<path fill="currentColor" fill-rule="evenodd" d="M24 2c8 0 14 6 14 14 0 11-14 28-14 28S10 27 10 16C10 8 16 2 24 2zm0 8a6 6 0 1 0 .1 0z"/>',
+ prod:'<path fill="currentColor" d="M4 42V20l12 8V20l12 8V18l10-8v32H4zm6-8h6v8h-6zm12 0h6v8h-6z"/>',
+ kp:'<path fill="currentColor" fill-rule="evenodd" d="M8 4h32v40H8V4zm6 6h20v8H14V10zM14 22h6v6h-6zm10 0h6v6h-6zm10 0h6v6h-6zM14 32h6v6h-6zm10 0h16v6H24z"/>',
+ subs:'<path fill="currentColor" fill-rule="evenodd" d="M4 8h40v24H4V8zm6 6h28v12H10V14zM16 36h16v4H16zM12 40h24v4H12z"/>'
+};
+function paintPicos(){
+ document.querySelectorAll('.home .card[data-go]').forEach(card=>{
+  if(card.querySelector(':scope > div > .zg-pico')) return;
+  const draw=PICO[card.dataset.go];
+  if(!draw) return;
+  const mark=document.createElement('span');
+  mark.className='zg-pico';
+  mark.setAttribute('aria-hidden','true');
+  mark.innerHTML='<svg viewBox="0 0 48 48">'+draw+'</svg>';
+  const host=card.querySelector(':scope > div')||card;
+  host.insertBefore(mark, host.firstChild);
+ });
+}
 (function(){
+ paintPicos();
  let mode='cards';
  try{ const saved=localStorage.getItem('zgHomeView'); if(saved==='list'||saved==='groups') mode=saved; }catch(e){}
  applyHomeView(mode, false);

@@ -167,11 +167,13 @@ html.zg-list .home .card .go b,html.zg-list .home .cards.three .go b{font-size:2
 @media(hover:none){html.zg-list .home .card:hover{background:var(--paper);transform:none;box-shadow:none}html.zg-list .home .card:active{background:var(--accent)}}
 @media(max-width:760px){html.zg-list .home .card{min-height:64px!important;padding:12px 14px!important}html.zg-list .home .card>div:first-child{grid-template-columns:minmax(0,1fr);grid-template-areas:"title" "meta"}html.zg-list .home .card .d{display:none}}
 .home .gh{display:none;margin:0}
-html.zg-groups .home{gap:28px}
-html.zg-groups .home .cards{row-gap:14px;column-gap:26px}
-html.zg-groups .home .gh{display:block;grid-column:1/-1;margin:0;font:400 13px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--on)}
+html.zg-groups .home{gap:36px}
+html.zg-groups .home .cards{row-gap:16px;column-gap:26px}
+html.zg-groups .home .gh{display:flex;align-items:center;gap:18px;grid-column:1/-1;margin:6px 0 2px;font:400 44px/1 "Stratos",sans-serif;letter-spacing:-.03em;text-transform:none;color:var(--on)}
+html.zg-groups .home .gh::after{content:"";flex:1 1 auto;height:2px;background:var(--on)}
 #gsets{display:none}
-html.zg-groups #gsets{display:flex;flex-direction:column;gap:28px}
+html.zg-groups #gsets{display:flex;flex-direction:column;gap:36px}
+@media(max-width:760px){html.zg-groups .home .gh{font-size:32px;gap:12px}}
 html.zg-groups .home>.cards{display:none!important}
 @media(max-width:480px){html.open[data-mode="home"] .viewsw{height:30px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 

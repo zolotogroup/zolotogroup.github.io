@@ -307,7 +307,7 @@ function dressFrame(doc, frame){
   'html body :is(button:disabled,[disabled],[aria-disabled="true"]){cursor:default!important}',
   'html,html body{height:auto!important;min-height:0!important;padding-top:8px!important;margin-top:0!important}',
   'html body .homeview{display:none!important;min-height:0!important;height:auto!important}',
-  'html body #zg-stack .zg-plaque,html body .hero,html body header .hd,html body main .tabpane>div:first-child{background:transparent!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque,html body .hero,html body header .hd,html body main .tabpane>div:first-child{background:transparent!important}',
   'main,nav.side{zoom:1!important}',
   'html body #zg-stack{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0;width:100%!important;max-width:100%!important;min-width:0;margin:0!important;padding:0!important;box-sizing:border-box;position:relative!important;z-index:4!important}',
   'html body #zg-stack.zg-inset{box-sizing:border-box!important;width:100%!important;max-width:min(1280px,100%)!important;margin-left:auto!important;margin-right:auto!important;padding:0 32px!important}',
@@ -320,31 +320,32 @@ function dressFrame(doc, frame){
   'html body #zg-stack.zg-oneline .zg-sub{flex-wrap:nowrap!important;width:100%!important}',
   'html body #zg-stack.zg-oneline .zg-sub button,html body #zg-stack.zg-oneline .zg-sub a{flex:1 1 auto!important;padding:10px 6px!important;font-size:12px!important;letter-spacing:.01em!important;white-space:nowrap!important;text-align:center!important}',
   'html body #zg-stack .zg-sub button[aria-selected="true"],html body #zg-stack .zg-sub button[aria-pressed="true"],html body #zg-stack .zg-sub button.on,html body #zg-stack .zg-sub button.active,html body #zg-stack .zg-sub button[aria-current],html body #zg-stack .zg-sub a[aria-current]{background:transparent!important;color:#1d1d1b!important;box-shadow:inset 0 -3px 0 #1d1d1b!important}',
-  'html body #zg-stack .zg-plaque{background:transparent!important;border:1px solid #1d1d1b!important;width:100%!important;max-width:100%!important;min-width:0;min-height:200px;height:auto!important;box-sizing:border-box!important;padding:28px 32px!important;margin:0 0 18px!important;color:#1d1d1b!important;overflow:visible!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;column-gap:28px!important;align-items:start!important;position:relative!important;z-index:4!important}',
-  'html body #zg-stack .zg-plaque h1,html body #zg-stack .zg-plaque .lead{grid-column:1!important}',
-  'html body #zg-stack .zg-corner{grid-column:2!important;grid-row:1 / span 2!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;max-width:420px!important;position:relative!important;z-index:8!important;pointer-events:auto!important}',
-  'html body #zg-stack .zg-plaque .thsw,html body #zg-stack .zg-plaque #theme,html body #zg-stack .zg-plaque .hdright .seg{display:inline-flex!important;width:auto!important;margin:0!important;padding:0!important;background:#fff!important;border:1px solid #1d1d1b!important;align-self:flex-end!important}',
-  'html body #zg-stack .zg-plaque .thsw button,html body #zg-stack .zg-plaque #theme button,html body #zg-stack .zg-plaque [data-th],html body #zg-stack .zg-plaque #themeBtn,html body #zg-stack .zg-plaque button.allbtn{appearance:none!important;background:#fff!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;font:400 13px/1 "Stratos",-apple-system,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:8px 12px!important;margin:0!important;flex:none!important;height:auto!important;width:auto!important}',
-  'html body #zg-stack .zg-plaque .thsw button:last-child,html body #zg-stack .zg-plaque #theme button:last-child{border-right:0!important}',
-  'html body #zg-stack .zg-plaque [data-th][aria-pressed="true"],html body #zg-stack .zg-plaque .thsw button.on{background:#b7cd00!important;color:#1d1d1b!important;box-shadow:none!important}',
-  'html body #zg-stack .zg-plaque .meta,html body #zg-stack .zg-plaque .hdright .meta{font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-align:right!important;color:#1d1d1b!important;margin:0!important}',
-  'html body #zg-stack .zg-plaque h1{font-family:"Zoloto Display","Stratos",sans-serif!important;font-size:40px!important;font-weight:400!important;line-height:1.1!important;letter-spacing:.01em!important;margin:0 0 12px!important;color:#1d1d1b!important;position:static!important}',
-  'html body #zg-stack .zg-plaque .lead{font-family:"Stratos",-apple-system,sans-serif!important;font-size:18px!important;line-height:1.45!important;font-weight:400!important;margin:0!important;max-width:70ch;color:#1d1d1b!important}',
-  'html body #zg-stack .zg-plaque .zg-stamp{grid-column:1!important;margin:16px 0 0!important;font:400 13px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.04em!important;color:#1d1d1b!important}',
-  'html body #zg-stack .zg-modebox{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:9!important;pointer-events:auto!important}',
-  'html body #zg-stack .zg-mode{appearance:none!important;background:#fff!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;font:400 14px/1 "Stratos",-apple-system,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:10px 14px!important;margin:0!important;cursor:pointer!important;position:relative!important;z-index:10!important;pointer-events:auto!important}',
-  'html body #zg-stack .zg-mode[aria-expanded="true"],html body #zg-stack .zg-mode[aria-pressed="true"]{background:#1d1d1b!important;color:#fff!important}',
-  'html body #zg-stack .zg-picks{display:none!important;flex-wrap:wrap!important;justify-content:flex-end!important;gap:6px!important;max-width:248px!important;position:relative!important;z-index:10!important;pointer-events:auto!important}',
-  'html body #zg-stack .zg-picks.on{display:flex!important}',
-  'html body #zg-stack .zg-swatch{appearance:none!important;width:28px!important;height:28px!important;padding:0!important;margin:0!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;z-index:11!important;pointer-events:auto!important;flex:none!important}',
-  'html body #zg-stack .zg-swatch[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #fff, inset 0 0 0 4px #1d1d1b!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque{background:transparent!important;border:1px solid #1d1d1b!important;width:100%!important;max-width:100%!important;min-width:0;min-height:200px;height:auto!important;box-sizing:border-box!important;padding:28px 32px!important;margin:0 0 18px!important;color:#1d1d1b!important;overflow:visible!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;column-gap:28px!important;align-items:start!important;position:relative!important;z-index:4!important}',
+  'html body #zg-tail{width:100%!important;max-width:100%!important;margin:28px 0 0!important;box-sizing:border-box!important}html body #zg-tail .zg-plaque{margin:0!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque h1,html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{grid-column:1!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-corner{grid-column:2!important;grid-row:1 / span 2!important;display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;max-width:420px!important;position:relative!important;z-index:8!important;pointer-events:auto!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .thsw,html body :is(#zg-stack,#zg-tail) .zg-plaque #theme,html body :is(#zg-stack,#zg-tail) .zg-plaque .hdright .seg{display:inline-flex!important;width:auto!important;margin:0!important;padding:0!important;background:#fff!important;border:1px solid #1d1d1b!important;align-self:flex-end!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .thsw button,html body :is(#zg-stack,#zg-tail) .zg-plaque #theme button,html body :is(#zg-stack,#zg-tail) .zg-plaque [data-th],html body :is(#zg-stack,#zg-tail) .zg-plaque #themeBtn,html body :is(#zg-stack,#zg-tail) .zg-plaque button.allbtn{appearance:none!important;background:#fff!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;font:400 13px/1 "Stratos",-apple-system,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:8px 12px!important;margin:0!important;flex:none!important;height:auto!important;width:auto!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .thsw button:last-child,html body :is(#zg-stack,#zg-tail) .zg-plaque #theme button:last-child{border-right:0!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque [data-th][aria-pressed="true"],html body :is(#zg-stack,#zg-tail) .zg-plaque .thsw button.on{background:#b7cd00!important;color:#1d1d1b!important;box-shadow:none!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .meta,html body :is(#zg-stack,#zg-tail) .zg-plaque .hdright .meta{font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-align:right!important;color:#1d1d1b!important;margin:0!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-family:"Zoloto Display","Stratos",sans-serif!important;font-size:40px!important;font-weight:400!important;line-height:1.1!important;letter-spacing:.01em!important;margin:0 0 12px!important;color:#1d1d1b!important;position:static!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-family:"Stratos",-apple-system,sans-serif!important;font-size:18px!important;line-height:1.45!important;font-weight:400!important;margin:0!important;max-width:70ch;color:#1d1d1b!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .zg-stamp{grid-column:1!important;margin:16px 0 0!important;font:400 13px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.04em!important;color:#1d1d1b!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-modebox{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:9!important;pointer-events:auto!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-mode{appearance:none!important;background:#fff!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;font:400 14px/1 "Stratos",-apple-system,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:10px 14px!important;margin:0!important;cursor:pointer!important;position:relative!important;z-index:10!important;pointer-events:auto!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-mode[aria-expanded="true"],html body :is(#zg-stack,#zg-tail) .zg-mode[aria-pressed="true"]{background:#1d1d1b!important;color:#fff!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-picks{display:none!important;flex-wrap:wrap!important;justify-content:flex-end!important;gap:6px!important;max-width:248px!important;position:relative!important;z-index:10!important;pointer-events:auto!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-picks.on{display:flex!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-swatch{appearance:none!important;width:28px!important;height:28px!important;padding:0!important;margin:0!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;z-index:11!important;pointer-events:auto!important;flex:none!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-swatch[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #fff, inset 0 0 0 4px #1d1d1b!important}',
   '.zg-src-title,html body header.zg-src-title,html body .hd.zg-src-title{display:none!important}',
-  '@media(max-width:800px){html body #zg-stack.zg-inset{padding:0 16px!important}html body #zg-stack .zg-plaque{min-height:180px;padding:18px 16px!important;grid-template-columns:1fr!important}html body #zg-stack .zg-plaque h1{font-size:30px!important}html body #zg-stack .zg-plaque .lead{font-size:16px!important}html body #zg-stack .zg-corner{grid-column:1!important;grid-row:auto!important;align-items:flex-start!important;max-width:none!important}html body #zg-stack.zg-oneline .zg-sub{flex-wrap:wrap!important}html body .split,html body .access-grid{grid-template-columns:minmax(0,1fr)!important}html body .split>*,html body .plate{min-width:0!important}html body .plate{overflow-x:auto}html body #roles.roles,html body .psearch{flex-wrap:wrap!important}html body #roles.roles .role{flex:1 1 150px!important;min-width:0!important}}'
+  '@media(max-width:800px){html body #zg-stack.zg-inset{padding:0 16px!important}html body :is(#zg-stack,#zg-tail) .zg-plaque{min-height:180px;padding:18px 16px!important;grid-template-columns:1fr!important}html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-size:30px!important}html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-size:16px!important}html body :is(#zg-stack,#zg-tail) .zg-corner{grid-column:1!important;grid-row:auto!important;align-items:flex-start!important;max-width:none!important}html body #zg-stack.zg-oneline .zg-sub{flex-wrap:wrap!important}html body .split,html body .access-grid{grid-template-columns:minmax(0,1fr)!important}html body .split>*,html body .plate{min-width:0!important}html body .plate{overflow-x:auto}html body #roles.roles,html body .psearch{flex-wrap:wrap!important}html body #roles.roles .role{flex:1 1 150px!important;min-width:0!important}}'
  ].join('');
  const __gs=getComputedStyle(document.documentElement);
  const __bg=(__gs.getPropertyValue('--ground')||'#73b3c3').trim();
  const __on=document.documentElement.dataset.on==='light'?'#fff':'#1d1d1b';
- st.textContent+='html,html body,html:root body,html:root:not([data-theme="dark"]) body,html:root[data-theme] body{background:'+__bg+'!important;color:'+__on+'!important}html body #zg-stack .zg-sub button,html body #zg-stack .zg-sub a{color:'+__on+'!important;border-color:'+__on+'!important}html body #zg-stack .zg-sub button[aria-selected="true"],html body #zg-stack .zg-sub button[aria-pressed="true"],html body #zg-stack .zg-sub button.on,html body #zg-stack .zg-sub button.active,html body #zg-stack .zg-sub button[aria-current],html body #zg-stack .zg-sub a[aria-current]{color:'+__on+'!important;box-shadow:inset 0 -3px 0 '+__on+'!important}html body #zg-stack .zg-plaque,html body #zg-stack .zg-plaque h1,html body #zg-stack .zg-plaque .lead,html body #zg-stack .zg-plaque .meta,html body #zg-stack .zg-plaque .zg-stamp{color:'+__on+'!important;border-color:'+__on+'!important}';
+ st.textContent+='html,html body,html:root body,html:root:not([data-theme="dark"]) body,html:root[data-theme] body{background:'+__bg+'!important;color:'+__on+'!important}html body #zg-stack .zg-sub button,html body #zg-stack .zg-sub a{color:'+__on+'!important;border-color:'+__on+'!important}html body #zg-stack .zg-sub button[aria-selected="true"],html body #zg-stack .zg-sub button[aria-pressed="true"],html body #zg-stack .zg-sub button.on,html body #zg-stack .zg-sub button.active,html body #zg-stack .zg-sub button[aria-current],html body #zg-stack .zg-sub a[aria-current]{color:'+__on+'!important;box-shadow:inset 0 -3px 0 '+__on+'!important}html body :is(#zg-stack,#zg-tail) .zg-plaque,html body :is(#zg-stack,#zg-tail) .zg-plaque h1,html body :is(#zg-stack,#zg-tail) .zg-plaque .lead,html body :is(#zg-stack,#zg-tail) .zg-plaque .meta,html body :is(#zg-stack,#zg-tail) .zg-plaque .zg-stamp{color:'+__on+'!important;border-color:'+__on+'!important}';
  st.textContent+='html body nav.side,html body main,html body section.doc,html body section.doc.on,html body .tldr,html body .figlist{background:transparent!important;color:'+__on+'!important}html body section.doc,html body section.doc.on{border:0!important;overflow:visible!important}html body nav.side a,html body nav.side .grp{color:'+__on+'!important}html body nav.side a.on,html body nav.side a.on *{background:#b7cd00!important;color:#1d1d1b!important}html body .lcstep:not(.key),html body .pcard,html body .ccard,html body .ptable,html body .psearch,html body .pfilt:not(.on),html body .pvol:not(.on),html body .pv:not(.on),html body .pexp,html body input,html body select,html body textarea{color:#1d1d1b}html body .foldall{color:'+__on+'!important;border-color:'+__on+'!important}html body section.doc :is(h1,h2,h3,h4,h5,h6,p,li){color:'+__on+'!important}html:not(.zg-keep-ink) body :is(.lcstep:not(.key),.pcard,.ccard,.ptable,.rulebox,.pt,.note,.years,.callout,.card,.checklist,.quote,.pan) :is(h1,h2,h3,h4,h5,h6,p,li,b,td,span){color:#1d1d1b!important}html body [data-prod-pane]>h2{display:none!important}html body h5.idgrp.open button,html body h5.idgrp.open button *{color:#1d1d1b!important}html body nav.side a:hover{background:#f3f3f1!important;color:#1d1d1b!important}html body nav.side .extmark{color:'+__on+'!important}';
  if(frame&&frame.dataset.sec==='regs') st.textContent+='html body nav.side,html body section.doc,html body section.doc.on{background:#fff!important;color:#1d1d1b!important}html body section.doc :is(h1,h2,h3,h4,h5,h6,p,li),html body nav.side a,html body nav.side .grp,html body nav.side .extmark,html body .foldall{color:#1d1d1b!important}html body .foldall{border-color:#1d1d1b!important}html body .tldr,html body .figlist{background:#f3f3f1!important;color:#1d1d1b!important}';
  if(doc.documentElement) doc.documentElement.style.setProperty('background',__bg,'important');
@@ -425,9 +426,16 @@ function dressFrame(doc, frame){
   [...fn.children].forEach(b=>{ const on=b.dataset.s===sec?'true':'false'; if(b.getAttribute('aria-selected')!==on) b.setAttribute('aria-selected', on); });
   if(stack.firstElementChild!==fn) stack.insertBefore(fn, stack.firstChild);
  }
- let box=stack.querySelector('.zg-plaque');
+ let box=doc.querySelector('.zg-plaque');
  if(!box){ box=doc.createElement('div'); box.className='zg-plaque'; box.innerHTML='<h1></h1><p class="lead"></p><div class="zg-corner"></div>'; }
- if(box.parentElement!==stack) stack.appendChild(box);
+ if(sec==='subs'){
+  const sheet=doc.querySelector('section.doc')||host;
+  let tail=doc.getElementById('zg-tail');
+  if(!tail){ tail=doc.createElement('div'); tail.id='zg-tail'; }
+  if(tail.parentElement!==sheet) sheet.appendChild(tail);
+  if(box.parentElement!==tail) tail.appendChild(box);
+  doc.querySelectorAll('.dochead').forEach(el=>{ if(!el.closest('#zg-tail')) keepClass(el,'zg-src-title'); });
+ }else if(box.parentElement!==stack) stack.appendChild(box);
  const h1=box.querySelector('h1'), lead=box.querySelector('.lead');
  if(h1.textContent!==pair[0]) h1.textContent=pair[0];
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];
@@ -542,10 +550,10 @@ function dressFrame(doc, frame){
    stack.style.setProperty('padding-right','0','important');
   }
  }
- host.querySelectorAll('.blockhead').forEach(el=>{ if(!el.closest('#zg-stack')) keepClass(el,'zg-src-title'); });
- host.querySelectorAll('h1').forEach(h=>{ if(!h.closest('#zg-stack')) keepClass(h,'zg-src-title'); });
+ host.querySelectorAll('.blockhead').forEach(el=>{ if(!el.closest('#zg-stack,#zg-tail')) keepClass(el,'zg-src-title'); });
+ host.querySelectorAll('h1').forEach(h=>{ if(!h.closest('#zg-stack,#zg-tail')) keepClass(h,'zg-src-title'); });
  host.querySelectorAll('p.lead, p.eyebrow, .eyebrow').forEach(p=>{
-  if(p.closest('#zg-stack')||p.closest('.strip,.tiles,.plate,table,.cards')) return;
+  if(p.closest('#zg-stack,#zg-tail')||p.closest('.strip,.tiles,.plate,table,.cards')) return;
   const parent=p.parentElement;
   if(parent&&(parent.matches('.subpanel,.hero,.hd,.tabpane,.stack,section,.wrap,main')||parent.querySelector(':scope > h1'))) keepClass(p,'zg-src-title');
  });
@@ -681,12 +689,12 @@ function clearHead(top){
 }
 function pageBox(doc, frame){
  const stack=doc.getElementById('zg-stack');
- const plaque=stack&&stack.querySelector('.zg-plaque');
+ const plaque=doc.querySelector('.zg-plaque');
  if(!plaque||!doc.defaultView) return null;
  const pr=plaque.getBoundingClientRect();
  if(pr.width<80) return null;
  let left=pr.left, right=pr.right;
- const parent=stack.parentElement;
+ const parent=stack&&stack.parentElement;
  if(parent){
   for(const el of parent.children){
    if(el===stack) continue;

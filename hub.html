@@ -59,6 +59,13 @@ html.booting .lock #lksub{margin:0}
 html[data-on="light"] .top .logo img{filter:brightness(0) invert(1)}
 .exitbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 html.open .exitbtn{display:inline-flex}
+.biobtn{display:none;appearance:none;height:34px;padding:0 12px;border:1px solid var(--on);background:transparent;color:var(--on);font:400 15px/1 "Stratos",-apple-system,sans-serif;cursor:pointer;white-space:nowrap;box-sizing:border-box;align-items:center}
+html.open .biobtn:not([hidden]){display:inline-flex;margin-left:10px}
+.biobtn.on{background:var(--paper);color:var(--ink)}
+.biobtn:hover{background:var(--paper);color:var(--ink)}
+.biobtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.lock #biogo{display:none;width:100%;height:auto;margin:14px 0 0;padding:0;border:0;background:none;color:var(--ink);font:400 15px/1 "Stratos",sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.lock #biogo:not([hidden]){display:block}
 html.open[data-mode="home"] .animbtn{display:inline-flex;margin-left:auto}
 html.open[data-mode="home"] .viewsw{display:inline-flex;margin-left:10px}
 html.open[data-mode="home"] .exitbtn{margin-left:10px}
@@ -80,6 +87,7 @@ html.open[data-mode="home"] .exitbtn{margin-left:10px}
 .top .note{order:4;margin-left:auto}
 .top .animbtn{order:5;align-self:center}
 .top .viewsw{order:5;align-self:center}
+.top .biobtn{order:5;align-self:center}
 .top .exitbtn{order:5;margin-left:16px;align-self:center}
 .top::before{content:"";order:6;flex:0 0 100%;height:0}
 .top .pagebar{order:8;display:none;align-items:center;border:1px solid var(--ink);background:var(--paper)}
@@ -269,6 +277,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <div class="pagebar" id="pagebar"></div>
 <button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
 <div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="groups" aria-pressed="false">Группы</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
+<button class="biobtn" id="biobtn" type="button" hidden>Отпечаток</button>
 <button class="exitbtn" id="exitbtn" type="button" title="Закрыть доступ и вернуться к вводу пароля">Выйти</button>
 <div class="zg-head-search" id="zg-head-search" hidden></div>
 </div>
@@ -277,6 +286,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <p id="lksub">Открываю</p>
 <div class="row"><input id="pw" type="text" name="zg-gate" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Пароль" placeholder="Пароль"><button id="peek" type="button" aria-label="Показать пароль">Aa</button><button id="lkb" type="submit">Открыть</button></div>
 <div class="err" id="lkerr" role="alert"></div>
+<button type="button" id="biogo" hidden>Войти по отпечатку</button>
 <p class="pub"><button type="button" id="pubback">Открытые разделы</button><i>Регламенты, промты и названия файлов</i></p>
 </form></div>
 <section class="home" aria-label="Разделы">
@@ -1304,6 +1314,68 @@ async function pubTen(){
  }
 }
 const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const b64=bytes=>{const u=new Uint8Array(bytes);let s='';for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);};
+const rnd=n=>crypto.getRandomValues(new Uint8Array(n));
+function bioLoad(){try{return JSON.parse(localStorage.getItem('zgBio')||'')}catch(e){return null}}
+function paintBio(){
+ const go=document.getElementById('biogo');
+ const btn=document.getElementById('biobtn');
+ const rec=bioLoad();
+ let pw='';
+ try{pw=sessionStorage.getItem('zltpw3')||''}catch(e){}
+ if(go) go.hidden=!rec;
+ if(btn){btn.hidden=!pw;btn.classList.toggle('on',!!rec)}
+}
+function remember(pw){try{sessionStorage.setItem('zltpw3',pw)}catch(e){}paintBio()}
+async function prfOk(){
+ if(!window.PublicKeyCredential) return false;
+ try{
+  if(PublicKeyCredential.getClientCapabilities){
+   const caps=await PublicKeyCredential.getClientCapabilities();
+   return !!(caps&&caps.prf);
+  }
+ }catch(e){}
+ return true;
+}
+async function enrollBio(pw){
+ const salt=rnd(32);
+ const cred=await navigator.credentials.create({publicKey:{
+  challenge:rnd(32),
+  rp:{name:'Пульт'},
+  user:{id:rnd(16),name:'pult',displayName:'Пульт'},
+  pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+  authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},
+  timeout:60000,
+  extensions:{prf:{eval:{first:salt}}}
+ }});
+ const first=cred.getClientExtensionResults().prf&&cred.getClientExtensionResults().prf.results&&cred.getClientExtensionResults().prf.results.first;
+ if(!first) throw new Error('noprf');
+ const key=await crypto.subtle.importKey('raw',new Uint8Array(first),'AES-GCM',false,['encrypt']);
+ const iv=rnd(12);
+ const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(pw)));
+ localStorage.setItem('zgBio',JSON.stringify({id:b64(cred.rawId),salt:b64(salt),iv:b64(iv),ct:b64(ct)}));
+ paintBio();
+}
+async function loginBio(){
+ const rec=bioLoad();
+ if(!rec) return;
+ const assertion=await navigator.credentials.get({publicKey:{
+  challenge:rnd(32),
+  allowCredentials:[{type:'public-key',id:ub(rec.id)}],
+  userVerification:'required',
+  timeout:60000,
+  extensions:{prf:{eval:{first:ub(rec.salt)}}}
+ }});
+ const ext=assertion.getClientExtensionResults();
+ const first=ext&&ext.prf&&ext.prf.results&&ext.prf.results.first;
+ if(!first) throw new Error('noprf');
+ const key=await crypto.subtle.importKey('raw',new Uint8Array(first),'AES-GCM',false,['decrypt']);
+ let pw='';
+ try{pw=new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(rec.iv)},key,ub(rec.ct)))}
+ catch(e){try{localStorage.removeItem('zgBio')}catch(e2){}paintBio();throw e}
+ await unlock(pw);
+ remember(pw);
+}
 async function decFile(name, meta, key){
  const buf=await fetch(new URL(String(meta.u).replace(/^\//,''),location.href)).then(r=>{if(!r.ok)throw new Error('file');return r.arrayBuffer()});
  const gz=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(meta.iv)},key,buf);
@@ -1363,6 +1435,7 @@ function enterGuest(){
  const dest=readHash();
  const n=LVLSEC[dest];
  show(!n||[4,5,6].indexOf(n)>=0?dest:'home');
+ paintBio();
 }
 async function unlock(pw){
  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -1432,13 +1505,38 @@ async function unlock(pw){
 const $f=document.getElementById('lk'),$p=document.getElementById('pw'),$e=document.getElementById('lkerr'),$b=document.getElementById('lkb');
 document.getElementById('peek').onclick=()=>{const on=$p.style.webkitTextSecurity==='none';$p.style.webkitTextSecurity=on?'disc':'none';};
 document.getElementById('pubback').onclick=()=>enterGuest();
+document.getElementById('biobtn').onclick=async()=>{
+ let pw='';
+ try{pw=sessionStorage.getItem('zltpw3')||''}catch(e){}
+ if(!pw) return;
+ try{await enrollBio(pw)}catch(e){}
+};
+document.getElementById('biogo').onclick=async()=>{
+ $e.textContent='';
+ try{await loginBio()}
+ catch(e){
+  if(e&&(e.name==='NotAllowedError'||e.name==='AbortError')) return;
+  try{localStorage.removeItem('zgBio')}catch(e2){}
+  paintBio();
+  $e.textContent='Отпечаток не подошёл';
+  $b.disabled=false;
+ }
+};
+prfOk().then(ok=>{
+ if(!ok){
+  const b=document.getElementById('biobtn'); if(b) b.remove();
+  const g=document.getElementById('biogo'); if(g) g.remove();
+  return;
+ }
+ paintBio();
+});
 $f.onsubmit=async ev=>{
  ev.preventDefault();
  $e.textContent='';
  const pw=($p.value||'').replace(/\s+/g,'');
  if(!pw) return;
  $b.disabled=true;
- try{ await unlock(pw); try{sessionStorage.setItem('zltpw3',pw)}catch(e){} }
+ try{ await unlock(pw); remember(pw); }
  catch(e){ $e.textContent='Пароль не подходит'; $b.disabled=false; }
 };
 window.addEventListener('hashchange',()=>{
@@ -1457,7 +1555,7 @@ window.addEventListener('hashchange',()=>{
  try{ await window.__zgPubReady; }catch(e){}
  let saved='';
  try{saved=sessionStorage.getItem('zltpw3')||''}catch(e){}
- if(saved){ try{ await unlock(saved); return; }catch(e){ try{sessionStorage.removeItem('zltpw3')}catch(e2){} enterGuest(); } }
+ if(saved){ try{ await unlock(saved); remember(saved); return; }catch(e){ try{sessionStorage.removeItem('zltpw3')}catch(e2){} enterGuest(); } }
  const dest=readHash();
  const n=LVLSEC[dest];
  if(!document.documentElement.classList.contains('guest')) return;

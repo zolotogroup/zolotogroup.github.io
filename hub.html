@@ -1337,7 +1337,6 @@ function paintAccess(AL){
   b.onclick=()=>show(b.dataset.s);
   const note=NOTE[b.dataset.s]; if(note) b.title=note;
  });
- document.querySelectorAll('.home .card[data-go]').forEach(c=>{const note=NOTE[c.dataset.go];if(note)c.title=note});
  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{
   if(b.dataset.go==='week'){
    window.__zgWeekRole=window.__zgLetters==='all'?'':(window.__zgRoleId||'');

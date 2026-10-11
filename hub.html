@@ -58,8 +58,13 @@ html.booting .lock #lksub{margin:0}
 html[data-on="light"] .top .logo img{filter:brightness(0) invert(1)}
 .exitbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 html.open .exitbtn{display:inline-flex}
-html.open[data-mode="home"] .viewsw{display:inline-flex;margin-left:auto}
+html.open[data-mode="home"] .animbtn{display:inline-flex;margin-left:auto}
+html.open[data-mode="home"] .viewsw{display:inline-flex;margin-left:10px}
 html.open[data-mode="home"] .exitbtn{margin-left:10px}
+.animbtn{display:none;appearance:none;height:34px;padding:0 12px;border:1px solid var(--on);background:transparent;color:var(--on);font:400 15px/1 "Stratos",-apple-system,sans-serif;cursor:pointer;white-space:nowrap;box-sizing:border-box;align-items:center}
+.animbtn.on{background:var(--paper);color:var(--ink)}
+.animbtn:hover{background:var(--paper);color:var(--ink)}
+.animbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .viewsw{display:none;align-items:stretch;height:34px;border:1px solid var(--on);box-sizing:border-box}
 .viewsw button{appearance:none;margin:0;padding:0 12px;border:0;border-left:1px solid var(--on);background:transparent;color:var(--on);font:400 15px/1 "Stratos",-apple-system,sans-serif;cursor:pointer;white-space:nowrap}
 .viewsw button:first-child{border-left:0}
@@ -72,6 +77,7 @@ html.open[data-mode="home"] .exitbtn{margin-left:10px}
 .top .logo{order:1}
 .top .homebtn{order:2}
 .top .note{order:4;margin-left:auto}
+.top .animbtn{order:5;align-self:center}
 .top .viewsw{order:5;align-self:center}
 .top .exitbtn{order:5;margin-left:16px;align-self:center}
 .top::before{content:"";order:6;flex:0 0 100%;height:0}
@@ -179,26 +185,27 @@ html.zg-groups .home .card .zg-pico{display:block;width:64px;height:64px;margin:
 #gsets{display:none}
 html.zg-groups #gsets{display:flex;flex-direction:column;gap:40px}
 @media(max-width:760px){html.zg-groups .home .gh{font-size:32px;column-gap:12px;row-gap:12px}html.zg-groups .home .gh .zg-pico{width:56px;height:56px}html.zg-groups .home .gh::after{height:8px}html.zg-groups .home .card .zg-pico{width:48px;height:48px}}
-html:not(.zg-list) .home .cards{perspective:1000px}
-html:not(.zg-list) .home .cards.three .card{padding:50px 0 0;gap:0;border:3px solid var(--ink);transform-style:preserve-3d;background-color:var(--ink);background-image:linear-gradient(135deg,#0000 18.75%,#f3f3f1 0 31.25%,#0000 0),repeating-linear-gradient(45deg,#f3f3f1 -6.25% 6.25%,var(--ink) 0 18.75%);background-size:60px 60px;background-position:0 0,0 0;box-shadow:rgba(142,142,142,.3) 0 30px 30px -10px;transition:background-position .5s ease-in-out,transform .5s ease-in-out,box-shadow .5s ease-in-out;overflow:visible}
-html:not(.zg-list) .home .cards.three .card:hover{background-color:var(--ink);background-image:linear-gradient(135deg,#0000 18.75%,#f3f3f1 0 31.25%,#0000 0),repeating-linear-gradient(45deg,#f3f3f1 -6.25% 6.25%,var(--ink) 0 18.75%);background-size:60px 60px;background-position:-100px 100px,-100px 100px;transform:rotate3d(.5,1,0,30deg);box-shadow:rgba(142,142,142,.3) 0 30px 30px -10px;z-index:4}
-html:not(.zg-list) .home .card>div{background:var(--accent);transform-style:preserve-3d}
-html:not(.zg-list) .home .card>div:first-child{padding:28px 24px 8px}
-html:not(.zg-list) .home .card>div:last-child{padding:8px 24px 22px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
-html:not(.zg-list) .home .card .t,html:not(.zg-list) .home .cards.three .t{display:inline-block;transform:translate3d(0,0,50px);transition:transform .5s ease-in-out}
-html:not(.zg-list) .home .card:hover .t{transform:translate3d(0,0,60px)}
-html:not(.zg-list) .home .card .d,html:not(.zg-list) .home .cards.three .d{transform:translate3d(0,0,30px);transition:transform .5s ease-in-out}
-html:not(.zg-list) .home .card:hover .d{transform:translate3d(0,0,60px)}
-html:not(.zg-list) .home .card .go,html:not(.zg-list) .home .cards.three .go{display:inline-flex;width:auto;margin:4px 0 0;border:0;padding:8px 12px;background:var(--ink);color:var(--accent);font:400 12px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;transform:translate3d(0,0,20px);transition:transform .5s ease-in-out}
-html:not(.zg-list) .home .card:hover .go{transform:translate3d(0,0,60px)}
-html:not(.zg-list) .home .card .go b,html:not(.zg-list) .home .cards.three .go b{font-size:14px;color:var(--accent)}
-html:not(.zg-list) .home .card:hover .go b{transform:none}
-html:not(.zg-list) .home .card .tags span{background:transparent;transform:translate3d(0,0,16px)}
-html:not(.zg-list) .home .card .k>span:last-child:not(:first-child):not(:empty){position:absolute;top:-34px;right:16px;z-index:2;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:auto;min-width:60px;max-width:46%;height:60px;padding:8px 10px;overflow:hidden;background:var(--ink);border:1px solid var(--accent);color:var(--accent);font:400 11px/1.15 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-align:center;transform:translate3d(0,0,80px);box-shadow:rgba(100,100,111,.2) 0 17px 10px -10px}
-html.zg-groups .home .card .zg-pico{transform:translate3d(0,0,40px)}
-@media(hover:none){html:not(.zg-list) .home .cards.three .card:hover{background-position:0 0,0 0;transform:none}html:not(.zg-list) .home .cards.three .card:active{background-color:var(--ink)}}
+html.zg-anim:not(.zg-list) .home .cards.three .card{justify-content:flex-start;padding:52px 0 0;gap:0;border:3px solid var(--ink);transform-style:preserve-3d;transform:perspective(1000px) rotate3d(.5,1,0,0deg);background-color:var(--ink);background-image:linear-gradient(135deg,#0000 18.75%,#f3f3f1 0 31.25%,#0000 0),repeating-linear-gradient(45deg,#f3f3f1 -6.25% 6.25%,var(--ink) 0 18.75%);background-size:60px 60px;background-position:0 0,0 0;box-shadow:rgba(142,142,142,.3) 0 30px 30px -10px;transition:background-position .5s ease-in-out,transform .5s ease-in-out,box-shadow .5s ease-in-out;overflow:visible}
+html.zg-anim:not(.zg-list) .home .cards.three .card:hover{background-color:var(--ink);background-image:linear-gradient(135deg,#0000 18.75%,#f3f3f1 0 31.25%,#0000 0),repeating-linear-gradient(45deg,#f3f3f1 -6.25% 6.25%,var(--ink) 0 18.75%);background-size:60px 60px;background-position:-100px 100px,-100px 100px;transform:perspective(1000px) rotate3d(.5,1,0,14deg);box-shadow:rgba(142,142,142,.3) 0 30px 30px -10px;z-index:4}
+html.zg-anim:not(.zg-list) .home .card>div{background:var(--accent);transform-style:preserve-3d}
+html.zg-anim:not(.zg-list) .home .card>div:first-child{flex:1 1 auto;display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:0;padding:16px 22px 8px}
+html.zg-anim:not(.zg-list) .home .card>div:last-child{flex:none;padding:4px 22px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+html.zg-anim:not(.zg-list) .home .card .k{position:static;width:100%}
+html.zg-anim:not(.zg-list) .home .card .t,html.zg-anim:not(.zg-list) .home .cards.three .t{display:block;width:100%;margin:0;transform:none}
+html.zg-anim:not(.zg-list) .home .card:hover .t{transform:translate3d(0,0,28px)}
+html.zg-anim:not(.zg-list) .home .card .d,html.zg-anim:not(.zg-list) .home .cards.three .d{margin:0;transform:none}
+html.zg-anim:not(.zg-list) .home .card:hover .d{transform:translate3d(0,0,18px)}
+html.zg-anim:not(.zg-list) .home .card .go,html.zg-anim:not(.zg-list) .home .cards.three .go{display:inline-flex;width:auto;margin:0;border:0;padding:8px 12px;background:var(--ink);color:var(--accent);font:400 12px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;transform:none;transition:transform .5s ease-in-out}
+html.zg-anim:not(.zg-list) .home .card:hover .go{transform:translate3d(0,0,24px)}
+html.zg-anim:not(.zg-list) .home .card .go b,html.zg-anim:not(.zg-list) .home .cards.three .go b{font-size:14px;color:var(--accent)}
+html.zg-anim:not(.zg-list) .home .card:hover .go b{transform:none}
+html.zg-anim:not(.zg-list) .home .card .tags{width:100%}
+html.zg-anim:not(.zg-list) .home .card .tags span{background:transparent;transform:none}
+html.zg-anim:not(.zg-list) .home .card .k>span:last-child:not(:first-child):not(:empty){position:absolute;top:-44px;right:12px;z-index:2;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:auto;min-width:52px;max-width:46%;height:auto;min-height:36px;max-height:44px;padding:6px 8px;overflow:hidden;background:var(--ink);border:1px solid var(--accent);color:var(--accent);font:400 11px/1.15 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-align:center;transform:translate3d(0,0,36px);box-shadow:rgba(100,100,111,.2) 0 17px 10px -10px}
+html.zg-anim.zg-groups .home .card .zg-pico{position:relative;flex:none;width:56px;height:56px;margin:0;transform:none}
+@media(hover:none){html.zg-anim:not(.zg-list) .home .cards.three .card:hover{background-position:0 0,0 0;transform:perspective(1000px) rotate3d(.5,1,0,0deg)}html.zg-anim:not(.zg-list) .home .cards.three .card:active{background-color:var(--ink)}}
 html.zg-groups .home>.cards{display:none!important}
-@media(max-width:480px){html.open[data-mode="home"] .viewsw{height:30px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
+@media(max-width:480px){html.open[data-mode="home"] .animbtn{height:30px;padding:0 8px;font-size:13px}html.open[data-mode="home"] .viewsw{height:30px;margin-left:8px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 
 /* телефон: разделы одной строкой с прокруткой */
 @media(max-width:760px){
@@ -259,6 +266,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 </div>
 <span class="note" id="swn"></span>
 <div class="pagebar" id="pagebar"></div>
+<button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
 <div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="groups" aria-pressed="false">Группы</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
 <button class="exitbtn" id="exitbtn" type="button" title="Закрыть доступ и вернуться к вводу пароля">Выйти</button>
 <div class="zg-head-search" id="zg-head-search" hidden></div>
@@ -1151,16 +1159,33 @@ function paintPicos(){
   host.insertBefore(mark, host.firstChild);
  });
 }
+function applyAnim(on, save){
+ document.documentElement.classList.toggle('zg-anim', !!on);
+ const b=document.getElementById('animbtn');
+ if(b){
+  b.classList.toggle('on', !!on);
+  if(b.getAttribute('aria-pressed')!==(on?'true':'false')) b.setAttribute('aria-pressed', on?'true':'false');
+ }
+ if(save){ try{localStorage.setItem('zgHomeAnim', on?'1':'0')}catch(e){} }
+ if(!document.documentElement.classList.contains('zg-list')&&document.documentElement.classList.contains('open')&&document.documentElement.dataset.mode==='home') evenCards();
+}
 (function(){
  paintPicos();
  let mode='cards';
  try{ const saved=localStorage.getItem('zgHomeView'); if(saved==='list'||saved==='groups') mode=saved; }catch(e){}
  applyHomeView(mode, false);
+ let anim=false;
+ try{ anim=localStorage.getItem('zgHomeAnim')==='1'; }catch(e){}
+ applyAnim(anim, false);
  const box=document.getElementById('viewsw');
  if(box) box.addEventListener('click', ev=>{
   const b=ev.target.closest('button[data-view]');
   if(!b) return;
   applyHomeView(b.dataset.view, true);
+ });
+ const animbtn=document.getElementById('animbtn');
+ if(animbtn) animbtn.addEventListener('click', ()=>{
+  applyAnim(!document.documentElement.classList.contains('zg-anim'), true);
  });
 })();
 function evenCards(){

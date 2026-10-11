@@ -1327,16 +1327,6 @@ function paintBio(){
  if(btn){btn.hidden=!pw;btn.classList.toggle('on',!!rec)}
 }
 function remember(pw){try{sessionStorage.setItem('zltpw3',pw)}catch(e){}paintBio()}
-async function prfOk(){
- if(!window.PublicKeyCredential) return false;
- try{
-  if(PublicKeyCredential.getClientCapabilities){
-   const caps=await PublicKeyCredential.getClientCapabilities();
-   return !!(caps&&caps.prf);
-  }
- }catch(e){}
- return true;
-}
 async function enrollBio(pw){
  const salt=rnd(32);
  const cred=await navigator.credentials.create({publicKey:{
@@ -1506,10 +1496,16 @@ const $f=document.getElementById('lk'),$p=document.getElementById('pw'),$e=docum
 document.getElementById('peek').onclick=()=>{const on=$p.style.webkitTextSecurity==='none';$p.style.webkitTextSecurity=on?'disc':'none';};
 document.getElementById('pubback').onclick=()=>enterGuest();
 document.getElementById('biobtn').onclick=async()=>{
+ const btn=document.getElementById('biobtn');
  let pw='';
  try{pw=sessionStorage.getItem('zltpw3')||''}catch(e){}
  if(!pw) return;
- try{await enrollBio(pw)}catch(e){}
+ try{await enrollBio(pw)}
+ catch(e){
+  if(e&&(e.name==='NotAllowedError'||e.name==='AbortError')) return;
+  btn.textContent='Не включился';
+  setTimeout(()=>{ if(!btn.classList.contains('on')) btn.textContent='Отпечаток'; },2200);
+ }
 };
 document.getElementById('biogo').onclick=async()=>{
  $e.textContent='';
@@ -1522,14 +1518,7 @@ document.getElementById('biogo').onclick=async()=>{
   $b.disabled=false;
  }
 };
-prfOk().then(ok=>{
- if(!ok){
-  const b=document.getElementById('biobtn'); if(b) b.remove();
-  const g=document.getElementById('biogo'); if(g) g.remove();
-  return;
- }
- paintBio();
-});
+paintBio();
 $f.onsubmit=async ev=>{
  ev.preventDefault();
  $e.textContent='';

@@ -179,6 +179,24 @@ html.zg-groups .home .card .zg-pico{display:block;width:64px;height:64px;margin:
 #gsets{display:none}
 html.zg-groups #gsets{display:flex;flex-direction:column;gap:40px}
 @media(max-width:760px){html.zg-groups .home .gh{font-size:32px;column-gap:12px;row-gap:12px}html.zg-groups .home .gh .zg-pico{width:56px;height:56px}html.zg-groups .home .gh::after{height:8px}html.zg-groups .home .card .zg-pico{width:48px;height:48px}}
+html:not(.zg-list) .home .cards{perspective:1000px}
+html:not(.zg-list) .home .cards.three .card{padding:50px 0 0;gap:0;border:3px solid var(--ink);transform-style:preserve-3d;background-color:var(--ink);background-image:linear-gradient(135deg,#0000 18.75%,#f3f3f1 0 31.25%,#0000 0),repeating-linear-gradient(45deg,#f3f3f1 -6.25% 6.25%,var(--ink) 0 18.75%);background-size:60px 60px;background-position:0 0,0 0;box-shadow:rgba(142,142,142,.3) 0 30px 30px -10px;transition:background-position .5s ease-in-out,transform .5s ease-in-out,box-shadow .5s ease-in-out;overflow:visible}
+html:not(.zg-list) .home .cards.three .card:hover{background-color:var(--ink);background-image:linear-gradient(135deg,#0000 18.75%,#f3f3f1 0 31.25%,#0000 0),repeating-linear-gradient(45deg,#f3f3f1 -6.25% 6.25%,var(--ink) 0 18.75%);background-size:60px 60px;background-position:-100px 100px,-100px 100px;transform:rotate3d(.5,1,0,30deg);box-shadow:rgba(142,142,142,.3) 0 30px 30px -10px;z-index:4}
+html:not(.zg-list) .home .card>div{background:var(--accent);transform-style:preserve-3d}
+html:not(.zg-list) .home .card>div:first-child{padding:28px 24px 8px}
+html:not(.zg-list) .home .card>div:last-child{padding:8px 24px 22px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+html:not(.zg-list) .home .card .t,html:not(.zg-list) .home .cards.three .t{display:inline-block;transform:translate3d(0,0,50px);transition:transform .5s ease-in-out}
+html:not(.zg-list) .home .card:hover .t{transform:translate3d(0,0,60px)}
+html:not(.zg-list) .home .card .d,html:not(.zg-list) .home .cards.three .d{transform:translate3d(0,0,30px);transition:transform .5s ease-in-out}
+html:not(.zg-list) .home .card:hover .d{transform:translate3d(0,0,60px)}
+html:not(.zg-list) .home .card .go,html:not(.zg-list) .home .cards.three .go{display:inline-flex;width:auto;margin:4px 0 0;border:0;padding:8px 12px;background:var(--ink);color:var(--accent);font:400 12px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;transform:translate3d(0,0,20px);transition:transform .5s ease-in-out}
+html:not(.zg-list) .home .card:hover .go{transform:translate3d(0,0,60px)}
+html:not(.zg-list) .home .card .go b,html:not(.zg-list) .home .cards.three .go b{font-size:14px;color:var(--accent)}
+html:not(.zg-list) .home .card:hover .go b{transform:none}
+html:not(.zg-list) .home .card .tags span{background:transparent;transform:translate3d(0,0,16px)}
+html:not(.zg-list) .home .card .k>span:last-child:not(:first-child):not(:empty){position:absolute;top:-34px;right:16px;z-index:2;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:auto;min-width:60px;max-width:46%;height:60px;padding:8px 10px;overflow:hidden;background:var(--ink);border:1px solid var(--accent);color:var(--accent);font:400 11px/1.15 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-align:center;transform:translate3d(0,0,80px);box-shadow:rgba(100,100,111,.2) 0 17px 10px -10px}
+html.zg-groups .home .card .zg-pico{transform:translate3d(0,0,40px)}
+@media(hover:none){html:not(.zg-list) .home .cards.three .card:hover{background-position:0 0,0 0;transform:none}html:not(.zg-list) .home .cards.three .card:active{background-color:var(--ink)}}
 html.zg-groups .home>.cards{display:none!important}
 @media(max-width:480px){html.open[data-mode="home"] .viewsw{height:30px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 

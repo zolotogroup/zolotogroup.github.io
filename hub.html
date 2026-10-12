@@ -1421,7 +1421,7 @@ function paintAccess(AL){
  document.querySelectorAll('.home .card').forEach(c=>{
   const n=LVLSEC[c.dataset.go]||0;
   const ok=!AL||AL.indexOf(n)>=0;
-  const showCard=(n===10?ok&&!!PAGES.rp:n===11?ok&&!!PAGES.prem:n===12?ok&&!!PAGES.ten:ok)||c.dataset.go==='subs';
+  const showCard=c.dataset.go==='subs'?!!window.__zgSubsOK:(n===10?ok&&!!PAGES.rp:n===11?ok&&!!PAGES.prem:n===12?ok&&!!PAGES.ten:ok);
   c.hidden=!showCard;
   c.style.display=showCard?'':'none';
  });
@@ -1509,17 +1509,25 @@ function enterGuest(){
 async function unlock(pw){
  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
  const kek=await crypto.subtle.deriveKey({name:'PBKDF2',salt:ub(ENC.s),iterations:ENC.n,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
- let pay=null;
- for(const sl of ENC.w){try{pay=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(sl.iv)},kek,ub(sl.ct))));break}catch(e){}}
+ let pay=null, office=null;
+ for(const sl of ENC.w){
+  try{
+   const got=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(sl.iv)},kek,ub(sl.ct))));
+   if(got&&got.role==='office') office=got;
+   else if(!pay) pay=got;
+  }catch(e){}
+ }
+ if(!pay) pay=office;
  if(!pay) throw new Error('bad');
- window.__zgSubsOK=pay.role==='office';
+ window.__zgSubsOK=!!office;
  if(!window.__zgSubsOK&&frames.subs){ frames.subs.remove(); delete frames.subs; }
  window.__zgWeekPw=pw;
  window.__zgRoleId=pay.role||'';
  window.__zgLetters=pay.letters||'own';
  LVL=pay.l||'person';
  const ALLOW={all:null,base:[1,2,3,4,5,6,13,14,15,16],prem:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],week:[3]};
- const AL=('cards' in pay)?pay.cards:(ALLOW[LVL]!==undefined?ALLOW[LVL]:[4,5,6]);
+ const AL=('cards' in pay && pay.cards)?pay.cards.slice():(ALLOW[LVL]!==undefined?ALLOW[LVL]:[4,5,6]);
+ if(office&&AL&&AL.indexOf(17)<0) AL.push(17);
  MAXLVL=AL;
  const key=await crypto.subtle.importKey('raw',ub(pay.k),'AES-GCM',false,['decrypt']);
  const keep={};

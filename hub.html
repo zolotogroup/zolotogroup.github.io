@@ -437,6 +437,7 @@ function dressFrame(doc, frame){
  doc.documentElement.style.setProperty('background',__bg,'important');
  if(doc.body) doc.body.style.setProperty('background',__bg,'important');
  if((frame&&frame.dataset.sec)==='week') st.textContent+='html body.locked>#gate:not([hidden]),html body.locked #gate:not([hidden]){position:relative!important;inset:auto!important;min-height:520px!important;height:auto!important;display:flex!important;visibility:visible!important}html body.locked>.wrap{display:none!important}html body #zg-stack #weeks .wl{display:none!important}html body #zg-stack #weeks{position:relative!important;z-index:80!important;pointer-events:auto!important;display:flex!important;flex-wrap:nowrap!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;max-width:100%!important;padding:1px 1px 6px!important;box-sizing:border-box!important;scrollbar-width:thin}html body #zg-stack #weeks [data-w0]{pointer-events:auto!important;cursor:pointer!important;flex:0 0 auto!important}html body #zg-stack #weeks [aria-current]{background:#b7cd00!important;color:#1d1d1b!important;border-color:#1d1d1b!important;box-shadow:none!important}html body .ins,html body .ins h3,html body .ins p,html body .ins .ik{color:#1d1d1b!important}';
+ if((frame&&frame.dataset.sec)==='tests') st.textContent+='html body .ttpanel.on>.tt-wrap{max-width:1280px!important;margin-left:auto!important;margin-right:auto!important;padding-left:32px!important;padding-right:32px!important;box-sizing:border-box!important}html body .ttpanel.on .tt-wrap .wrap{max-width:none!important;padding-left:0!important;padding-right:0!important}html body #sub-tests-results table.t{table-layout:auto!important}html body #sub-tests-results table.t td:last-child{width:280px!important;min-width:240px!important;word-break:normal!important;overflow-wrap:normal!important;white-space:normal!important}html body #sub-tests-results .tag-alert{display:inline!important;word-break:normal!important;overflow-wrap:normal!important;white-space:normal!important;line-height:1.45!important;letter-spacing:.03em!important;padding:4px 8px!important}';
  if(!st.isConnected) (doc.head||doc.documentElement).appendChild(st);
  const COPY={
   pult:['Пульт ПланФикса','Контракты, дебиторка, часы и просрочки по отчётам ПланФикса. В сводке только карточки мастер-проектов, без этапов, завершённых и отменённых.'],
@@ -501,7 +502,7 @@ function dressFrame(doc, frame){
    fn.className='zg-sub zg-fin';
    FINNAV.forEach(([k,label])=>{
     const b=doc.createElement('button');
-    b.type='button';
+  b.type='button';
     b.textContent=label;
     b.dataset.s=k;
     b.addEventListener('click',()=>{ try{ window.zgShow(k); }catch(e){} });
@@ -773,9 +774,21 @@ function clearHead(top){
  if(note) note.style.marginLeft='';
 }
 function pageBox(doc, frame){
+ const view=doc.defaultView;
+ if(!view) return null;
+ const shown=el=>{
+  if(!el) return false;
+  for(let n=el;n&&n!==doc.body;n=n.parentElement){
+   if(n.classList&&n.classList.contains('ttpanel')&&!n.classList.contains('on')) return false;
+   const cs=view.getComputedStyle(n);
+   if(cs.display==='none'||cs.visibility==='hidden') return false;
+  }
+  const r=el.getBoundingClientRect();
+  return r.width>=80&&r.height>=40;
+ };
  const stack=doc.getElementById('zg-stack');
- const plaque=doc.querySelector('.zg-plaque');
- if(!plaque||!doc.defaultView) return null;
+ const plaque=[...doc.querySelectorAll('#zg-stack .zg-plaque')].find(shown)||[...doc.querySelectorAll('.zg-plaque')].find(shown);
+ if(!plaque) return null;
  const pr=plaque.getBoundingClientRect();
  if(pr.width<80) return null;
  let left=pr.left, right=pr.right;
@@ -1507,25 +1520,25 @@ async function unlock(pw){
   try{ await decFile(name, meta, (PUB.n||[]).indexOf(name)>=0?window.__zgPubKey:key); }catch(e){}
  }));
  if(!AL||AL.indexOf(10)>=0){
-  try{
-   const rkek=await crypto.subtle.deriveKey({name:'PBKDF2',salt:ub(ENCRP.s),iterations:ENCRP.n,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
-   let rkr=null;
-   for(const sl of (ENCRP.w||[])){try{rkr=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(sl.iv)},rkek,ub(sl.ct)))).k;break}catch(e){}}
-   if(!rkr) throw new Error('нет доступа');
-   const rk=await crypto.subtle.importKey('raw',ub(rkr),'AES-GCM',false,['decrypt']);
-   const rgz=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(ENCRP.i)},rk,ub(ENCRP.c));
-   PAGES.rp=await new Response(new Blob([rgz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+ try{
+  const rkek=await crypto.subtle.deriveKey({name:'PBKDF2',salt:ub(ENCRP.s),iterations:ENCRP.n,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+  let rkr=null;
+  for(const sl of (ENCRP.w||[])){try{rkr=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(sl.iv)},rkek,ub(sl.ct)))).k;break}catch(e){}}
+  if(!rkr) throw new Error('нет доступа');
+  const rk=await crypto.subtle.importKey('raw',ub(rkr),'AES-GCM',false,['decrypt']);
+  const rgz=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(ENCRP.i)},rk,ub(ENCRP.c));
+  PAGES.rp=await new Response(new Blob([rgz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
   }catch(e){}
  }
  if(!AL||AL.indexOf(11)>=0){
   try{
-   const pkek=await crypto.subtle.deriveKey({name:'PBKDF2',salt:ub(ENCPR.s),iterations:ENCPR.n,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
-   let pkr=null;
-   for(const sl of ENCPR.w){try{pkr=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(sl.iv)},pkek,ub(sl.ct)))).k;break}catch(e){}}
-   if(!pkr) throw new Error('нет доступа');
-   const pk=await crypto.subtle.importKey('raw',ub(pkr),'AES-GCM',false,['decrypt']);
-   const pgz=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(ENCPR.i)},pk,ub(ENCPR.c));
-   PAGES.prem=await new Response(new Blob([pgz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  const pkek=await crypto.subtle.deriveKey({name:'PBKDF2',salt:ub(ENCPR.s),iterations:ENCPR.n,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']);
+  let pkr=null;
+  for(const sl of ENCPR.w){try{pkr=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(sl.iv)},pkek,ub(sl.ct)))).k;break}catch(e){}}
+  if(!pkr) throw new Error('нет доступа');
+  const pk=await crypto.subtle.importKey('raw',ub(pkr),'AES-GCM',false,['decrypt']);
+  const pgz=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(ENCPR.i)},pk,ub(ENCPR.c));
+  PAGES.prem=await new Response(new Blob([pgz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
   }catch(e){}
  }
  if(!AL||AL.indexOf(12)>=0) await pubTen();

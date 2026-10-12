@@ -22,9 +22,13 @@ body{margin:0;min-height:100%;color:var(--fg);font:300 16.5px/1.55 var(--sans);b
 /* фотополоса: фото проектов с сайта, ч/б; появляется только когда картинка загрузилась */
 #bg{display:none!important}
 #veil{display:none}
-.mast{position:relative;z-index:3;background:transparent;border-bottom:1px solid var(--on);
-color:var(--on);padding:18px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
-.mast .logo{display:flex;align-items:center}
+.mast{position:relative;z-index:5;background:#73b3c3;border-bottom:0;color:#1d1d1b;
+padding:0;display:flex;justify-content:center;box-sizing:border-box}
+.mast-in{width:100%;max-width:1280px;margin:0 auto;padding:6px 28px 4px;box-sizing:border-box}
+.mast .logo{display:inline-block;line-height:0;cursor:pointer;width:auto;padding:0}
+.mast .logo img{height:46px;width:auto;display:block}
+@media(max-width:760px){.mast-in{padding:7px 16px 8px}.mast .logo img{height:48px}}
+.mast .logo{display:inline-block;align-items:center}
 .mast .logo:hover svg{opacity:.6}
 .mast .logo svg{height:26px;width:auto;display:block;fill:var(--on);transition:fill .15s}
 .mast .mtitle{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
@@ -243,20 +247,7 @@ margin:12px 0 0;cursor:pointer;background:var(--paper);border:1px solid var(--in
 @media(max-width:640px){.pan{padding:20px 18px}h1{font-size:27px}.qt{font-size:19px}.hello h1{font-size:27px}
 .wrap{padding:16px 16px 40px}.mast{padding:14px 16px}.dep{min-height:0}}
 </style></head><body>
-<header class="mast"><a class="logo" href="#" id="home" title="На начальный экран"><svg viewBox="0 0 963 215" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M58 114.5H75V125H111.5V114.5H83V101.5H109.5V91H75V101.5H58C58.2 91.3 61.1 76 94.6 76C119.2 76 126 84.1 126 93.8C126 102.3 118.8 106.9 113.5 107C119.8 107 128 111.9 128 121.2C128 132.7 119.4 140 91.7 140C57.9 140 58 122.2 58 114.5Z"/>
-<path d="M170 140C145.8 140 131.5 127.5 131.5 108C131.5 88.5 145.8 76 170 76C194.2 76 208.5 88.5 208.5 108C208.5 127.5 194.2 140 170 140ZM150 92.9V123.1H190V92.9H150Z"/>
-<path d="M263.5 94H234.8C234.6 101 234.4 113.2 233.7 121.6C232.7 134.6 230.1 139.5 214.8 139.5H208.5V124.2H217.5C218 121.9 218.3 114.1 218.6 104.4C218.9 95.3 219 85.7 219 78H279.5V138H263.5V94Z"/>
-<path d="M324 140C299.8 140 285.5 127.5 285.5 108C285.5 88.5 299.8 76 324 76C348.2 76 362.5 88.5 362.5 108C362.5 127.5 348.2 140 324 140ZM304 92.9V123.1H344V92.9H304Z"/>
-<path d="M391 94H363V78H435.4V94H407.4V138H391V94Z"/>
-<path d="M474.4 140C450.2 140 435.9 127.5 435.9 108C435.9 88.5 450.2 76 474.4 76C498.6 76 512.9 88.5 512.9 108C512.9 127.5 498.6 140 474.4 140ZM454.4 92.9V123.1H494.4V92.9H454.4Z"/>
-<path d="M523 78H583V94H539.4V138H523V78Z"/>
-<path d="M655.8 99.7C655.8 113.4 646.6 122.4 629.8 122.4H603.8V138H587.8V78H629.8C646.6 78 655.8 85.7 655.8 99.7ZM638.3 92.9H603.8V107.5H638.3V92.9Z"/>
-<path d="M689.2 111H671.2L653.3 78H674.2L690.6 108.5L707.7 78H727.1L693.5 138H674.1L689.2 111Z"/>
-<path d="M729.9 78H798.2V138H781.8V94H746.3V138H729.9V78Z"/>
-<path d="M806.2 78H874.5V138H858.1V94H822.6V138H806.2V78Z"/>
-</svg></a>
-<span class="mtitle">опрос по регламентам</span><span id="who"></span></header>
+<header class="mast"><div class="mast-in"><a class="logo" id="home" href="hub.html" title="На главную"><img src="brand/logo-horizontal.svg" alt="ЗОЛОТО ГРУПП — агентство стандартов навигации и визуальной среды"></a></div></header>
 <div class="wrap"><main class="main">
 
 <section id="s-lock" class="hide"><div class="lock pan w">
@@ -555,13 +546,7 @@ $('#pw').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#pwgo').click();
 
 function toLock(){ $('#s-hello').classList.add('hide'); $('#s-lock').classList.remove('hide');
   setbg(2); window.scrollTo({top:0}); setTimeout(()=>$('#pw').focus(),60); }
-$('#home').onclick=e=>{ e.preventDefault();
-  if(tick){ clearInterval(tick); tick=null; save(); }
-  document.querySelectorAll('.main>section').forEach(x=>x.classList.add('hide'));
-  $('#s-hello').classList.remove('hide'); $('#conf').innerHTML='';
-  $('#step-fio').classList.add('hide'); $('#step-dep').classList.remove('hide');
-  me=null; mode='main'; sent=false; setAccent(null);
-  setbg(1); window.scrollTo({top:0}); };
+
 $('#hgo').onclick=()=>{ if(closed()){ showClosed(); return; } mode='main'; renderDeps(); toLock(); };
 
 function plural(n,a,b,c){ const m=n%100, k=n%10;

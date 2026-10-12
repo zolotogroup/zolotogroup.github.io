@@ -66,9 +66,13 @@ html.open .biobtn:not([hidden]){display:inline-flex;margin-left:10px}
 .biobtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .lock #biogo{display:none;width:100%;height:auto;margin:14px 0 0;padding:0;border:0;background:none;color:var(--ink);font:400 15px/1 "Stratos",sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .lock #biogo:not([hidden]){display:block}
-html.open[data-mode="home"] .animbtn{display:inline-flex;margin-left:auto}
+html.open[data-mode="home"] .testbtn{display:inline-flex;margin-left:auto}
+html.open[data-mode="home"] .animbtn{display:inline-flex;margin-left:10px}
 html.open[data-mode="home"] .viewsw{display:inline-flex;margin-left:10px}
 html.open[data-mode="home"] .exitbtn{margin-left:10px}
+.testbtn{display:none;appearance:none;height:34px;padding:0 12px;border:1px solid var(--on);background:transparent;color:var(--on);font:400 15px/1 "Stratos",-apple-system,sans-serif;cursor:pointer;white-space:nowrap;box-sizing:border-box;align-items:center;text-decoration:none}
+.testbtn:hover{background:var(--paper);color:var(--ink)}
+.testbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .animbtn{display:none;appearance:none;height:34px;padding:0 12px;border:1px solid var(--on);background:transparent;color:var(--on);font:400 15px/1 "Stratos",-apple-system,sans-serif;cursor:pointer;white-space:nowrap;box-sizing:border-box;align-items:center}
 .animbtn.on{background:var(--paper);color:var(--ink)}
 .animbtn:hover{background:var(--paper);color:var(--ink)}
@@ -85,6 +89,7 @@ html.open[data-mode="home"] .exitbtn{margin-left:10px}
 .top .logo{order:1}
 .top .homebtn{order:2}
 .top .note{order:4;margin-left:auto}
+.top .testbtn{order:5;align-self:center}
 .top .animbtn{order:5;align-self:center}
 .top .viewsw{order:5;align-self:center}
 .top .biobtn{order:5;align-self:center}
@@ -214,7 +219,7 @@ html.zg-anim:not(.zg-list) .home .card .k>span:last-child:not(:first-child):not(
 html.zg-anim.zg-groups .home .card .zg-pico{position:relative;flex:none;width:56px;height:56px;margin:0;transform:none}
 @media(hover:none){html.zg-anim:not(.zg-list) .home .cards.three .card:hover{background-position:0 0,0 0;transform:perspective(1000px) rotate3d(.5,1,0,0deg)}html.zg-anim:not(.zg-list) .home .cards.three .card:active{background-color:var(--ink)}}
 html.zg-groups .home>.cards{display:none!important}
-@media(max-width:480px){html.open[data-mode="home"] .animbtn{height:30px;padding:0 8px;font-size:13px}html.open[data-mode="home"] .viewsw{height:30px;margin-left:8px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
+@media(max-width:480px){html.open[data-mode="home"] .testbtn{height:30px;padding:0 8px;font-size:13px}html.open[data-mode="home"] .animbtn{height:30px;padding:0 8px;font-size:13px;margin-left:8px}html.open[data-mode="home"] .viewsw{height:30px;margin-left:8px}html.open[data-mode="home"] .viewsw button{padding:0 8px;font-size:13px}html.open[data-mode="home"] .exitbtn{margin-left:8px}}
 
 /* телефон: разделы одной строкой с прокруткой */
 @media(max-width:760px){
@@ -275,6 +280,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 </div>
 <span class="note" id="swn"></span>
 <div class="pagebar" id="pagebar"></div>
+<a class="testbtn" id="testbtn" href="opros.html">Тест</a>
 <button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
 <div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="groups" aria-pressed="false">Группы</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
 <button class="biobtn" id="biobtn" type="button" hidden>Отпечаток</button>

@@ -444,7 +444,7 @@ function dressFrame(doc, frame){
  if(doc.body) doc.body.style.setProperty('background',__bg,'important');
  if((frame&&frame.dataset.sec)==='week') st.textContent+='html body.locked>#gate:not([hidden]),html body.locked #gate:not([hidden]){position:relative!important;inset:auto!important;min-height:520px!important;height:auto!important;display:flex!important;visibility:visible!important}html body.locked>.wrap{display:none!important}html body #zg-stack #weeks .wl{display:none!important}html body #zg-stack #weeks{position:relative!important;z-index:80!important;pointer-events:auto!important;display:flex!important;flex-wrap:nowrap!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;max-width:100%!important;padding:1px 1px 6px!important;box-sizing:border-box!important;scrollbar-width:thin}html body #zg-stack #weeks [data-w0]{pointer-events:auto!important;cursor:pointer!important;flex:0 0 auto!important}html body #zg-stack #weeks [aria-current]{background:#b7cd00!important;color:#1d1d1b!important;border-color:#1d1d1b!important;box-shadow:none!important}html body .ins,html body .ins h3,html body .ins p,html body .ins .ik{color:#1d1d1b!important}';
  if((frame&&frame.dataset.sec)==='tests') st.textContent+='html body .ttpanel.on>.tt-wrap{max-width:1280px!important;margin-left:auto!important;margin-right:auto!important;padding-left:32px!important;padding-right:32px!important;box-sizing:border-box!important}html body .ttpanel.on .tt-wrap .wrap{max-width:none!important;padding-left:0!important;padding-right:0!important}html body #sub-tests-results table.t{table-layout:auto!important}html body #sub-tests-results table.t td:last-child{width:280px!important;min-width:240px!important;word-break:normal!important;overflow-wrap:normal!important;white-space:normal!important}html body #sub-tests-results .tag-alert{display:inline!important;word-break:normal!important;overflow-wrap:normal!important;white-space:normal!important;line-height:1.45!important;letter-spacing:.03em!important;padding:4px 8px!important}';
- if((frame&&frame.dataset.sec)==='subs') st.textContent+='html body main{display:block!important;width:100%!important;max-width:1280px!important;margin-left:auto!important;margin-right:auto!important;padding:18px 32px 48px!important;box-sizing:border-box!important}html body #zg-stack{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}html body #zg-tail{width:100%!important;max-width:none!important;margin:28px 0 0!important}@media(max-width:760px){html body main{padding-left:16px!important;padding-right:16px!important}}';
+ if((frame&&frame.dataset.sec)==='subs') st.textContent+='html body main{display:block!important;width:100%!important;max-width:1280px!important;margin-left:auto!important;margin-right:auto!important;padding:18px 32px 48px!important;box-sizing:border-box!important}html body #zg-stack{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}html body #zg-tail{width:100%!important;max-width:none!important;margin:28px 0 0!important}html body.zg-tablock #lockcontent,html body.zg-tablock .tabs,html body.zg-tablock .pane{display:none!important}#zg-tabgate{max-width:420px;margin:48px auto;padding:32px;border:1px solid #1d1d1b;background:#fff;box-sizing:border-box;color:#1d1d1b}#zg-tabgate h1{margin:0 0 8px;font:400 32px/1.1 "Zoloto Display","Stratos",sans-serif;color:#1d1d1b!important}#zg-tabgate p{margin:0 0 16px;font:400 15px/1.4 "Stratos",sans-serif;color:#1d1d1b!important}#zg-tabgate .row{display:flex;border:1px solid #1d1d1b}#zg-tabgate input{flex:1;min-width:0;height:46px;border:0;padding:0 14px;font:400 18px/1 "Aeroport Mono",ui-monospace,monospace;letter-spacing:.12em;background:#fff;color:#1d1d1b}#zg-tabgate button{height:46px;padding:0 18px;border:0;border-left:1px solid #1d1d1b;background:#b7cd00;color:#1d1d1b;font:400 15px/1 "Stratos",sans-serif;cursor:pointer}#zg-tabgate .err{margin:12px 0 0;color:#e30c13!important;font:400 13px/1.3 "Aeroport Mono",ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase}@media(max-width:760px){html body main{padding-left:16px!important;padding-right:16px!important}}';
  if(!st.isConnected) (doc.head||doc.documentElement).appendChild(st);
  const COPY={
   pult:['Пульт ПланФикса','Контракты, дебиторка, часы и просрочки по отчётам ПланФикса. В сводке только карточки мастер-проектов, без этапов, завершённых и отменённых.'],
@@ -656,6 +656,43 @@ function dressFrame(doc, frame){
  });
  paintInk(doc, __on, __bg);
  hoistSearch(frame);
+ if(sec==='subs') gateSubsTabs(doc);
+}
+function gateSubsTabs(doc){
+ if(!doc||!doc.body) return;
+ const pass='офис48';
+ let ok=false;
+ try{ ok=sessionStorage.getItem('zgSubsView')==='1'; }catch(e){}
+ const box=doc.getElementById('lockcontent');
+ if(ok){
+  doc.body.classList.remove('zg-tablock');
+  if(box) box.hidden=false;
+  const old=doc.getElementById('zg-tabgate');
+  if(old) old.remove();
+  return;
+ }
+ doc.body.classList.add('zg-tablock');
+ if(box) box.hidden=true;
+ if(doc.getElementById('zg-tabgate')) return;
+ const g=doc.createElement('form');
+ g.id='zg-tabgate';
+ g.setAttribute('autocomplete','off');
+ g.innerHTML='<h1>Пароль</h1><p>Вкладки откроются после кода.</p><div class="row"><input aria-label="Пароль" autocomplete="off" spellcheck="false"></div><p class="err" hidden>Пароль не подходит</p>';
+ const btn=doc.createElement('button');
+ btn.type='submit';
+ btn.textContent='Открыть';
+ g.querySelector('.row').appendChild(btn);
+ const host=doc.querySelector('main')||doc.body;
+ host.insertBefore(g, host.firstChild);
+ g.addEventListener('submit', ev=>{
+  ev.preventDefault();
+  const v=(g.querySelector('input').value||'').replace(/\s+/g,'');
+  if(v!==pass){ g.querySelector('.err').hidden=false; return; }
+  try{ sessionStorage.setItem('zgSubsView','1'); }catch(e){}
+  doc.body.classList.remove('zg-tablock');
+  if(box) box.hidden=false;
+  g.remove();
+ });
 }
 function zgRgb(c){
  if(!c) return null;

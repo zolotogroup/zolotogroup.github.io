@@ -1356,7 +1356,7 @@ function regsGo(frame,at){
 }
 window.__zgHron=part=>PAGES&&PAGES.hroniki?PAGES.hroniki.replace('<head>','<head><script>window.__zgPart='+JSON.stringify(part)+'<\/script>'):null;
 
-let LVL='guest', MAXLVL=[4,5,6];
+let LVL='guest', MAXLVL=[];
 const CARDFILE={1:['pult'],2:['fin','fot','kassa','taxi','lic','org'],3:['week'],4:['regs'],5:['prompts'],6:['names'],7:['orgdoc'],8:['orgdoc'],9:['orgdoc'],13:['kp'],14:['navsum'],15:['prod'],16:['hroniki'],17:['subs']};
 const ADDRSEC={1:'pult',2:'fin',3:'week',4:'regs',5:'prompts',6:'names',7:'orgdoc',8:'lessons',9:'tests',10:'rp',11:'prem',12:'ten',13:'kp',14:'navsum',15:'prod',16:'hroniki',17:'subs'};
 function filesFor(AL){
@@ -1497,6 +1497,10 @@ function paintLead(){
   if(c.style.display==='none'||c.hidden) return;
   vis.add(c.dataset.go);
  });
+ if(!vis.size){
+  lead.textContent='Разделы открываются своим паролем.';
+  return;
+ }
  const has=k=>vis.has(k);
  const any=a=>a.some(has);
  const proj=[];
@@ -1527,7 +1531,7 @@ function paintLead(){
  lead.textContent=text;
 }
 function enterGuest(){
- LVL='guest'; MAXLVL=[4,5,6];
+ LVL='guest'; MAXLVL=[];
  window.__zgSubsOK=false;
  window.__zgLetters=''; window.__zgRoleId=''; window.__zgWeekPw=''; window.__zgWeekRole='';
  document.documentElement.classList.add('open','guest');
@@ -1540,8 +1544,8 @@ function enterGuest(){
  const dest=readHash();
  const n=LVLSEC[dest];
  paintBio();
- if(dest!=='home'&&n&&[4,5,6].indexOf(n)<0){ showLock(dest); return; }
- show(!n||[4,5,6].indexOf(n)>=0?dest:'home');
+ if(dest!=='home'&&n){ showLock(dest); return; }
+ show('home');
 }
 async function unlock(pw){
  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -1681,7 +1685,7 @@ window.addEventListener('hashchange',()=>{
  const dest=readHash();
  const n=LVLSEC[dest];
  if(!document.documentElement.classList.contains('open')){
-  if(document.documentElement.classList.contains('guest')&&(!n||[4,5,6].indexOf(n)>=0)) enterGuest();
+  if(document.documentElement.classList.contains('guest')){ if(n) showLock(dest); else enterGuest(); return; }
   return;
  }
  if(dest==='week'&&frames.week){frames.week.remove();delete frames.week;}
@@ -1697,8 +1701,8 @@ window.addEventListener('hashchange',()=>{
  const dest=readHash();
  const n=LVLSEC[dest];
  if(!document.documentElement.classList.contains('guest')) return;
- if(dest!=='home'&&n&&[4,5,6].indexOf(n)<0){ showLock(dest); return; }
- show(!n||[4,5,6].indexOf(n)>=0?dest:'home');
+ if(dest!=='home'&&n){ showLock(dest); return; }
+ show('home');
 })();
 </script>
 

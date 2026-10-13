@@ -1356,7 +1356,7 @@ function show(k){
    let html=PAGES[PAGEOF[k]||k];
    if(k==='week'){
     html=html.replace('<head>','<head><script>window.__zgRole='+JSON.stringify(window.__zgWeekRole||'')+';window.__zgPw='+JSON.stringify(window.__zgWeekPw||'')+';<\/script>');
-    html=html.replace("if (document.body.classList.contains('locked')) { gate.hidden = false; inp.focus(); }","if (document.body.classList.contains('locked') && !window.__zgPw) { gate.hidden = false; inp.focus(); }");
+    html=html.replace("document.body.classList.add('locked'); gate.hidden = !!window.__zgPw;","document.body.classList.add('locked'); gate.hidden = false;");
    }
    if(SECTION[k]) html=html.replace(/<\/body>\s*<\/html>\s*$/i,'<script>document.documentElement.classList.remove("zg-locked");window.__zgGateOK=true;if(window.__zgShowSection)window.__zgShowSection("'+SECTION[k]+'");<\/script></body></html>');
    f.dataset.role=k==='week'?(window.__zgWeekRole||''):'';

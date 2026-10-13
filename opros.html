@@ -621,7 +621,7 @@ function start(){ if(closed()){ showClosed(); return; }
   if(s&&s.ans&&s.ans.length===qs.length&&s.end<=Date.now()&&s.ans.some(a=>a&&a.trim())){ ans=s.ans; cur=s.cur||0; tEnd=s.end; $('#s-pick').classList.add('hide'); finishUp(true); return; }
   if(s&&s.end>Date.now()&&s.ans&&s.ans.length===qs.length){ ans=s.ans; cur=s.cur||0; tEnd=s.end; }
   else { ans=qs.map(()=>''); cur=0; tEnd=Date.now()+minutes()*60000; }
-  $('#who').textContent=me.n;
+  const who=$('#who'); if(who) who.textContent=me.n;
   $('#s-pick').classList.add('hide'); $('#s-test').classList.remove('hide');
   paint(); tick=setInterval(clock,1000); clock();
 }

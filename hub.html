@@ -280,7 +280,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 </div>
 <span class="note" id="swn"></span>
 <div class="pagebar" id="pagebar"></div>
-<a class="testbtn" id="testbtn" href="opros.html">Тест</a>
+<a class="testbtn" id="testbtn" href="opros.html?v=2">Тест</a>
 <button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
 <div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="groups" aria-pressed="false">Группы</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
 <button class="biobtn" id="biobtn" type="button" hidden>Отпечаток</button>
@@ -717,7 +717,7 @@ function loadOprosResults(doc){
    const when=cells[0]&&(cells[0].f||cells[0].v)||'';
    let data=null;
    try{ data=JSON.parse(cells[1]&&cells[1].v||''); }catch(e){}
-   if(!data||data.v!==1||!data.name) return;
+   if(!data||data.v!==1||!data.name||data.name==='Проверка связи') return;
    items.push({t:when,name:data.name,pos:data.pos||'',group:data.group||'',answered:data.answered||0,total:data.total||0,answers:data.answers||[]});
   });
   if(!items.length){ box.innerHTML='<h2>Новые прохождения</h2><p class="mini">Пока никто не завершил опрос на сайте.</p>'; return; }

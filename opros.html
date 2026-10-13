@@ -718,6 +718,19 @@ function showFinal(L,chain){
   ['#backsteps','#backsteps2'].forEach(q=>{ const b=sec.querySelector(q); if(b) b.onclick=back; });
   $('#s-done').classList.add('hide'); sec.classList.remove('hide'); setbg(2+qs.length); window.scrollTo({top:0});
 }
+const OPROS_INBOX='https://docs.google.com/forms/d/e/1FAIpQLSetbotMtrLJManjGCOxCI2dgbjaT8_Xr59s6tFzweSCWZlYoA/formResponse';
+const OPROS_ENTRY='entry.1543256418';
+function showRecorded(){
+  $('#s-test').classList.add('hide'); $('#s-done').classList.remove('hide');
+  $('#s-done').innerHTML='<div class="pan w">'+cards(me.n,me.pos,me.o+' · <b>ответы записаны '+new Date().toLocaleDateString('ru-RU')+'</b>')+
+   '<p class="eyebrow">Готово</p><h1>Ответы записаны</h1>'+
+   '<p class="lead">'+(me.n.split(' ')[1]||me.n)+', спасибо. Письмо отправлять не нужно — ответы уже попадут во вкладку «Итоги теста».</p>'+
+   '<div class="facts"><div class="fact hi"><span>с ответом</span><b>'+done()+' из '+qs.length+'</b></div>'+
+   '<div class="fact"><span>записано</span><b>'+new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'</b></div></div></div>'+
+   '<div class="pan ok"><p style="margin:0">Список на пульте обновится сам. Повторно проходить опрос не нужно.</p></div>'+
+   '<div class="strip bleed b" data-strip="6,1,28,4" data-mode="mark"></div>';
+  fillStrips(); setbg(1+qs.length); window.scrollTo({top:0});
+}
 async function finishUp(auto){
   if(sent) return; sent=true; clearInterval(tick);
   const L=letter();
@@ -727,6 +740,23 @@ async function finishUp(auto){
       (await enc(L.body,'881204')); crypted=true; } }catch(e){}
   L.body=payload;
   try{ localStorage.setItem('zg-op3-'+mode+'-'+me.id, JSON.stringify({ans:ans,cur:cur,end:tEnd,done:true,auto:!!auto})); }catch(e){}
+  if(OPROS_INBOX){
+    const pack={v:1,name:me.n,pos:me.pos,group:me.o,answered:done(),total:qs.length,
+      answers:qs.map(function(q,i){return {q:q.q,a:(ans[i]||'').trim()};})};
+    const raw=JSON.stringify(pack);
+    if(raw.length<=30000){
+      try{
+        const body=new URLSearchParams();
+        body.set(OPROS_ENTRY, raw);
+        body.set('fvv','1');
+        body.set('pageHistory','0');
+        body.set('submit','Submit');
+        await fetch(OPROS_INBOX,{method:'POST',mode:'no-cors',body:body});
+        showRecorded();
+        return;
+      }catch(e){}
+    }
+  }
   const blob=new Blob([L.body],{type:'text/plain;charset=utf-8'});
   const file=(typeof File==='function')?new File([blob],L.file,{type:'text/plain'}):null;
   const canShare=!!(file&&navigator.canShare&&navigator.canShare({files:[file]}));

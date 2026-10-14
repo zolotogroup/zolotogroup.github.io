@@ -111,7 +111,7 @@ textarea{min-height:200px;font-size:15.5px;line-height:1.55;resize:vertical}
 label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);
 margin:0 0 8px}
 .btn{background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:0;padding:12px 24px;
-font:inherit;font-size:15px;font-weight:400;cursor:pointer;transition:.15s}
+font:inherit;font-size:15px;font-weight:400;cursor:pointer;transition:.15s;touch-action:manipulation}
 .btn:hover{background:var(--accent);color:var(--ink);border-color:var(--accent)} .btn[disabled]{opacity:.3;cursor:default}
 .btn[disabled]:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink);font-weight:300}
@@ -432,9 +432,9 @@ margin:12px 0 0;cursor:pointer;background:var(--paper);border:1px solid var(--in
   <div class="pan w">
     <label for="qans">Ваш ответ</label>
     <textarea id="qans" placeholder="Своими словами, коротко и по делу"></textarea>
-    <div class="row"><button class="btn ghost" id="prev">Назад</button>
-    <button class="btn" id="next">Дальше</button>
-    <button class="btn hide" id="finish">Завершить опрос</button></div>
+    <div class="row"><button class="btn ghost" id="prev" type="button">Назад</button>
+    <button class="btn" id="next" type="button">Дальше</button>
+    <button class="btn hide" id="finish" type="button">Завершить опрос</button></div>
   </div>
 
   <div class="pan t tight">
@@ -653,18 +653,35 @@ $('#qans').addEventListener('input',e=>{ ans[cur]=e.target.value; save();
   $('#qcount').textContent=done()+' из '+qs.length;
   $('#pfill').style.width=Math.round(done()/qs.length*100)+'%';
   const d=$('#dots').children[cur]; if(d) d.classList.toggle('done',!!e.target.value.trim()); });
-$('#prev').onclick=()=>{ if(cur>0){cur--;paint();save();} };
-$('#next').onclick=()=>{ if(cur<qs.length-1){cur++;paint();save();} };
+function tap(el, fn){
+  let last=0;
+  const go=ev=>{
+    if(ev.type==='touchend') ev.preventDefault();
+    const now=Date.now();
+    if(now-last<500) return;
+    last=now;
+    fn(ev);
+  };
+  el.addEventListener('click', go);
+  el.addEventListener('touchend', go);
+}
+tap($('#prev'), ()=>{ if(cur>0){cur--;paint();save();} });
+tap($('#next'), ()=>{ if(cur<qs.length-1){cur++;paint();save();} });
 $('#dots').addEventListener('click',e=>{ const b=e.target.closest('.dot'); if(!b) return;
   cur=+b.dataset.i; paint(); save(); });
-$('#finish').onclick=()=>{ const e=qs.length-done();
+tap($('#finish'), ()=>{
+  const box0=$('#qans'); if(box0){ ans[cur]=box0.value; save(); }
+  const e=qs.length-done();
   if(!e){ finishUp(false); return; }
   let box=$('#fconf'); if(!box){ box=document.createElement('div'); box.id='fconf'; box.className='note';
-    $('#finish').closest('.pan').appendChild(box); }
+    $('#finish').closest('.pan').insertBefore(box, $('#finish').closest('.row')); }
   box.innerHTML='Без ответа осталось вопросов: <b>'+e+'</b>. Завершить всё равно? '+
-    '<span class="row" style="margin-top:8px"><button class="btn" id="fyes">Да, завершить</button>'+
-    '<button class="btn ghost" id="fno">Вернуться к вопросам</button></span>';
-  $('#fyes').onclick=()=>finishUp(false); $('#fno').onclick=()=>box.remove(); };
+    '<span class="row" style="margin-top:8px"><button class="btn" id="fyes" type="button">Да, завершить</button>'+
+    '<button class="btn ghost" id="fno" type="button">Вернуться к вопросам</button></span>';
+  tap($('#fyes'), ()=>finishUp(false));
+  tap($('#fno'), ()=>box.remove());
+  box.scrollIntoView({block:'center'});
+});
 
 async function enc(text,pass){
   const e=new TextEncoder(), salt=crypto.getRandomValues(new Uint8Array(16)),
@@ -733,12 +750,9 @@ function showRecorded(){
 }
 async function finishUp(auto){
   if(sent) return; sent=true; clearInterval(tick);
-  const L=letter();
-  let payload=L.body, crypted=false;
-  try{ if(window.crypto&&crypto.subtle){ payload=L.head+'\n\n'+
-      'Ответы зашифрованы. Открываются на первом экране опроса по ссылке «Расшифровать ответы».\n\n'+
-      (await enc(L.body,'881204')); crypted=true; } }catch(e){}
-  L.body=payload;
+  const fin=$('#finish');
+  if(fin){ fin.disabled=true; fin.textContent='Записываю…'; }
+  const box0=$('#qans'); if(box0) ans[cur]=box0.value;
   try{ localStorage.setItem('zg-op3-'+mode+'-'+me.id, JSON.stringify({ans:ans,cur:cur,end:tEnd,done:true,auto:!!auto})); }catch(e){}
   if(OPROS_INBOX){
     const pack={v:1,name:me.n,pos:me.pos,group:me.o,answered:done(),total:qs.length,
@@ -770,6 +784,12 @@ async function finishUp(auto){
     showRecorded();
     return;
   }
+  const L=letter();
+  let payload=L.body, crypted=false;
+  try{ if(window.crypto&&crypto.subtle){ payload=L.head+'\n\n'+
+      'Ответы зашифрованы. Открываются на первом экране опроса по ссылке «Расшифровать ответы».\n\n'+
+      (await enc(L.body,'881204')); crypted=true; } }catch(e){}
+  L.body=payload;
   const blob=new Blob([L.body],{type:'text/plain;charset=utf-8'});
   const file=(typeof File==='function')?new File([blob],L.file,{type:'text/plain'}):null;
   const canShare=!!(file&&navigator.canShare&&navigator.canShare({files:[file]}));

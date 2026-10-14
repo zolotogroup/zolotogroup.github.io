@@ -742,20 +742,33 @@ async function finishUp(auto){
   try{ localStorage.setItem('zg-op3-'+mode+'-'+me.id, JSON.stringify({ans:ans,cur:cur,end:tEnd,done:true,auto:!!auto})); }catch(e){}
   if(OPROS_INBOX){
     const pack={v:1,name:me.n,pos:me.pos,group:me.o,answered:done(),total:qs.length,
-      answers:qs.map(function(q,i){return {q:q.q,a:(ans[i]||'').trim()};})};
+      answers:qs.map(function(q,i){return {i:i,q:String(q.q||'').slice(0,180),a:(ans[i]||'').trim()};})};
     const raw=JSON.stringify(pack);
-    if(raw.length<=30000){
-      try{
-        const body=new URLSearchParams();
-        body.set(OPROS_ENTRY, raw);
-        body.set('fvv','1');
-        body.set('pageHistory','0');
-        body.set('submit','Submit');
-        await fetch(OPROS_INBOX,{method:'POST',mode:'no-cors',body:body});
-        showRecorded();
-        return;
-      }catch(e){}
+    let frame=document.getElementById('zg-opros-post');
+    if(!frame){
+      frame=document.createElement('iframe');
+      frame.name='zg-opros-post';
+      frame.id='zg-opros-post';
+      frame.hidden=true;
+      document.body.appendChild(frame);
     }
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action=OPROS_INBOX;
+    form.target='zg-opros-post';
+    form.acceptCharset='UTF-8';
+    [['entry', raw],['fvv','1'],['pageHistory','0'],['submit','Submit']].forEach(function(pair){
+      const input=document.createElement('input');
+      input.type='hidden';
+      input.name=pair[0]==='entry'?OPROS_ENTRY:pair[0];
+      input.value=pair[1];
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+    form.submit();
+    form.remove();
+    showRecorded();
+    return;
   }
   const blob=new Blob([L.body],{type:'text/plain;charset=utf-8'});
   const file=(typeof File==='function')?new File([blob],L.file,{type:'text/plain'}):null;

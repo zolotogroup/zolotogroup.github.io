@@ -280,7 +280,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 </div>
 <span class="note" id="swn"></span>
 <div class="pagebar" id="pagebar"></div>
-<a class="testbtn" id="testbtn" href="opros.html?v=2">Тест</a>
+<a class="testbtn" id="testbtn" href="opros.html?v=3">Тест</a>
 <button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
 <div class="viewsw" id="viewsw" role="group" aria-label="Вид главной"><button type="button" data-view="list" aria-pressed="false">Список</button><button type="button" data-view="groups" aria-pressed="false">Группы</button><button type="button" data-view="cards" class="on" aria-pressed="true">Карточки</button></div>
 <button class="biobtn" id="biobtn" type="button" hidden>Отпечаток</button>
@@ -696,34 +696,47 @@ function gateSubsTabs(doc){
  });
 }
 const OPROS_READ='https://docs.google.com/spreadsheets/d/1XZBelOhEQbTrMepBcABhJhmttmfV_jIyMufCDBSR8-E/gviz/tq?tqx=out:json&gid=906830995';
+function oprosWhen(cell){
+ if(!cell) return '';
+ if(cell.f) return cell.f;
+ const m=String(cell.v||'').match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+)/);
+ if(!m) return String(cell.v||'');
+ const d=new Date(+m[1], +m[2], +m[3], +m[4], +m[5]);
+ return d.toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
 function loadOprosResults(doc){
- if(!OPROS_READ||!doc||doc.getElementById('zg-opros-live')) return;
+ if(!OPROS_READ||!doc) return;
  const host=doc.getElementById('sub-tests-results');
  if(!host) return;
- const box=doc.createElement('section');
- box.id='zg-opros-live';
+ let box=doc.getElementById('zg-opros-live');
+ if(!box){
+  box=doc.createElement('section');
+  box.id='zg-opros-live';
+  const wrap=host.querySelector('.wrap')||host;
+  wrap.insertBefore(box, wrap.firstChild);
+ }
  box.innerHTML='<h2>Новые прохождения</h2><p class="mini">Загружаются…</p>';
- const wrap=host.querySelector('.wrap')||host;
- wrap.insertBefore(box, wrap.firstChild);
  const esc=function(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
  window.google=window.google||{};
  window.google.visualization=window.google.visualization||{};
  window.google.visualization.Query=window.google.visualization.Query||{};
  window.google.visualization.Query.setResponse=function(resp){
+  const live=doc.getElementById('zg-opros-live');
+  if(!live) return;
   const rows=(resp&&resp.table&&resp.table.rows)||[];
   const items=[];
   rows.forEach(function(row){
    const cells=row.c||[];
-   const when=cells[0]&&(cells[0].f||cells[0].v)||'';
    let data=null;
    try{ data=JSON.parse(cells[1]&&cells[1].v||''); }catch(e){}
    if(!data||data.v!==1||!data.name||data.name==='Проверка связи') return;
-   items.push({t:when,name:data.name,pos:data.pos||'',group:data.group||'',answered:data.answered||0,total:data.total||0,answers:data.answers||[]});
+   items.push({t:oprosWhen(cells[0]),name:data.name,pos:data.pos||'',group:data.group||'',answered:data.answered||0,total:data.total||0,answers:data.answers||[]});
   });
-  if(!items.length){ box.innerHTML='<h2>Новые прохождения</h2><p class="mini">Пока никто не завершил опрос на сайте.</p>'; return; }
-  box.innerHTML='<h2>Новые прохождения</h2>'+items.slice().reverse().map(function(r){
+  if(!items.length){ live.innerHTML='<h2>Новые прохождения</h2><p class="mini">Пока никто не завершил опрос на сайте.</p>'; return; }
+  live.innerHTML='<h2>Новые прохождения</h2>'+items.slice().reverse().map(function(r){
    const ans=(r.answers||[]).map(function(a,i){
-    return '<p style="margin:8px 0"><b>'+(i+1)+'.</b> '+esc(a.q)+'<br>'+esc(a.a||'—')+'</p>';
+    const n=(a.i!=null?a.i:i)+1;
+    return '<p style="margin:8px 0"><b>'+n+'.</b> '+esc(a.q||('Вопрос '+n))+'<br>'+esc(a.a||'—')+'</p>';
    }).join('');
    return '<details style="margin:0 0 12px;padding:10px 0;border-bottom:1px solid #1d1d1b"><summary><b>'+esc(r.name)+'</b> · '+esc(r.group)+' · '+esc(r.pos)+' · '+esc(r.t)+' · '+r.answered+' из '+r.total+'</summary>'+ans+'</details>';
   }).join('');

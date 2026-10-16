@@ -394,6 +394,35 @@ function zoomImage(src,alt){
  lb.firstChild.alt=alt||'';
  lb.style.display='flex';
 }
+// In a srcdoc frame "#id" resolves against hub.html, so an in-page link the section's own script didn't take loads the hub into the frame.
+function hookAnchors(doc, frame){
+ if(!frame||!doc||!doc.defaultView||doc.zgAnchorHook) return;
+ doc.zgAnchorHook=true;
+ // Человек сам листает — доводка к якорю (frameAnchor) больше не перехватывает прокрутку.
+ const stop=()=>document.querySelectorAll('#fr iframe').forEach(f=>{ f.__zgLand=(f.__zgLand||0)+1; });
+ ['wheel','touchmove','keydown'].forEach(t=>{
+  doc.defaultView.addEventListener(t,stop,{passive:true});
+  if(!window.__zgLandStop) window.addEventListener(t,stop,{passive:true});
+ });
+ window.__zgLandStop=1;
+ const onDoc=()=>{ const s=doc.querySelector('section.doc.on[id^="doc"]'); return s?s.id:''; };
+ let was='';
+ doc.defaultView.addEventListener('click',()=>{ was=onDoc(); },true);
+ doc.defaultView.addEventListener('click',e=>{
+  const a=e.target.closest&&e.target.closest('a[href^="#"]');
+  if(!a||(a.target&&a.target!=='_self')||a.hasAttribute('download')) return;
+  const anch=a.getAttribute('href').slice(1);
+  // Свод листает сам, но рамка без своей прокрутки: к якорю или к началу открытого документа хаб доводит сам.
+  if(e.defaultPrevented){
+   if(frame.dataset.sec!=='regs') return;
+   const now=onDoc();
+   if(anch) frameAnchor(frame,anch); else if(now&&now!==was) frameAnchor(frame,now);
+   return;
+  }
+  e.preventDefault();
+  if(anch) frameAnchor(frame,anch);
+ });
+}
 function dressFrame(doc, frame){
  doc.querySelectorAll('iframe').forEach(flushEmbed);
  if(!doc.zgFlushHook){ doc.zgFlushHook=true; doc.addEventListener('load',e=>{ if(e.target&&e.target.tagName==='IFRAME') flushEmbed(e.target); },true); }
@@ -409,6 +438,7 @@ function dressFrame(doc, frame){
   },true);
   doc.addEventListener('keydown',e=>{ if(e.key==='Escape') zoomImage(); });
  }
+ hookAnchors(doc, frame);
  let st=doc.getElementById('zg-tight');
  if(!st){
   st=doc.createElement('style');
@@ -1138,6 +1168,7 @@ function watchFrame(frame){
   foldPage(frame);settleFrame(frame);
   const doc=frame.contentDocument;
   if(!doc||!doc.body) return;
+  hookAnchors(doc, frame);
   try{ fillHronFrame(doc); }catch(e){}
   if(frame.__zgMo){ try{frame.__zgMo.disconnect()}catch(e){} }
   frame.__zgMo=new MutationObserver(recs=>{ if(frame.hidden||frame.__zgBusy) return; recs=recs.filter(r=>{ const el=r.target&&(r.target.nodeType===1?r.target:r.target.parentElement); if(el&&el.closest&&el.closest('#tip,.tip,#z-tip,[role="tooltip"]')) return false; return !(r.type==='attributes'&&r.attributeName==='class'&&r.oldValue===(typeof r.target.className==='string'?r.target.className:'')); }); if(!recs.length) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d&&recs.some(r=>r.type==='childList'&&r.addedNodes.length&&!(r.target&&(r.target.id==='zg-tight'||r.target.id==='zg-fold')))) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
@@ -1440,24 +1471,39 @@ function regsGo(frame,at){
  let i=at.indexOf(':'), key=null, anch=at;
  if(i>0){ key=at.slice(0,i); anch=at.slice(i+1); }
  else if(/^\d{2}$/.test(at)){ key=at; anch=''; }
- let id=anch; try{ id=decodeURIComponent(anch); }catch(e){}
- let tries=0, lastH=-1, still=0;
- const land=n=>{
-  const doc=frame.contentDocument;
-  const el=doc&&(doc.getElementById(id)||doc.getElementById(anch));
-  if(el&&el.getClientRects().length) window.scrollTo(0,Math.max(0,frame.getBoundingClientRect().top+el.getBoundingClientRect().top+window.scrollY-90));
-  const h=frame.offsetHeight;
-  still=h===lastH?still+1:0; lastH=h;
-  if(still<3&&n<40) setTimeout(()=>land(n+1),200);
- };
+ let tries=0;
  const step=()=>{
   const doc=frame.contentDocument;
   if(!doc||doc.readyState!=='complete'||!doc.querySelector('a.doc[data-go]')){ if(++tries<150) setTimeout(step,100); return; }
   const nav=key&&doc.querySelector('a.doc[data-go="'+key+'"]');
   if(nav) nav.click();
-  if(anch) setTimeout(()=>land(0),200);
+  if(anch) setTimeout(()=>frameAnchor(frame,anch),200);
  };
  step();
+}
+/* Якорь внутри раздела: открыть документ свода и свёрнутый блок, где он лежит, и долистать хаб — рамка без своей прокрутки.
+   Высота рамки ещё меняется после переключения документа, поэтому доводим, пока она не устоится. */
+function frameAnchor(frame,anch){
+ let id=anch; try{ id=decodeURIComponent(anch); }catch(e){}
+ const find=()=>{ const doc=frame.contentDocument; return doc&&(doc.getElementById(id)||doc.getElementById(anch)); };
+ const el=find();
+ if(el){
+  const sec=el.closest('section.doc[id^="doc"]');
+  if(sec&&!sec.classList.contains('on')){ const nav=el.ownerDocument.querySelector('a.doc[data-go="'+(sec.dataset.key||sec.id.slice(3))+'"]'); if(nav) nav.click(); }
+  let top=el; while(top.parentElement&&top.parentElement!==sec&&top.parentElement!==el.ownerDocument.body) top=top.parentElement;
+  for(let p=top.previousElementSibling; p&&top.style.display==='none'; p=p.previousElementSibling) if(/^H[23]$/.test(p.tagName)&&p.classList.contains('folded')) p.click();
+ }
+ const run=frame.__zgLand=(frame.__zgLand||0)+1;
+ let lastH=-1, still=0;
+ const land=n=>{
+  if(frame.__zgLand!==run) return;
+  const el=find();
+  if(el&&el.getClientRects().length) window.scrollTo(0,Math.max(0,frame.getBoundingClientRect().top+el.getBoundingClientRect().top+window.scrollY-90));
+  const h=frame.offsetHeight;
+  still=h===lastH?still+1:0; lastH=h;
+  if(still<3&&n<40) setTimeout(()=>land(n+1),200);
+ };
+ land(0);
 }
 window.__zgHron=part=>PAGES&&PAGES.hroniki?PAGES.hroniki.replace('<head>','<head><script>window.__zgPart='+JSON.stringify(part)+'<\/script>'):null;
 

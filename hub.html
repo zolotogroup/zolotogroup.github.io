@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta http-equiv="Cache-Control" content="no-cache"><link rel="icon" href="favicon.ico?v=3" sizes="32x32"><link rel="icon" type="image/png" href="favicon-32.png?v=3" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><script>/* Хаб открылся в рамке своего же раздела — рамку увела ссылка. Второй хаб не рисуем: рамке возвращается её раздел, хаб снаружи долистает к якорю. */(function(){var fe=null;try{fe=window.frameElement}catch(e){}if(!fe||!fe.hasAttribute('srcdoc'))return;var id=location.hash.slice(1);try{window.stop()}catch(e){}try{if(parent.__zgHeal){parent.__zgHeal(fe,id);return}}catch(e){}fe.setAttribute('srcdoc',fe.getAttribute('srcdoc'))})();</script><meta http-equiv="Cache-Control" content="no-cache"><link rel="icon" href="favicon.ico?v=3" sizes="32x32"><link rel="icon" type="image/png" href="favicon-32.png?v=3" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Пульт ЗОЛОТОГРУПП</title>
 <meta name="description" content="Регламенты, реестр промтов и названия файлов ЗОЛОТОГРУПП. Остальные разделы открываются по паролю.">
 <style>
@@ -1481,6 +1481,10 @@ function regsGo(frame,at){
  };
  step();
 }
+window.__zgHeal=(fe,id)=>{
+ if(id) fe.addEventListener('load',()=>setTimeout(()=>frameAnchor(fe,id),150),{once:true});
+ fe.setAttribute('srcdoc',fe.getAttribute('srcdoc'));
+};
 /* Якорь внутри раздела: открыть документ свода и свёрнутый блок, где он лежит, и долистать хаб — рамка без своей прокрутки.
    Высота рамки ещё меняется после переключения документа, поэтому доводим, пока она не устоится. */
 function frameAnchor(frame,anch){

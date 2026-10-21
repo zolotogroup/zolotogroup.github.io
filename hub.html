@@ -247,6 +247,10 @@ html.open .top .logo img{height:46px}
 html[data-bw="1"] #fr{filter:grayscale(1)}
 html.open .top::before{display:block!important;order:6;flex:0 0 100%;height:0}
 html.open .top .pagebar,html.open .top .pagebar.has{display:none!important}
+#rpweeks{display:none!important}
+html.open #rpweeks.on{display:flex!important;order:8;flex:1 0 100%;flex-wrap:wrap;align-items:flex-end;gap:0;margin:6px 0 2px;min-width:0}
+html.open #rpweeks.on button{appearance:none;background:transparent;color:inherit;border:1px solid currentColor;border-bottom:0;font:400 13px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.03em;text-transform:uppercase;padding:8px 10px;margin:0 -1px 0 0;cursor:pointer;white-space:nowrap}
+html.open #rpweeks.on button[aria-current="page"]{box-shadow:inset 0 -3px 0 currentColor}
 html.open .home{overflow:visible;flex:none;height:auto}
 html.open .fr{position:static;flex:none;height:auto;min-height:0;overflow:visible}
 html.open .fr iframe{position:static;display:block;width:100%;height:auto;min-height:0;inset:auto;overflow:hidden}
@@ -293,6 +297,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <button role="tab" data-s="org" aria-selected="false" id="b-org">Оргструктура <i>ШР</i></button>
 </div>
 <span class="note" id="swn"></span>
+<nav id="rpweeks" aria-label="Неделя"></nav>
 <div class="pagebar" id="pagebar"></div>
 <a class="testbtn" id="testbtn" href="opros.html?v=4">Тест</a>
 <button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
@@ -437,6 +442,99 @@ function hookAnchors(doc, frame){
   e.preventDefault();
   if(anch) frameAnchor(frame,anch);
  });
+}
+function rpMonday(ymd, days){
+ const [y,m,d]=ymd.split('-').map(Number);
+ const dt=new Date(Date.UTC(y,m-1,d+days));
+ return dt.toISOString().slice(0,10);
+}
+function rpWeekNo(ymd){
+ const [y,m,d]=ymd.split('-').map(Number);
+ const utc=Date.UTC(y,m-1,d);
+ const date=new Date(utc);
+ const thu=new Date(utc);
+ thu.setUTCDate(date.getUTCDate()+4-(date.getUTCDay()||7));
+ const yearStart=Date.UTC(thu.getUTCFullYear(),0,1);
+ return Math.ceil(((thu-yearStart)/86400000+1)/7);
+}
+function rpShort(ymd){ const p=ymd.split('-'); return p[2]+'.'+p[1]; }
+function rpNowMonday(){
+ const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'}).formatToParts(new Date());
+ const g=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+ const today=g.year+'-'+g.month+'-'+g.day;
+ const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(g.weekday);
+ return rpMonday(today, wd===0?-6:1-wd);
+}
+function rpWeeksFrom(start){
+ const end=rpNowMonday();
+ const out=[];
+ for(let w=start; w<=end; w=rpMonday(w,7)) out.push({w0:w, week:rpWeekNo(w), label:rpShort(w)+'–'+rpShort(rpMonday(w,4))});
+ return out;
+}
+const RP_SAVED_WEEK='2026-09-21';
+function zgRpHeadPaint(){
+ const w0=window.__zgRpWeek||RP_SAVED_WEEK;
+ document.querySelectorAll('#rpweeks [data-w0]').forEach(b=>{
+  if(b.dataset.w0===w0) b.setAttribute('aria-current','page');
+  else b.removeAttribute('aria-current');
+ });
+}
+function zgRpHead(k){
+ const nav=document.getElementById('rpweeks');
+ if(!nav) return;
+ if(k!=='rp'){ nav.classList.remove('on'); return; }
+ if(!nav.childElementCount){
+  rpWeeksFrom(RP_SAVED_WEEK).forEach(w=>{
+   const b=document.createElement('button');
+   b.type='button';
+   b.dataset.w0=w.w0;
+   b.dataset.week=String(w.week);
+   b.textContent=w.w0===RP_SAVED_WEEK ? (w.week+' неделя · 26.09') : (w.week+' неделя · '+w.label);
+   b.addEventListener('click',()=>{
+    window.__zgRpWeek=w.w0;
+    const frame=frames.rp;
+    const doc=frame&&frame.contentDocument;
+    const stack=doc&&doc.getElementById('zg-stack');
+    if(doc&&stack){ doc.__zgRpWeek=w.w0; rpWeekBar(doc, stack, stack.parentElement, 'rp'); }
+    zgRpHeadPaint();
+   });
+   nav.appendChild(b);
+  });
+ }
+ nav.classList.add('on');
+ zgRpHeadPaint();
+}
+function rpApplyWeek(doc){
+ const w0=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_WEEK;
+ const showSaved=w0===RP_SAVED_WEEK;
+ doc.querySelectorAll('[data-zg-rp-body]').forEach(el=>{ if(showSaved) el.removeAttribute('hidden'); else el.setAttribute('hidden',''); });
+ const empty=doc.getElementById('zg-rp-empty');
+ if(empty){
+  if(showSaved) empty.hidden=true;
+  else {
+   const b=document.querySelector('#rpweeks [data-w0="'+w0+'"]');
+   const n=b&&b.dataset.week?b.dataset.week:'';
+   empty.hidden=false;
+   empty.textContent='Среза '+(n?n+' недели':'этой недели')+' ещё нет. В разделе пока открыт разбор от 26.09.';
+  }
+ }
+ zgRpHeadPaint();
+}
+function rpWeekBar(doc, stack, slot, sec){
+ if(sec!=='rp'||!stack||!slot||doc.getElementById('RP')) return;
+ doc.__zgRpWeek=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_WEEK;
+ if(!doc.getElementById('zg-rp-empty')){
+  const empty=doc.createElement('p');
+  empty.id='zg-rp-empty';
+  empty.hidden=true;
+  empty.style.cssText='margin:0 0 18px;max-width:70ch';
+  stack.insertAdjacentElement('afterend', empty);
+  [...slot.children].forEach(el=>{
+   if(el.id==='zg-stack'||el.id==='zg-rp-empty'||el.tagName==='SCRIPT'||el.tagName==='STYLE'||el.hidden) return;
+   el.dataset.zgRpBody='1';
+  });
+ }
+ rpApplyWeek(doc);
 }
 function dressFrame(doc, frame){
  doc.querySelectorAll('iframe').forEach(flushEmbed);
@@ -612,6 +710,7 @@ function dressFrame(doc, frame){
  const h1=box.querySelector('h1'), lead=box.querySelector('.lead');
  if(h1.textContent!==pair[0]) h1.textContent=pair[0];
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];
+ rpWeekBar(doc, stack, slot, sec);
  let stamp=box.querySelector('.zg-stamp');
  if(sec==='pult'||sec==='fin'||sec==='week'){
   if(!stamp){ stamp=doc.createElement('p'); stamp.className='zg-stamp'; box.querySelector('.lead').insertAdjacentElement('afterend', stamp); }
@@ -1457,7 +1556,7 @@ function show(k){
  document.documentElement.dataset.mode=k==='home'?'home':(k==='pult'?'pult':(FINSEC.indexOf(k)>=0?'fin':(GRPSEC.indexOf(k)>=0?'grp':'solo')));
  Object.entries(frames).forEach(([n,f])=>{f.hidden=n!==k; if(n!==k&&f.__zgMo){try{f.__zgMo.disconnect()}catch(e){} f.__zgMo=null;}});
  if(k!=='regs') hoistSearch(null);
- if(k==='home'){const bar=document.getElementById('pagebar');if(bar){bar.classList.remove('has');bar.innerHTML='';bar.dataset.sig='';}alignHead(null);requestAnimationFrame(evenCards);}
+ if(k==='home'){const bar=document.getElementById('pagebar');if(bar){bar.classList.remove('has');bar.innerHTML='';bar.dataset.sig='';}zgRpHead('home');alignHead(null);requestAnimationFrame(evenCards);}
  if(k!=='home'){
   document.querySelectorAll('.sw button').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===k));
   if(k==='week'&&frames.week&&frames.week.dataset.role!==(window.__zgWeekRole||'')){frames.week.remove();delete frames.week;}
@@ -1476,6 +1575,7 @@ function show(k){
    f.dataset.role=k==='week'?(window.__zgWeekRole||''):'';
    f.srcdoc=html;}
   document.getElementById('swn').textContent=NOTE[k]||'';
+  zgRpHead(k);
   frames[k].dataset.sec=k;
   frames[k].removeAttribute('title');
   watchFrame(frames[k]);foldPage(frames[k]);settleFrame(frames[k]);

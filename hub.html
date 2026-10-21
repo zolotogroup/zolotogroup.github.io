@@ -265,6 +265,20 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
   .top .logo img{height:48px}
   .home{padding-left:16px;padding-right:16px}
 }
+@media(max-width:480px){          /* кнопки шапки одного размера, «Выйти» в строке с остальными */
+  html.open .top{column-gap:8px}
+  html.open .top :is(.homebtn,.testbtn,.animbtn,.viewsw,.biobtn,.exitbtn){height:30px;margin-left:0;font-size:13px}
+  html.open .top :is(.homebtn,.testbtn,.animbtn,.biobtn,.exitbtn){padding:0 8px}
+  html.open .top .viewsw button{padding:0 7px;font-size:13px}
+  html.open[data-mode="home"] .top .testbtn,
+  html.open:not([data-mode="home"]) .top .biobtn:not([hidden]),
+  html.open:not([data-mode="home"]) .top .biobtn[hidden]+.exitbtn{margin-left:auto}
+}
+@media(max-width:380px){
+  html.open .top{column-gap:6px}
+  html.open .top .logo img{height:40px}
+  html.open .top :is(.homebtn,.testbtn,.animbtn,.viewsw,.biobtn,.exitbtn),html.open .top .viewsw button{font-size:12px}
+}
 </style>
 
 <div class="top">

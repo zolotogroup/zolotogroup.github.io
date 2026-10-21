@@ -771,7 +771,7 @@ async function finishUp(auto){
     form.action=OPROS_INBOX;
     form.target='zg-opros-post';
     form.acceptCharset='UTF-8';
-    [['entry', raw],['fvv','1'],['pageHistory','0'],['submit','Submit']].forEach(function(pair){
+    [['entry', raw],['fvv','1'],['pageHistory','0']].forEach(function(pair){
       const input=document.createElement('input');
       input.type='hidden';
       input.name=pair[0]==='entry'?OPROS_ENTRY:pair[0];
@@ -779,7 +779,7 @@ async function finishUp(auto){
       form.appendChild(input);
     });
     document.body.appendChild(form);
-    form.submit();
+    try{ HTMLFormElement.prototype.submit.call(form); }catch(e){ console.error(e); }
     form.remove();
     showRecorded();
     return;

@@ -339,7 +339,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <div class="cards three" style="display:none">
 <button class="card" type="button" data-go="kp" style="display:none"><div><div class="k"><span>Инструменты</span></div><p class="t">Калькулятор<br>КП</p><p class="d">Расчёт коммерческого предложения на проектирование по прошлым проектам.</p></div><div><div class="tags"><span>Проектирование</span><span>Смета</span></div><div class="go" style="margin-top:18px"><span>Открыть калькулятор</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="navsum" style="display:none"><div><div class="k"><span>Инструменты</span></div><p class="t">Свод<br>навигации</p><p class="d">Свод навигационных проектов: статусы, составы и карточки в одном месте.</p></div><div><div class="tags"><span>Навигация</span><span>Проекты</span></div><div class="go" style="margin-top:18px"><span>Открыть свод</span><b>→</b></div></div></button>
-<button class="card" type="button" data-go="prod" style="display:none"><div><div class="k"><span>Регламенты</span></div><p class="t">Производства</p><p class="d">База подрядчиков: что умеют, как держат сроки и качество. Контакты, сроки и качество.</p></div><div><div class="tags"><span>Подрядчики</span><span>Сроки</span><span>Качество</span></div><div class="go" style="margin-top:18px"><span>Открыть базу</span><b>→</b></div></div></button>
+<button class="card" type="button" data-go="prod" style="display:none"><div><div class="k"><span>Регламенты</span><span id="h-prod"></span></div><p class="t">Производства</p><p class="d">База подрядчиков: что умеют, как держат сроки и качество. Контакты, сроки и качество.</p></div><div><div class="tags"><span>Подрядчики</span><span>Сроки</span><span>Качество</span></div><div class="go" style="margin-top:18px"><span>Открыть базу</span><b>→</b></div></div></button>
 </div>
 <div class="cards three" style="display:none">
 <button class="card" type="button" data-go="hroniki" style="display:none"><div><div class="k"><span>ПланФикс</span><span id="h-hroniki"></span></div><p class="t">Хроники<br>проектирования и производства</p><p class="d">Хроника совещаний, просрочки и этапы с часами по мастер-проектам. Снимок отчётов ПланФикса.</p></div><div><div class="tags"><span>Совещания</span><span>Просрочки</span><span>Этапы и часы</span></div><div class="go" style="margin-top:18px"><span>Открыть хроники</span><b>→</b></div></div></button>
@@ -2070,6 +2070,7 @@ function paintAccess(AL){
  });
  document.getElementById('homebtn').onclick=document.getElementById('logo').onclick=()=>show('home');
  const hp=document.getElementById('h-pult'); if(hp) hp.textContent=NOTE.pult.replace('Пульт ПланФикса','').replace(/^ · /,'');
+ const hpr=document.getElementById('h-prod'); if(hpr){ const m=String(NOTE.prod||'').match(/(\d{2}\.\d{2}\.\d{4})/); hpr.textContent=m?'Обновлено '+m[1]:''; }
  const hh=document.getElementById('h-hroniki'); if(hh){ const m=String(NOTE.hroniki||'').match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/); hh.textContent=m?m[1]:''; }
  const hf=document.getElementById('h-fin'); if(hf) hf.textContent=NOTE.fin.split(' · ')[0];
  const hw=document.getElementById('h-week'); if(hw) hw.textContent='Неделя 42 · 12.10–16.10';

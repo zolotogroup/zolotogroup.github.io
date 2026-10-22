@@ -1260,14 +1260,18 @@ function loadOprosResults(doc){
  if(!OPROS_READ||!doc) return;
  const host=doc.getElementById('sub-tests-results');
  if(!host) return;
+ /* dressFrame зовёт нас на каждой подгонке высоты, а перерисовка блока вызывает новую подгонку */
+ const now=Date.now();
+ if(doc.__zgOprosAt&&now-doc.__zgOprosAt<300000&&doc.getElementById('zg-opros-live')) return;
+ doc.__zgOprosAt=now;
  let box=doc.getElementById('zg-opros-live');
  if(!box){
   box=doc.createElement('section');
   box.id='zg-opros-live';
   const wrap=host.querySelector('.wrap')||host;
   wrap.insertBefore(box, wrap.firstChild);
+  box.innerHTML='<h2>Новые прохождения</h2><p class="mini">Загружаются…</p>';
  }
- box.innerHTML='<h2>Новые прохождения</h2><p class="mini">Загружаются…</p>';
  const esc=function(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
  window.google=window.google||{};
  window.google.visualization=window.google.visualization||{};
@@ -1284,17 +1288,20 @@ function loadOprosResults(doc){
    if(!data||data.v!==1||!data.name||data.name==='Проверка связи') return;
    items.push({t:oprosWhen(cells[0]),name:data.name,pos:data.pos||'',group:data.group||'',answered:data.answered||0,total:data.total||0,answers:data.answers||[]});
   });
-  if(!items.length){ live.innerHTML='<h2>Новые прохождения</h2><p class="mini">Пока никто не завершил опрос на сайте.</p>'; return; }
-  live.innerHTML='<h2>Новые прохождения</h2>'+items.slice().reverse().map(function(r){
+  const html=!items.length?'<h2>Новые прохождения</h2><p class="mini">Пока никто не завершил опрос на сайте.</p>':'<h2>Новые прохождения</h2>'+items.slice().reverse().map(function(r){
    const ans=(r.answers||[]).map(function(a,i){
     const n=(a.i!=null?a.i:i)+1;
     return '<p style="margin:8px 0"><b>'+n+'.</b> '+esc(a.q||('Вопрос '+n))+'<br>'+esc(a.a||'—')+'</p>';
    }).join('');
    return '<details style="margin:0 0 12px;padding:10px 0;border-bottom:1px solid #1d1d1b"><summary><b>'+esc(r.name)+'</b> · '+esc(r.group)+' · '+esc(r.pos)+' · '+esc(r.t)+' · '+r.answered+' из '+r.total+'</summary>'+ans+'</details>';
   }).join('');
+  if(live.__zgHtml===html) return;
+  live.__zgHtml=html;
+  live.innerHTML=html;
  };
  const s=document.createElement('script');
  s.src=OPROS_READ+'&_='+Date.now();
+ s.onload=s.onerror=function(){ s.remove(); };
  document.head.appendChild(s);
 }
 function zgRgb(c){
@@ -1542,7 +1549,8 @@ function fitFrame(frame){
  const doc=frame&&frame.contentDocument;
  if(!frame||frame.hidden||!doc||!doc.body||!doc.defaultView||frame.__zgBusy) return;
  frame.__zgBusy=1;
- try{ fitFrameIn(frame,doc); }finally{ frame.__zgBusy=0; }
+ /* наблюдатель срабатывает после подгонки, когда __zgBusy уже снят: свои правки выкидываем сразу, иначе подгонка будит сама себя по кругу */
+ try{ fitFrameIn(frame,doc); }finally{ frame.__zgBusy=0; if(frame.__zgMo) frame.__zgMo.takeRecords(); }
 }
 function fitFrameIn(frame,doc){
  frame.__zgMuteUntil=(typeof performance!=='undefined'?performance.now():Date.now())+120;
@@ -1666,7 +1674,7 @@ function watchFrame(frame){
   hookAnchors(doc, frame);
   try{ fillHronFrame(doc); }catch(e){}
   if(frame.__zgMo){ try{frame.__zgMo.disconnect()}catch(e){} }
-  frame.__zgMo=new MutationObserver(recs=>{ if(frame.hidden||frame.__zgBusy) return; recs=recs.filter(r=>{ const el=r.target&&(r.target.nodeType===1?r.target:r.target.parentElement); if(el&&el.closest&&el.closest('#tip,.tip,#z-tip,[role="tooltip"]')) return false; return !(r.type==='attributes'&&r.attributeName==='class'&&r.oldValue===(typeof r.target.className==='string'?r.target.className:'')); }); if(!recs.length) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d&&recs.some(r=>r.type==='childList'&&r.addedNodes.length&&!(r.target&&(r.target.id==='zg-tight'||r.target.id==='zg-fold')))) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; try{ syncSectionStamp(frame.contentDocument, frame); }catch(e){} foldPage(frame);settleFrame(frame); },wait); });
+  frame.__zgMo=new MutationObserver(recs=>{ if(frame.hidden||frame.__zgBusy) return; recs=recs.filter(r=>{ const el=r.target&&(r.target.nodeType===1?r.target:r.target.parentElement); if(el&&el.closest&&el.closest('#tip,.tip,#z-tip,[role="tooltip"]')) return false; if(r.type==='childList'&&[...r.addedNodes,...r.removedNodes].every(n=>n.nodeName.toLowerCase()==='svg')) return false; return !(r.type==='attributes'&&r.attributeName==='class'&&r.oldValue===(typeof r.target.className==='string'?r.target.className:'')); }); if(!recs.length) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d&&recs.some(r=>r.type==='childList'&&r.addedNodes.length&&!(r.target&&(r.target.id==='zg-tight'||r.target.id==='zg-fold')))) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; try{ syncSectionStamp(frame.contentDocument, frame); }catch(e){} foldPage(frame);settleFrame(frame); },wait); });
   frame.__zgMo.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeOldValue:true,attributeFilter:['class','hidden','open','aria-current','aria-selected']});
   /* вкладки внутри разделов переключаются и через style.display — без этого рамка держит высоту прошлой вкладки */
   if(frame.__zgRo){ try{frame.__zgRo.disconnect()}catch(e){} }

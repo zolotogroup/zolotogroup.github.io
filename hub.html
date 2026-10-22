@@ -342,7 +342,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <button class="card" type="button" data-go="prod" style="display:none"><div><div class="k"><span>Регламенты</span></div><p class="t">Производства</p><p class="d">База подрядчиков: что умеют, как держат сроки и качество. Контакты, сроки и качество.</p></div><div><div class="tags"><span>Подрядчики</span><span>Сроки</span><span>Качество</span></div><div class="go" style="margin-top:18px"><span>Открыть базу</span><b>→</b></div></div></button>
 </div>
 <div class="cards three" style="display:none">
-<button class="card" type="button" data-go="hroniki" style="display:none"><div><div class="k"><span>ПланФикс</span></div><p class="t">Хроники<br>проектирования и производства</p><p class="d">Хроника совещаний, просрочки и этапы с часами по мастер-проектам. Снимок отчётов ПланФикса.</p></div><div><div class="tags"><span>Совещания</span><span>Просрочки</span><span>Этапы и часы</span></div><div class="go" style="margin-top:18px"><span>Открыть хроники</span><b>→</b></div></div></button>
+<button class="card" type="button" data-go="hroniki" style="display:none"><div><div class="k"><span>ПланФикс</span><span id="h-hroniki"></span></div><p class="t">Хроники<br>проектирования и производства</p><p class="d">Хроника совещаний, просрочки и этапы с часами по мастер-проектам. Снимок отчётов ПланФикса.</p></div><div><div class="tags"><span>Совещания</span><span>Просрочки</span><span>Этапы и часы</span></div><div class="go" style="margin-top:18px"><span>Открыть хроники</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="subs" style="display:none"><div><div class="k"><span>Документы</span></div><p class="t">Подписки<br>и техника</p><p class="d">Действующие подписки, регулярные платежи и техника, закреплённая за сотрудниками.</p></div><div><div class="tags"><span>Подписки</span><span>Платежи</span><span>Техника</span></div><div class="go" style="margin-top:18px"><span>Открыть раздел</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="ofis" style="display:none"><div><div class="k"><span>Люди</span><span>СКУД до 16.10</span></div><p class="t">Посещаемость<br>офиса</p><p class="d">Сколько рабочих дней сотрудники провели в офисе без отпусков, удалёнки и выездов, время в здании и выходы в течение дня. По СКУД, календарям и кадрам за год.</p></div><div><div class="tags"><span>% в офисе</span><span>Отделы</span><span>Календарь</span></div><div class="go" style="margin-top:18px"><span>Открыть разбор</span><b>→</b></div></div></button>
 </div>
@@ -927,9 +927,13 @@ function dressFrame(doc, frame){
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];
  rpWeekBar(doc, stack, slot, sec);
  let stamp=box.querySelector('.zg-stamp');
- if(sec==='pult'||sec==='fin'||sec==='week'){
+ if(sec==='pult'||sec==='fin'||sec==='week'||sec==='hroniki'){
   if(!stamp){ stamp=doc.createElement('p'); stamp.className='zg-stamp'; box.querySelector('.lead').insertAdjacentElement('afterend', stamp); }
-  const stampText=NOTE[sec]||'';
+  let stampText=NOTE[sec]||'';
+  if(sec==='hroniki'){
+   const m=stampText.match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/);
+   stampText=m?('обновлено '+m[1]):stampText;
+  }
   if(stamp.textContent!==stampText) stamp.textContent=stampText;
  }else if(stamp) stamp.remove();
  let corner=box.querySelector('.zg-corner');
@@ -1990,6 +1994,7 @@ function paintAccess(AL){
  });
  document.getElementById('homebtn').onclick=document.getElementById('logo').onclick=()=>show('home');
  const hp=document.getElementById('h-pult'); if(hp) hp.textContent=NOTE.pult.replace('Пульт ПланФикса','').replace(/^ · /,'');
+ const hh=document.getElementById('h-hroniki'); if(hh){ const m=String(NOTE.hroniki||'').match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/); hh.textContent=m?m[1]:''; }
  const hf=document.getElementById('h-fin'); if(hf) hf.textContent=NOTE.fin.split(' · ')[0];
  const hw=document.getElementById('h-week'); if(hw) hw.textContent='Неделя 42 · 12.10–16.10';
  paintLead();

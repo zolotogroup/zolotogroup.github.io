@@ -297,7 +297,7 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 <button role="tab" data-s="org" aria-selected="false" id="b-org">Оргструктура <i>ШР</i></button>
 </div>
 <span class="note" id="swn"></span>
-<nav id="rpweeks" aria-label="Неделя"></nav>
+<nav id="rpweeks" aria-label="Месяц"></nav>
 <div class="pagebar" id="pagebar"></div>
 <a class="testbtn" id="testbtn" href="opros.html?v=4">Тест</a>
 <button class="animbtn" id="animbtn" type="button" aria-pressed="false">Анимация</button>
@@ -443,39 +443,23 @@ function hookAnchors(doc, frame){
   if(anch) frameAnchor(frame,anch);
  });
 }
-function rpMonday(ymd, days){
- const [y,m,d]=ymd.split('-').map(Number);
- const dt=new Date(Date.UTC(y,m-1,d+days));
- return dt.toISOString().slice(0,10);
+const RP_MONTHS=[
+ {id:'2026-09', label:'Сентябрь 2026'},
+ {id:'2026-10', label:'Октябрь 2026'}
+];
+const RP_SAVED_MONTH='2026-09';
+const RP_SEP_LEAD='Семь руководителей: ставка, активные мастер-проекты и портфель в деньгах относительно ФОТ.';
+const RP_OCT_LEAD='Активные сотрудники: оклад октября, активные мастер-проекты и портфель по сумме договора.';
+const RP_OCT_NOTE='Мастер-проекты и деньги по РП · октябрь 2026';
+// Октябрь лежит в оболочке: тело раздела запечатано, ключа портала здесь нет.
+const RP_OCT_ROWS=[{"name":"Головкина Полина","role":"Директор проектного департамента","fot":350,"star":false,"active":[{"id":781,"name":"278. ЖК Primavera Bellini","status":"В процессе","sum":1470000},{"id":27638,"name":"295. ВДНХ ЭКСПО","status":"В процессе","sum":25660000},{"id":23481,"name":"308. МФК Оне","status":"В процессе","sum":9450000},{"id":28084,"name":"319. ВДНХ ЭКСПО Производство","status":"В процессе","sum":258350512},{"id":42490,"name":"330. Объект на Вернадского","status":"Предпроект","sum":null}],"signing":[],"other":7},{"name":"Соколова Алина","role":"Заместитель генерального директора","fot":250,"star":false,"active":[{"id":27669,"name":"291. ФИЦ Сколково","status":"В процессе","sum":36461420}],"signing":[{"id":1689,"name":"273. АНО РГТ (офис) Производство","status":"Подписание актов","sum":2681205}],"other":3},{"name":"Московчук Алёна","role":"Старший менеджер проектов","fot":220,"star":false,"active":[{"id":747,"name":"260. TOP TOWER (iCity2)","status":"В процессе","sum":10840000},{"id":791,"name":"282. MR Дом Соболева (Машкова, 18)","status":"В процессе","sum":1890000},{"id":799,"name":"286. ЕУСПБ (Европейский университет)","status":"В процессе","sum":3675000},{"id":26540,"name":"318. ОЗОН","status":"В процессе","sum":13100000}],"signing":[{"id":1775,"name":"237. Коворкинг Столешники Производство. С2","status":"Подписание актов","sum":8105838}],"other":8},{"name":"Лебедев Даниил","role":"Старший менеджер проектов","fot":210,"star":false,"active":[{"id":1442,"name":"194. Олимпийский","status":"В процессе","sum":15027500},{"id":21784,"name":"294. С2. Аэропорт Махачкала. Бренд","status":"В процессе","sum":6510000},{"id":27635,"name":"296. Киностудия им. Горького Производство","status":"В процессе","sum":null},{"id":30966,"name":"324. Кинозавод Москино","status":"В процессе","sum":null},{"id":32513,"name":"325. Кинозавод Москино Производство","status":"В процессе","sum":null},{"id":38442,"name":"329. Винодельни","status":"В процессе","sum":1260000},{"id":46713,"name":"333. C1. Ленэкспо. Проектирование","status":"В процессе","sum":5000000}],"signing":[{"id":16920,"name":"279. С2. Центр видеоигр в Сколково Производство","status":"Подписание актов","sum":24098890},{"id":29558,"name":"322. Аэропорт Махачкала. Зона прилета. Производство","status":"Подписание актов","sum":3679636}],"other":8},{"name":"Артемьева Елизавета","role":"Старший менеджер проектов","fot":185,"star":false,"active":[{"id":40008,"name":"243. Третьяковская галерея_Кадашевская набережная","status":"В процессе","sum":null},{"id":14606,"name":"300. Точка будущего.Якутск","status":"В процессе","sum":2525000},{"id":22931,"name":"306. Районные суды Производство","status":"В процессе","sum":3827671},{"id":26537,"name":"317. Школа 21 Махачкала","status":"Предпроект","sum":null},{"id":28116,"name":"320. ФИЦ Навигация Производство","status":"В процессе","sum":51827674},{"id":28119,"name":"321. Точка будущего.Якутск Производство","status":"В процессе","sum":24768499},{"id":37542,"name":"328. Лужники_производство","status":"В процессе","sum":null},{"id":42494,"name":"331. МККЗ Башня","status":"Предпроект","sum":null}],"signing":[{"id":10735,"name":"189. С2. Береговой 2 (Главстрой) Этап 2.1. Производство","status":"Подписание актов","sum":9770109}],"other":5},{"name":"Попов Сергей","role":"Технический менеджер","fot":185,"star":false,"active":[{"id":27931,"name":"W.220.БОТАНИКА производство","status":"В процессе","sum":479433}],"signing":[],"other":0},{"name":"Остапчук Ксения","role":"Старший менеджер проектов","fot":173,"star":false,"active":[{"id":10727,"name":"275. Поликлиники: 6 очередь Производство","status":"В процессе","sum":231220340},{"id":10636,"name":"288. РЦИ","status":"В процессе","sum":null},{"id":30269,"name":"290. Больница Буянова","status":"В процессе","sum":32528616},{"id":1521,"name":"292. ОДОТСЗН_Проектирование","status":"В процессе","sum":24875816},{"id":25372,"name":"312. МГСУ Блок Б Производство","status":"В процессе","sum":21120297},{"id":25621,"name":"314. РЦИ Производство","status":"В процессе","sum":null}],"signing":[{"id":25869,"name":"256. Паллиатив Двинцев Производство","status":"Подписание актов","sum":6785448},{"id":13472,"name":"274. ЦЖЗ Щербинка. Р2 Производство","status":"Подписание актов","sum":4482220},{"id":24407,"name":"310. Центр ментального здоровья (Трубная)","status":"Подписание актов","sum":null},{"id":1696,"name":"316. ОДОТСЗН Офис: Скорняжный Производство","status":"Подписание актов","sum":null}],"other":8},{"name":"Федченко Егор","role":"Ведущий менеджер проектов","fot":140,"star":true,"active":[{"id":25699,"name":"301. СД производство 2026","status":"В процессе","sum":null},{"id":23360,"name":"307. СД проектирование 2026","status":"В процессе","sum":27848000}],"signing":[],"other":0},{"name":"Чегаровская Дарья","role":"Старший менеджер проектов","fot":null,"star":false,"active":[{"id":26199,"name":"298. Колледжи","status":"В процессе","sum":44387154}],"signing":[],"other":0},{"name":"РП не указан","role":"","fot":null,"star":false,"active":[{"id":36365,"name":"281. Лыжные трассы и катки","status":"В процессе","sum":null},{"id":41085,"name":"299. Морозовская больница","status":"В процессе","sum":41737488},{"id":36136,"name":"327. ЦСКА","status":"Предпроект","sum":null},{"id":48120,"name":"329. АСТ Подстанция скорой помощи","status":"Предпроект","sum":null},{"id":45561,"name":"332. РГТ Полиграфия","status":"Предпроект","sum":null}],"signing":[],"other":5}];
+function rpMonthNote(id){
+ return id==='2026-10' ? RP_OCT_NOTE : NOTE.rp;
 }
-function rpWeekNo(ymd){
- const [y,m,d]=ymd.split('-').map(Number);
- const utc=Date.UTC(y,m-1,d);
- const date=new Date(utc);
- const thu=new Date(utc);
- thu.setUTCDate(date.getUTCDate()+4-(date.getUTCDay()||7));
- const yearStart=Date.UTC(thu.getUTCFullYear(),0,1);
- return Math.ceil(((thu-yearStart)/86400000+1)/7);
-}
-function rpShort(ymd){ const p=ymd.split('-'); return p[2]+'.'+p[1]; }
-function rpNowMonday(){
- const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'}).formatToParts(new Date());
- const g=Object.fromEntries(parts.map(x=>[x.type,x.value]));
- const today=g.year+'-'+g.month+'-'+g.day;
- const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(g.weekday);
- return rpMonday(today, wd===0?-6:1-wd);
-}
-function rpWeeksFrom(start){
- const end=rpNowMonday();
- const out=[];
- for(let w=start; w<=end; w=rpMonday(w,7)) out.push({w0:w, week:rpWeekNo(w), label:rpShort(w)+'–'+rpShort(rpMonday(w,4))});
- return out;
-}
-const RP_SAVED_WEEK='2026-09-21';
 function zgRpHeadPaint(){
- const w0=window.__zgRpWeek||RP_SAVED_WEEK;
+ const id=window.__zgRpWeek||RP_SAVED_MONTH;
  document.querySelectorAll('#rpweeks [data-w0]').forEach(b=>{
-  if(b.dataset.w0===w0) b.setAttribute('aria-current','page');
+  if(b.dataset.w0===id) b.setAttribute('aria-current','page');
   else b.removeAttribute('aria-current');
  });
 }
@@ -484,18 +468,19 @@ function zgRpHead(k){
  if(!nav) return;
  if(k!=='rp'){ nav.classList.remove('on'); return; }
  if(!nav.childElementCount){
-  rpWeeksFrom(RP_SAVED_WEEK).forEach(w=>{
+  RP_MONTHS.forEach(m=>{
    const b=document.createElement('button');
    b.type='button';
-   b.dataset.w0=w.w0;
-   b.dataset.week=String(w.week);
-   b.textContent=w.w0===RP_SAVED_WEEK ? (w.week+' неделя · 26.09') : (w.week+' неделя · '+w.label);
+   b.dataset.w0=m.id;
+   b.textContent=m.label;
    b.addEventListener('click',()=>{
-    window.__zgRpWeek=w.w0;
+    window.__zgRpWeek=m.id;
+    const note=document.getElementById('swn');
+    if(note) note.textContent=rpMonthNote(m.id);
     const frame=frames.rp;
     const doc=frame&&frame.contentDocument;
     const stack=doc&&doc.getElementById('zg-stack');
-    if(doc&&stack){ doc.__zgRpWeek=w.w0; rpWeekBar(doc, stack, stack.parentElement, 'rp'); }
+    if(doc&&stack){ doc.__zgRpWeek=m.id; rpWeekBar(doc, stack, stack.parentElement, 'rp'); }
     zgRpHeadPaint();
    });
    nav.appendChild(b);
@@ -503,34 +488,251 @@ function zgRpHead(k){
  }
  nav.classList.add('on');
  zgRpHeadPaint();
+ if(frames.rp && !frames.rp.hidden){
+  const note=document.getElementById('swn');
+  if(note) note.textContent=rpMonthNote(window.__zgRpWeek||RP_SAVED_MONTH);
+ }
+}
+function rpSetHidden(el, hide){
+ if(!el) return;
+ if(hide){ if(!el.hidden) el.hidden=true; }
+ else if(el.hidden) el.hidden=false;
+}
+function rpMask(el, hide){
+ if(!el) return;
+ if(hide){
+  if(!el.hasAttribute('data-zg-rp-hold')) el.dataset.zgRpHold=el.hidden?'1':'0';
+  el.style.setProperty('display','none','important');
+  rpSetHidden(el, true);
+ }else if(el.hasAttribute('data-zg-rp-hold')){
+  el.style.removeProperty('display');
+  rpSetHidden(el, el.dataset.zgRpHold==='1');
+  el.removeAttribute('data-zg-rp-hold');
+ }
+}
+function rpFmt(n, digits){
+ if(!Number.isFinite(n)) return '—';
+ return n.toFixed(digits).replace('.', ',');
+}
+function rpRub(n){
+ if(n==null) return 'нет в срезе 17.10';
+ return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')+' ₽';
+}
+function rpSum(list){
+ return list.reduce((s,p)=>s+(p.sum||0), 0);
+}
+function rpCards(n){
+ const n10=n%10, n100=n%100;
+ if(n10===1 && n100!==11) return 'карточка';
+ if(n10>=2 && n10<=4 && (n100<12 || n100>14)) return 'карточки';
+ return 'карточек';
+}
+function rpBuildOctober(doc){
+ const panel=doc.createElement('div');
+ panel.id='zg-rp-oct';
+ panel.hidden=true;
+ const st=doc.createElement('style');
+ st.textContent='#zg-rp-oct{margin:0 0 28px;padding:4px 0 24px;background:#fff;color:#1d1d1b}#zg-rp-oct .wrap{overflow-x:auto}#zg-rp-oct table{border-collapse:collapse;width:100%;min-width:760px}#zg-rp-oct table.proj{min-width:0}#zg-rp-oct th{font:400 11px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;text-align:right;padding:8px 8px 10px;border-bottom:1px solid #1d1d1b;vertical-align:bottom}#zg-rp-oct th:first-child,#zg-rp-oct td:first-child{text-align:left}#zg-rp-oct td{padding:10px 8px;border-bottom:1px solid #d5d5d0;vertical-align:top;font:400 15px/1.35 "Stratos",-apple-system,sans-serif}#zg-rp-oct td.num{text-align:right;font:400 14px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;white-space:nowrap}#zg-rp-oct td.ratio{background:#e4ef6a}#zg-rp-oct .role{display:block;margin-top:2px;color:#5c5c57;font:400 12px/1.3 "Stratos",-apple-system,sans-serif}#zg-rp-oct tr.total td{border-top:1px solid #1d1d1b;border-bottom:1px solid #1d1d1b}#zg-rp-oct .who{margin:22px 0 8px;font:400 18px/1.25 "Stratos",-apple-system,sans-serif}#zg-rp-oct .subh{margin:8px 0 4px;font:400 12px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#5c5c57}#zg-rp-oct a{color:#1d1d1b}#zg-rp-oct .st{display:inline-block;margin-left:8px;font:400 11px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#5c5c57}#zg-rp-oct .rp-tabs{display:flex;flex-wrap:wrap;align-items:flex-end;margin:0 0 16px}#zg-rp-oct .rp-tabs button{appearance:none;background:transparent;color:#1d1d1b;border:1px solid #1d1d1b;border-bottom:0;font:400 13px/1.2 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;padding:10px 12px;margin:0 -1px 0 0;cursor:pointer}#zg-rp-oct .rp-tabs button[aria-selected="true"]{box-shadow:inset 0 -3px 0 #1d1d1b}#zg-rp-oct .note p,#zg-rp-oct .foot{margin:10px 0 0;max-width:78ch;color:#3a3a36;font:400 14px/1.45 "Stratos",-apple-system,sans-serif}#zg-rp-oct .note p{margin:0 0 10px;color:#1d1d1b;font-size:15px}';
+ panel.appendChild(st);
+ const tabs=doc.createElement('div');
+ tabs.className='rp-tabs';
+ tabs.setAttribute('role','tablist');
+ tabs.setAttribute('aria-label','Октябрь 2026');
+ [['sum','Сводка'],['proj','Проекты по РП'],['method','Метод']].forEach(([id,label],i)=>{
+  const b=doc.createElement('button');
+  b.type='button';
+  b.dataset.pane=id;
+  b.textContent=label;
+  if(i===0) b.setAttribute('aria-selected','true');
+  tabs.appendChild(b);
+ });
+ panel.appendChild(tabs);
+ const sumPane=doc.createElement('div');
+ sumPane.dataset.paneBody='sum';
+ const projPane=doc.createElement('div');
+ projPane.dataset.paneBody='proj';
+ projPane.hidden=true;
+ const methodPane=doc.createElement('div');
+ methodPane.dataset.paneBody='method';
+ methodPane.className='note';
+ methodPane.hidden=true;
+ const rows=RP_OCT_ROWS;
+ const fotAll=rows.reduce((s,r)=>s+(r.fot||0),0);
+ const portAll=rows.reduce((s,r)=>s+rpSum(r.active),0);
+ const activeAll=rows.reduce((s,r)=>s+r.active.length,0);
+ const totalAll=rows.reduce((s,r)=>s+r.active.length+r.signing.length+r.other,0);
+ const miss=rows.reduce((s,r)=>s+r.active.filter(p=>p.sum==null).length,0);
+ const wrap=doc.createElement('div');
+ wrap.className='wrap';
+ const table=doc.createElement('table');
+ const thead=doc.createElement('thead');
+ const hr=doc.createElement('tr');
+ ['Руководитель','ФОТ тыс ₽','доля ФОТ','актив./всего','МП портфель млн ₽','доля денег','деньги/ФОТ','млн ₽ на МП'].forEach(label=>{
+  const th=doc.createElement('th');
+  th.textContent=label;
+  hr.appendChild(th);
+ });
+ thead.appendChild(hr);
+ table.appendChild(thead);
+ const tb=doc.createElement('tbody');
+ const cell=(tr, text, cls)=>{
+  const td=doc.createElement('td');
+  if(cls) td.className=cls;
+  td.textContent=text;
+  tr.appendChild(td);
+  return td;
+ };
+ rows.forEach(r=>{
+  const port=rpSum(r.active);
+  const tr=doc.createElement('tr');
+  const name=doc.createElement('td');
+  const strong=doc.createElement('b');
+  strong.textContent=r.name;
+  name.appendChild(strong);
+  if(r.role){
+   const role=doc.createElement('span');
+   role.className='role';
+   role.textContent=r.role;
+   name.appendChild(role);
+  }
+  tr.appendChild(name);
+  cell(tr, r.fot==null?'—':String(r.fot)+(r.star?'*':''), 'num');
+  cell(tr, r.fot==null?'—':rpFmt(r.fot/fotAll*100, 1)+'%', 'num');
+  cell(tr, r.active.length+'/'+(r.active.length+r.signing.length+r.other), 'num');
+  cell(tr, rpFmt(port/1e6, 1), 'num');
+  cell(tr, portAll?rpFmt(port/portAll*100, 1)+'%':'—', 'num');
+  cell(tr, r.fot?rpFmt((port/1e6)/(r.fot*0.455), 2):'—', 'num ratio');
+  cell(tr, r.active.length?rpFmt((port/1e6)/r.active.length, 1):'—', 'num');
+  tb.appendChild(tr);
+ });
+ const total=doc.createElement('tr');
+ total.className='total';
+ cell(total, 'Всего');
+ cell(total, fotAll.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'), 'num');
+ cell(total, '100%', 'num');
+ cell(total, activeAll+'/'+totalAll, 'num');
+ cell(total, rpFmt(portAll/1e6, 1), 'num');
+ cell(total, '100%', 'num');
+ cell(total, rpFmt((portAll/1e6)/(fotAll*0.455), 2), 'num ratio');
+ cell(total, rpFmt((portAll/1e6)/activeAll, 1), 'num');
+ tb.appendChild(total);
+ table.appendChild(tb);
+ wrap.appendChild(table);
+ sumPane.appendChild(wrap);
+ const foot=doc.createElement('p');
+ foot.className='foot';
+ foot.textContent='Звёздочка — в ведомости нет оклада, стоит выплата. Суммы договора нет у '+miss+' активных карточек: в портфель они не вошли.';
+ sumPane.appendChild(foot);
+ rows.forEach(r=>{
+  const h=doc.createElement('h2');
+  h.className='who';
+  h.textContent=r.role?r.name+' · '+r.role:r.name;
+  projPane.appendChild(h);
+  const addList=(title, list)=>{
+   if(!list.length) return;
+   const sh=doc.createElement('div');
+   sh.className='subh';
+   sh.textContent=title;
+   projPane.appendChild(sh);
+   const t=doc.createElement('table');
+   t.className='proj';
+   list.forEach(p=>{
+    const row=doc.createElement('tr');
+    const td=doc.createElement('td');
+    const a=doc.createElement('a');
+    a.href='https://zlt.planfix.ru/task/'+p.id;
+    a.target='_blank';
+    a.rel='noopener';
+    a.textContent=p.name;
+    td.appendChild(a);
+    if(p.status && p.status!=='В процессе'){
+     const mark=doc.createElement('span');
+     mark.className='st';
+     mark.textContent=p.status;
+     td.appendChild(mark);
+    }
+    row.appendChild(td);
+    const num=doc.createElement('td');
+    num.className='num';
+    num.textContent=rpRub(p.sum);
+    row.appendChild(num);
+    t.appendChild(row);
+   });
+   projPane.appendChild(t);
+  };
+  addList('Активные · предпроект и в процессе', r.active);
+  addList('Подписание актов · в активные не входит', r.signing);
+  if(r.other){
+   const p=doc.createElement('p');
+   p.className='foot';
+   p.textContent='Ещё '+r.other+' '+rpCards(r.other)+': выполнены, на холде, отменены или ждут поступлений. В портфель и в активные не входят.';
+   projPane.appendChild(p);
+  }
+ });
+ [
+  'Срез — третья неделя месяца, не каждая неделя. Сентябрь 2026 — это прежний разбор от 26.09, он не пересчитывался. Октябрь 2026 — третья неделя, 19–23 октября.',
+  'Кто в таблице. Активные сотрудники, у кого есть мастер-проект в предпроекте, в процессе или на подписании актов. Чегаровской в ведомости нет — ФОТ пустой. Колобахина среди активных сотрудников нет и активных проектов нет, поэтому в октябре его нет.',
+  'Активные — статусы «Предпроект» и «В процессе». «Подписание актов» показано отдельно и в число активных не входит.',
+  'ФОТ — оклад при полной ставке за октябрь 2026. Где оклада нет, стоит выплата и звёздочка: Федченко 140*. Соколова — заместитель генерального директора, в доле ФОТ её оклад 250 тыс., это не ставка руководителя проектов. Попов — технический менеджер, оклад 185 тыс.: строка есть, потому что на нём мастер-проект.',
+  'Портфель — сумма договора мастер-проекта и его договоров на 17.10. Поступившие деньги в портфель не входят. У '+miss+' активных карточек суммы в этом срезе нет: в портфель они не добавлены, в «млн ₽ на МП» знаменатель их всё равно включает.',
+  'Доля ФОТ считается от суммы окладов тех, у кого цифра есть (1\u00a0713 тыс.). Доля денег — от всего портфеля, включая людей без ФОТ.',
+  'Деньги/ФОТ — портфель в млн ₽ разделить на ФОТ в тыс. ₽ и на 0,455. Так же считался сентябрьский столбец.',
+  'Кто руководитель — по распределению на вечер 19.10. Статусы карточек — на 22.10. Пустая ячейка руководителя остаётся «РП не указан».',
+  'Часы, правки, срывы поставок и репорты этими источниками не заданы — колонок нет.'
+ ].forEach(text=>{
+  const p=doc.createElement('p');
+  p.textContent=text;
+  methodPane.appendChild(p);
+ });
+ panel.appendChild(sumPane);
+ panel.appendChild(projPane);
+ panel.appendChild(methodPane);
+ tabs.addEventListener('click', e=>{
+  const b=e.target.closest&&e.target.closest('button[data-pane]');
+  if(!b||!tabs.contains(b)) return;
+  [...tabs.children].forEach(x=>{
+   if(x===b) x.setAttribute('aria-selected','true');
+   else x.removeAttribute('aria-selected');
+  });
+  [sumPane, projPane, methodPane].forEach(p=>rpSetHidden(p, p.dataset.paneBody!==b.dataset.pane));
+ });
+ return panel;
 }
 function rpApplyWeek(doc){
- const w0=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_WEEK;
- const showSaved=w0===RP_SAVED_WEEK;
- doc.querySelectorAll('[data-zg-rp-body]').forEach(el=>{ if(showSaved) el.removeAttribute('hidden'); else el.setAttribute('hidden',''); });
- const empty=doc.getElementById('zg-rp-empty');
- if(empty){
-  if(showSaved) empty.hidden=true;
-  else {
-   const b=document.querySelector('#rpweeks [data-w0="'+w0+'"]');
-   const n=b&&b.dataset.week?b.dataset.week:'';
-   empty.hidden=false;
-   empty.textContent='Среза '+(n?n+' недели':'этой недели')+' ещё нет. В разделе пока открыт разбор от 26.09.';
+ const id=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_MONTH;
+ const september=id!=='2026-10';
+ const stack=doc.getElementById('zg-stack');
+ if(stack){
+  [...stack.children].forEach(el=>{
+   if(el.classList.contains('zg-plaque')) return;
+   el.dataset.zgRpTabs='1';
+  });
+ }
+ doc.querySelectorAll('[data-zg-rp-body]').forEach(el=>rpMask(el, !september));
+ doc.querySelectorAll('[data-zg-rp-tabs]').forEach(el=>rpMask(el, !september));
+ rpSetHidden(doc.getElementById('zg-rp-oct'), september);
+ const lead=doc.querySelector('.zg-plaque .lead');
+ if(lead){
+  const text=september?RP_SEP_LEAD:RP_OCT_LEAD;
+  if(lead.textContent!==text) lead.textContent=text;
+ }
+ if(frames.rp && !frames.rp.hidden){
+  const note=document.getElementById('swn');
+  if(note){
+   const text=rpMonthNote(september?RP_SAVED_MONTH:'2026-10');
+   if(note.textContent!==text) note.textContent=text;
   }
  }
  zgRpHeadPaint();
 }
 function rpWeekBar(doc, stack, slot, sec){
  if(sec!=='rp'||!stack||!slot||doc.getElementById('RP')) return;
- doc.__zgRpWeek=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_WEEK;
- if(!doc.getElementById('zg-rp-empty')){
-  const empty=doc.createElement('p');
-  empty.id='zg-rp-empty';
-  empty.hidden=true;
-  empty.style.cssText='margin:0 0 18px;max-width:70ch';
-  stack.insertAdjacentElement('afterend', empty);
+ doc.__zgRpWeek=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_MONTH;
+ if(!doc.getElementById('zg-rp-oct')){
+  const panel=rpBuildOctober(doc);
+  stack.insertAdjacentElement('afterend', panel);
   [...slot.children].forEach(el=>{
-   if(el.id==='zg-stack'||el.id==='zg-rp-empty'||el.tagName==='SCRIPT'||el.tagName==='STYLE'||el.hidden) return;
+   if(el.id==='zg-stack'||el.id==='zg-rp-oct'||el.tagName==='SCRIPT'||el.tagName==='STYLE'||el.hidden) return;
    el.dataset.zgRpBody='1';
   });
  }

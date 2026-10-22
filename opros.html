@@ -752,7 +752,7 @@ async function finishUp(auto){
   if(sent) return; sent=true; clearInterval(tick);
   const fin=$('#finish');
   if(fin){ fin.disabled=true; fin.textContent='Записываю…'; }
-  const box0=$('#qans'); if(box0) ans[cur]=box0.value;
+  const box0=$('#qans'); if(box0&&!$('#s-test').classList.contains('hide')) ans[cur]=box0.value;
   try{ localStorage.setItem('zg-op3-'+mode+'-'+me.id, JSON.stringify({ans:ans,cur:cur,end:tEnd,done:true,auto:!!auto})); }catch(e){}
   if(OPROS_INBOX){
     const pack={v:1,name:me.n,pos:me.pos,group:me.o,answered:done(),total:qs.length,

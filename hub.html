@@ -827,6 +827,91 @@ function rpWeekBar(doc, stack, slot, sec){
  }
  rpApplyWeek(doc);
 }
+function readJson(doc, id){
+ const el=doc.getElementById(id);
+ if(!el) return null;
+ try{ return JSON.parse(el.textContent); }catch(e){ return null; }
+}
+function hronikiWhen(doc){
+ if(!doc||!doc.documentElement) return '';
+ if(doc.documentElement.dataset.zgBuilt) return doc.documentElement.dataset.zgBuilt;
+ const tab=doc.querySelector('#tabs [role="tab"][aria-selected="true"]');
+ const view=(tab&&tab.dataset.view)||'chron';
+ if(view==='ovd'){
+  const ch=readJson(doc,'CHRON');
+  return (ch&&ch.ovd&&ch.ovd.built)||'';
+ }
+ if(view==='hours'){
+  const sub=doc.querySelector('[data-hsub][aria-pressed="true"]');
+  if(sub&&sub.dataset.hsub==='rework'){
+   const rw=readJson(doc,'RWRAW');
+   const days=[rw&&rw.s568, rw&&rw.s592].filter(Boolean).sort();
+   const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(days[days.length-1]||'');
+   return m?`${m[3]}.${m[2]}.${m[1]}`:'';
+  }
+  const data=readJson(doc,'DATA');
+  return (data&&data.meta&&data.meta.generated)||'';
+ }
+ const ch=readJson(doc,'CHRON');
+ return (ch&&ch.built)||'';
+}
+function visibleHronWhen(doc){
+ if(!doc) return '';
+ for(const f of doc.querySelectorAll('iframe.zg-hron')){
+  if(f.hidden||f.closest('[hidden]')) continue;
+  try{
+   const cs=doc.defaultView.getComputedStyle(f);
+   if(cs.display==='none'||cs.visibility==='hidden') continue;
+  }catch(e){}
+  let inner=null;
+  try{ inner=f.contentDocument; }catch(e){}
+  const when=inner&&hronikiWhen(inner);
+  if(when) return when;
+ }
+ return '';
+}
+function frameOf(doc){
+ for(const fr of document.querySelectorAll('iframe')){
+  try{ if(fr.contentDocument===doc) return fr; }catch(e){}
+ }
+ return null;
+}
+function sectionStampText(doc, sec){
+ if(sec==='hroniki'){
+  const when=hronikiWhen(doc);
+  if(when) return 'обновлено '+when;
+  const m=String(NOTE.hroniki||'').match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/);
+  return m?('обновлено '+m[1]):(NOTE.hroniki||'');
+ }
+ if(sec==='pult'){
+  const when=(doc.documentElement&&doc.documentElement.dataset.zgBuilt)||visibleHronWhen(doc);
+  if(when) return 'обновлено '+when;
+  return NOTE.pult||'';
+ }
+ return NOTE[sec]||'';
+}
+function syncSectionStamp(doc, frame){
+ if(!doc) return;
+ const sec=(frame&&frame.dataset.sec)||'';
+ if(sec!=='pult'&&sec!=='fin'&&sec!=='week'&&sec!=='hroniki') return;
+ const box=doc.querySelector('.zg-plaque');
+ if(!box) return;
+ let stamp=box.querySelector('.zg-stamp');
+ if(!stamp){
+  stamp=doc.createElement('p');
+  stamp.className='zg-stamp';
+  const lead=box.querySelector('.lead');
+  if(lead) lead.insertAdjacentElement('afterend', stamp);
+  else box.appendChild(stamp);
+ }
+ const text=sectionStampText(doc, sec);
+ if(stamp.textContent!==text) stamp.textContent=text;
+ /* дата среза уже в шапке вкладки — в строке под ней вторую не пишем */
+ if(sec==='hroniki') doc.querySelectorAll('.srcline').forEach(el=>{
+  const next=el.innerHTML.replace(/\s*—\s*(?:<b>)?\d{2}\.\d{2}\.\d{2,4}(?:<\/b>)?/,'');
+  if(next!==el.innerHTML) el.innerHTML=next;
+ });
+}
 function dressFrame(doc, frame){
  doc.querySelectorAll('iframe').forEach(flushEmbed);
  if(!doc.zgFlushHook){ doc.zgFlushHook=true; doc.addEventListener('load',e=>{ if(e.target&&e.target.tagName==='IFRAME') flushEmbed(e.target); },true); }
@@ -1003,15 +1088,8 @@ function dressFrame(doc, frame){
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];
  rpWeekBar(doc, stack, slot, sec);
  let stamp=box.querySelector('.zg-stamp');
- if(sec==='pult'||sec==='fin'||sec==='week'||sec==='hroniki'){
-  if(!stamp){ stamp=doc.createElement('p'); stamp.className='zg-stamp'; box.querySelector('.lead').insertAdjacentElement('afterend', stamp); }
-  let stampText=NOTE[sec]||'';
-  if(sec==='hroniki'){
-   const m=stampText.match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/);
-   stampText=m?('обновлено '+m[1]):stampText;
-  }
-  if(stamp.textContent!==stampText) stamp.textContent=stampText;
- }else if(stamp) stamp.remove();
+ if(sec==='pult'||sec==='fin'||sec==='week'||sec==='hroniki') syncSectionStamp(doc, frame);
+ else if(stamp) stamp.remove();
  let corner=box.querySelector('.zg-corner');
  if(!corner){ corner=doc.createElement('div'); corner.className='zg-corner'; box.appendChild(corner); }
  const parked=el=>el&&el.closest('.zg-plaque');
@@ -1543,6 +1621,13 @@ function fitFrameIn(frame,doc){
 function fillHronFrame(doc){
  if(!doc||typeof window.__zgHron!=='function') return;
  doc.querySelectorAll('iframe.zg-hron').forEach(f=>{
+  if(!f.__zgStamp){
+   f.__zgStamp=1;
+   f.addEventListener('load', ()=>{
+    const outer=frameOf(f.ownerDocument);
+    if(outer) syncSectionStamp(f.ownerDocument, outer);
+   });
+  }
   if(f.srcdoc) return;
   const src=f.getAttribute('src')||'';
   const m=src.match(/[?&]part=(chron|ovd|hours)/);
@@ -1581,7 +1666,7 @@ function watchFrame(frame){
   hookAnchors(doc, frame);
   try{ fillHronFrame(doc); }catch(e){}
   if(frame.__zgMo){ try{frame.__zgMo.disconnect()}catch(e){} }
-  frame.__zgMo=new MutationObserver(recs=>{ if(frame.hidden||frame.__zgBusy) return; recs=recs.filter(r=>{ const el=r.target&&(r.target.nodeType===1?r.target:r.target.parentElement); if(el&&el.closest&&el.closest('#tip,.tip,#z-tip,[role="tooltip"]')) return false; return !(r.type==='attributes'&&r.attributeName==='class'&&r.oldValue===(typeof r.target.className==='string'?r.target.className:'')); }); if(!recs.length) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d&&recs.some(r=>r.type==='childList'&&r.addedNodes.length&&!(r.target&&(r.target.id==='zg-tight'||r.target.id==='zg-fold')))) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; foldPage(frame);settleFrame(frame); },wait); });
+  frame.__zgMo=new MutationObserver(recs=>{ if(frame.hidden||frame.__zgBusy) return; recs=recs.filter(r=>{ const el=r.target&&(r.target.nodeType===1?r.target:r.target.parentElement); if(el&&el.closest&&el.closest('#tip,.tip,#z-tip,[role="tooltip"]')) return false; return !(r.type==='attributes'&&r.attributeName==='class'&&r.oldValue===(typeof r.target.className==='string'?r.target.className:'')); }); if(!recs.length) return; try{ fillHronFrame(frame.contentDocument); }catch(e){} const d=frame.contentDocument; if(d&&recs.some(r=>r.type==='childList'&&r.addedNodes.length&&!(r.target&&(r.target.id==='zg-tight'||r.target.id==='zg-fold')))) d.__zgInkFresh=0; const now=(typeof performance!=='undefined'?performance.now():Date.now()); const wait=Math.max(80,(frame.__zgMuteUntil||0)-now+40); clearTimeout(timer);timer=setTimeout(()=>{ if(frame.hidden) return; try{ syncSectionStamp(frame.contentDocument, frame); }catch(e){} foldPage(frame);settleFrame(frame); },wait); });
   frame.__zgMo.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeOldValue:true,attributeFilter:['class','hidden','open','aria-current','aria-selected']});
   /* вкладки внутри разделов переключаются и через style.display — без этого рамка держит высоту прошлой вкладки */
   if(frame.__zgRo){ try{frame.__zgRo.disconnect()}catch(e){} }
@@ -1591,6 +1676,7 @@ function watchFrame(frame){
    [doc.body,...doc.body.children].forEach(el=>{ if(!/^(SCRIPT|STYLE|LINK|NOSCRIPT)$/.test(el.tagName)) frame.__zgRo.observe(el); });
   }
   if(!doc.__zgFit){ doc.__zgFit=1; const refit=()=>{ clearTimeout(timer); timer=setTimeout(()=>{ if(!frame.hidden) fitFrame(frame); }, 60); }; doc.addEventListener('toggle', refit, true); doc.addEventListener('click', ev=>{ const n=ev.target&&ev.target.closest&&ev.target.closest('summary,.xopen,#weeks [data-w0]'); if(n) refit(); }, true); }
+  if(!doc.__zgStamp){ doc.__zgStamp=1; doc.addEventListener('click', ev=>{ const n=ev.target&&ev.target.closest&&ev.target.closest('[data-view],[data-hsub],[role="tab"]'); if(!n) return; setTimeout(()=>{ if(!frame.hidden) syncSectionStamp(doc, frame); }, 0); }); }
  };
  if(again){ if(!frame.hidden&&!frame.__zgMo&&frame.contentDocument&&frame.contentDocument.body) go(); return; }
  frame.addEventListener('load', go);

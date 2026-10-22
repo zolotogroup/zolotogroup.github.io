@@ -838,7 +838,7 @@ function hronikiWhen(doc){
  const view=(tab&&tab.dataset.view)||'';
  /* старая запечатанная страница ставит дату причин по более позднему сохранению часов;
     шапка читает 426592 из RWRAW сама */
- if(view==='hours'){
+  if(view==='hours'){
   const sub=doc.querySelector('[data-hsub][aria-pressed="true"]');
   if(sub&&sub.dataset.hsub==='rework'){
    const rw=readJson(doc,'RWRAW');
@@ -846,6 +846,12 @@ function hronikiWhen(doc){
    const m=/^(\d{4})-(\d{2})-(\d{2})/.exec((rw&&rw.s592)||'');
    if(m) return `${m[3]}.${m[2]}.${m[1]}`;
   }
+  /* generated остался 30.09.2026, когда куб уже продлили: дата среза — anchor */
+  const data=readJson(doc,'DATA');
+  const meta=data&&data.meta;
+  const iso=(meta&&(meta.anchor||meta.f12_to))||'';
+  const a=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if(a) return `${a[3]}.${a[2]}.${a[1]}`;
  }
  if(doc.documentElement.dataset.zgBuilt) return doc.documentElement.dataset.zgBuilt;
  if(view==='ovd'){

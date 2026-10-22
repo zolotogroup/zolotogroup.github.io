@@ -834,21 +834,25 @@ function readJson(doc, id){
 }
 function hronikiWhen(doc){
  if(!doc||!doc.documentElement) return '';
- if(doc.documentElement.dataset.zgBuilt) return doc.documentElement.dataset.zgBuilt;
  const tab=doc.querySelector('#tabs [role="tab"][aria-selected="true"]');
- const view=(tab&&tab.dataset.view)||'chron';
+ const view=(tab&&tab.dataset.view)||'';
+ /* старая запечатанная страница ставит дату причин по более позднему сохранению часов;
+    шапка читает 426592 из RWRAW сама */
+ if(view==='hours'){
+  const sub=doc.querySelector('[data-hsub][aria-pressed="true"]');
+  if(sub&&sub.dataset.hsub==='rework'){
+   const rw=readJson(doc,'RWRAW');
+   if(rw&&rw.t592) return rw.t592;
+   const m=/^(\d{4})-(\d{2})-(\d{2})/.exec((rw&&rw.s592)||'');
+   if(m) return `${m[3]}.${m[2]}.${m[1]}`;
+  }
+ }
+ if(doc.documentElement.dataset.zgBuilt) return doc.documentElement.dataset.zgBuilt;
  if(view==='ovd'){
   const ch=readJson(doc,'CHRON');
   return (ch&&ch.ovd&&ch.ovd.built)||'';
  }
  if(view==='hours'){
-  const sub=doc.querySelector('[data-hsub][aria-pressed="true"]');
-  if(sub&&sub.dataset.hsub==='rework'){
-   const rw=readJson(doc,'RWRAW');
-   const days=[rw&&rw.s568, rw&&rw.s592].filter(Boolean).sort();
-   const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(days[days.length-1]||'');
-   return m?`${m[3]}.${m[2]}.${m[1]}`:'';
-  }
   const data=readJson(doc,'DATA');
   return (data&&data.meta&&data.meta.generated)||'';
  }

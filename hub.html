@@ -538,7 +538,7 @@ function rpBuildBoard(doc, panelId, rows, monthLabel){
  panel.className='zg-rp-board';
  panel.hidden=true;
  const st=doc.createElement('style');
- st.textContent='.zg-rp-board{margin:0 0 28px;padding:4px 0 24px;background:#fff;color:#1d1d1b}.zg-rp-board .wrap{overflow-x:auto}.zg-rp-board table{border-collapse:collapse;width:100%;min-width:760px}.zg-rp-board table.proj{min-width:0;width:100%}.zg-rp-board th{font:400 11px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;text-align:right;padding:8px 8px 10px;border-bottom:1px solid #1d1d1b;vertical-align:bottom}.zg-rp-board th:first-child,.zg-rp-board td:first-child{text-align:left}.zg-rp-board td{padding:10px 8px;border-bottom:1px solid #d5d5d0;vertical-align:top;font:400 15px/1.35 "Stratos",-apple-system,sans-serif}.zg-rp-board td.num{text-align:right;font:400 14px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;white-space:nowrap}.zg-rp-board td.ratio{background:#e4ef6a}.zg-rp-board .role{display:block;margin-top:2px;color:#5c5c57;font:400 12px/1.3 "Stratos",-apple-system,sans-serif}.zg-rp-board tr.total td{border-top:1px solid #1d1d1b;border-bottom:1px solid #1d1d1b}.zg-rp-board tr.person{cursor:pointer}.zg-rp-board button.who{appearance:none;background:transparent;border:0;padding:0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}.zg-rp-board .twist{display:inline-block;width:1.1em;font:400 12px/1 ui-monospace,Menlo,monospace}.zg-rp-board tr.detail td{background:#f6f6f3;padding:8px 12px 14px 28px}.zg-rp-board tr.detail td.num{background:transparent}.zg-rp-board .subh{margin:8px 0 4px;font:400 12px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#5c5c57}.zg-rp-board a{color:#1d1d1b}.zg-rp-board .st{display:inline-block;margin-left:8px;font:400 11px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#5c5c57}.zg-rp-board .rp-tabs{display:flex;flex-wrap:wrap;align-items:flex-end;margin:0 0 16px}.zg-rp-board .rp-tabs button{appearance:none;background:transparent;color:#1d1d1b;border:1px solid #1d1d1b;border-bottom:0;font:400 13px/1.2 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;padding:10px 12px;margin:0 -1px 0 0;cursor:pointer}.zg-rp-board .rp-tabs button[aria-selected="true"]{box-shadow:inset 0 -3px 0 #1d1d1b}.zg-rp-board .note p,.zg-rp-board .foot{margin:10px 0 0;max-width:78ch;color:#3a3a36;font:400 14px/1.45 "Stratos",-apple-system,sans-serif}.zg-rp-board .note p{margin:0 0 10px;color:#1d1d1b;font-size:15px}';
+ st.textContent='.zg-rp-board{margin:0 0 28px;padding:4px 0 24px;background:#fff;color:#1d1d1b}.zg-rp-board .wrap{overflow-x:auto}.zg-rp-board table{border-collapse:collapse;width:100%;min-width:760px}.zg-rp-board table.proj{min-width:0;width:100%}.zg-rp-board th{font:400 11px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;text-align:right;padding:8px 8px 10px;border-bottom:1px solid #1d1d1b;vertical-align:bottom}.zg-rp-board th:first-child,.zg-rp-board td:first-child{text-align:left}.zg-rp-board td{padding:10px 8px;border-bottom:1px solid #d5d5d0;vertical-align:top;font:400 15px/1.35 "Stratos",-apple-system,sans-serif}.zg-rp-board td.num{text-align:right;font:400 14px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;white-space:nowrap}.zg-rp-board td.ratio{background:#e4ef6a}.zg-rp-board .role{display:block;margin-top:2px;color:#5c5c57;font:400 12px/1.3 "Stratos",-apple-system,sans-serif}.zg-rp-board tr.total td{border-top:1px solid #1d1d1b;border-bottom:1px solid #1d1d1b}.zg-rp-board tr.person{cursor:pointer}.zg-rp-board button.who{appearance:none;background:transparent;border:0;padding:0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}.zg-rp-board .twist{display:inline-block;width:1.1em;font:400 12px/1 ui-monospace,Menlo,monospace}.zg-rp-board tr.detail td{background:#f6f6f3;padding:8px 12px 14px 28px}.zg-rp-board tr.detail td.num{background:transparent}.zg-rp-board .subh{margin:8px 0 4px;font:400 12px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#5c5c57}.zg-rp-board a{color:#1d1d1b}.zg-rp-board .st{display:inline-block;margin-left:8px;font:400 11px/1 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#5c5c57}.zg-rp-board .rp-tabs{display:flex;flex-wrap:wrap;align-items:flex-end;margin:0 0 16px}.zg-rp-board .rp-tabs button{appearance:none;background:transparent;color:#1d1d1b;border:1px solid #1d1d1b;border-bottom:0;font:400 13px/1.2 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;padding:10px 12px;margin:0 -1px 0 0;cursor:pointer}.zg-rp-board .rp-tabs button[aria-selected="true"]{box-shadow:inset 0 -3px 0 #1d1d1b}.zg-rp-board .note p,.zg-rp-board .foot{margin:10px 0 0;max-width:78ch;color:#3a3a36;font:400 14px/1.45 "Stratos",-apple-system,sans-serif}.zg-rp-board .note p{margin:0 0 10px;color:#1d1d1b;font-size:15px}.zg-rp-board th button.sort{appearance:none;background:transparent;border:0;padding:0;margin:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;display:block;width:100%;text-align:inherit}.zg-rp-board th .ar{display:inline-block;margin-left:.3em;font-size:10px}.zg-rp-board th .ar.dim{opacity:.35}';
  panel.appendChild(st);
  const tabs=doc.createElement('div');
  tabs.className='rp-tabs';
@@ -568,10 +568,29 @@ function rpBuildBoard(doc, panelId, rows, monthLabel){
  const table=doc.createElement('table');
  const thead=doc.createElement('thead');
  const hr=doc.createElement('tr');
- ['Руководитель','ЗП (NET), ₽','доля ЗП','актив./всего','МП портфель млн ₽','доля денег','деньги/ЗП','млн ₽ на МП'].forEach(label=>{
+ const sortHeads=[];
+ let sortCol=1, sortDir='desc';
+ ['Руководитель','ЗП (NET), ₽','доля ЗП','актив./всего','МП портфель млн ₽','доля денег','деньги/ЗП','млн ₽ на МП'].forEach((label,i)=>{
   const th=doc.createElement('th');
-  th.textContent=label;
+  const b=doc.createElement('button');
+  b.type='button';
+  b.className='sort';
+  b.title='Сортировать';
+  const tx=doc.createElement('span');
+  tx.textContent=label;
+  const ar=doc.createElement('span');
+  ar.className='ar dim';
+  ar.textContent='\u21c5';
+  b.appendChild(tx);
+  b.appendChild(ar);
+  b.addEventListener('click', ()=>{
+   if(sortCol===i) sortDir=sortDir==='asc'?'desc':'asc';
+   else { sortCol=i; sortDir=i===0?'asc':'desc'; }
+   rpApplySort();
+  });
+  th.appendChild(b);
   hr.appendChild(th);
+  sortHeads.push({th, ar});
  });
  thead.appendChild(hr);
  table.appendChild(thead);
@@ -617,6 +636,7 @@ function rpBuildBoard(doc, panelId, rows, monthLabel){
   });
   host.appendChild(t);
  };
+ const sortEntries=[];
  rows.forEach(r=>{
   const port=rpSum(r.active);
   const all=r.active.length+r.signing.length+r.other.length;
@@ -666,6 +686,20 @@ function rpBuildBoard(doc, panelId, rows, monthLabel){
    tr.setAttribute('aria-expanded', open?'true':'false');
    twist.textContent=open?'\u25be':'\u25b8';
   });
+  const activeN=r.active.length;
+  sortEntries.push({
+   tr, detail, name:r.name,
+   v:[
+    r.name,
+    r.fot,
+    r.fot,
+    [activeN, all],
+    port,
+    port,
+    r.fot?(port/1e6)/((r.fot/1000)*0.455):null,
+    activeN?(port/1e6)/activeN:null
+   ]
+  });
   tb.appendChild(tr);
   tb.appendChild(detail);
  });
@@ -680,6 +714,40 @@ function rpBuildBoard(doc, panelId, rows, monthLabel){
  cell(total, fotAll?rpFmt((portAll/1e6)/((fotAll/1000)*0.455), 2):'\u2014', 'num ratio');
  cell(total, activeAll?rpFmt((portAll/1e6)/activeAll, 1):'\u2014', 'num');
  tb.appendChild(total);
+ function rpCmp(a, b){
+  if(Array.isArray(a)) return a[0]-b[0] || a[1]-b[1];
+  if(typeof a==='string') return a.localeCompare(b, 'ru');
+  return a-b;
+ }
+ function rpApplySort(){
+  const col=sortCol, dir=sortDir;
+  sortEntries.slice().sort((a, b)=>{
+   const av=a.v[col], bv=b.v[col];
+   const an=av==null, bn=bv==null;
+   if(an||bn){
+    if(an&&bn) return a.name.localeCompare(b.name, 'ru');
+    return an?1:-1;
+   }
+   let d=rpCmp(av, bv);
+   if(!d) return a.name.localeCompare(b.name, 'ru');
+   return dir==='asc'?d:-d;
+  }).forEach(e=>{
+   tb.insertBefore(e.tr, total);
+   tb.insertBefore(e.detail, total);
+  });
+  sortHeads.forEach((h, i)=>{
+   if(i===col){
+    h.th.setAttribute('aria-sort', dir==='asc'?'ascending':'descending');
+    h.ar.className='ar';
+    h.ar.textContent=dir==='asc'?'\u25b2':'\u25bc';
+   }else{
+    h.th.removeAttribute('aria-sort');
+    h.ar.className='ar dim';
+    h.ar.textContent='\u21c5';
+   }
+  });
+ }
+ rpApplySort();
  table.appendChild(tb);
  wrap.appendChild(table);
  sumPane.appendChild(wrap);

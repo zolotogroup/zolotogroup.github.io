@@ -20,6 +20,7 @@ button:disabled,[disabled],[aria-disabled="true"]{cursor:default}
 .sw button[aria-selected="true"]{background:var(--accent)}
 .sw button:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
 .note{margin-left:auto;font:400 12px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--on)}
+html.open .top .note.zg-prov{text-transform:none;letter-spacing:.02em;white-space:normal;text-align:right;max-width:min(720px,48vw);line-height:1.35}
 .fr{flex:1 1 auto;position:relative;min-height:0}
 .fr iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--ground)}
 @media(max-width:760px){.note{display:none}}
@@ -934,6 +935,151 @@ function readJson(doc, id){
  if(!el) return null;
  try{ return JSON.parse(el.textContent); }catch(e){ return null; }
 }
+function zgPlain(el){
+ if(!el) return '';
+ const c=el.cloneNode(true);
+ c.querySelectorAll('.zg-tabdate').forEach(n=>n.remove());
+ return (c.textContent||'').replace(/\s+/g,' ').trim();
+}
+const ZGPROV={"Недельная рассылка":{"Недельная рассылка":["Планфакт и отчёты Планфикса субботнего пересохранения, сборка week.bin без отправки писем","сб 24.10, 23:00","17.10.2026"],"Архив недель":["тот же week.bin, переключатель недель","сб 24.10, 23:00","17.10.2026"],"Заполнение часов по отделам":["отчёт 426568 «1.4. на какой тег потрачены часы на проекте»; вторник пересчитывает часы недель, которые уже лежат в week.bin","вт 27.10, 20:00","17.10.2026"]},"Пульт ПланФикса":{"Пульт ПланФикса":["подпись хаба «просрочки и часы»; по расписанию в pult.bin пишутся только просрочки","сб 24.10, 23:00","22.10.2026"],"Сводка":["нет источника","вручную","нет даты"],"BD воронка":["xlsx и отчёт 426440 «BD»","вручную","нет даты"],"Люди":["отчёт 426554 (1.2); в субботнем пересохранении этого номера нет","вручную","нет даты"],"Этапы и правки":["отчёт 426568 «1.4. на какой тег потрачены часы на проекте», объект DATA","вручную","нет даты"],"Куда уходят часы":["отчёт 426568 «1.4. на какой тег потрачены часы на проекте», объект H426","вручную","нет даты"],"Производство":["отчёты 426448, 426570 «Оплаты», 426548","вручную","нет даты"],"Просрочки":["426582 «3. ZG: Просроченные этапы или Мастер-Проекты»; 426580 «1.1. ZG: Список просроченных задач по документам компании»; 426586 «1.2. ZG: Список просроченных задач сотрудников»; 426590 «1.3. ZG: Список задач сотрудников за месяц»","сб 24.10, 23:00","22.10.2026"],"Дебиторка":["отчёт 426450 «Счета и суды»","вручную","нет даты"],"Расходы":["отчёт 426548","вручную","нет даты"],"Контракты":["отчёт 426408 «Новые контракты»","вручную","нет даты"],"Хроники":["свой блок CHRON внутри pult.bin","вручную","нет даты"],"Монтаж":["отчёт 426406 «Монтаж»","вручную","нет даты"],"Документы":["отчёты 426454 «Документы» и 426588 «Делопроизводство»","вручную","нет даты"],"Верификация":["отчёты 426436 «Подрядчики не верифицированы» и 426522 «Подрядчики не верифицированы, второй»","вручную","нет даты"]},"Финансы":{"Финансы":["Планфакт, операции 2026, объект F в fin.bin","сб 24.10, 23:00","23.09.2026"],"Сводка":["Планфакт, операции 2026","сб 24.10, 23:00","23.09.2026"],"Поступления":["Планфакт, операции 2026","сб 24.10, 23:00","23.09.2026"],"Выплаты":["Планфакт, операции 2026","сб 24.10, 23:00","23.09.2026"],"Юрлица":["Планфакт, операции 2026","сб 24.10, 23:00","23.09.2026"],"До конца года":["Планфакт, операции 2026","сб 24.10, 23:00","23.09.2026"],"Как считалось":["Планфакт, операции 2026","сб 24.10, 23:00","23.09.2026"]},"ФОТ":{"ФОТ":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Департаменты":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Структура":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Динамика":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"План против бюджета":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Премии":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Рост зарплаты":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Давно без повышения":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Фактология":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"],"Атрибуция":["ведомость ЗП.xlsx, листы «2026» и «ШР 2 полугодие», таблица «Отделы/премии»","вручную","нет даты"]},"Касса":{"Касса":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Сводка":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Детализация":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"По компаниям":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Динамика":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Статьи":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Цена наличных":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Прозрачность":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"До конца года":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"],"Словарь":["операции Планфакта по кассе; отчёт «Бюджет 2026» от 13.05.2026","вручную","нет даты"]},"Такси и доставка":{"Такси и доставка":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"],"Сводка":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"],"Лимиты":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"],"Отделы":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"],"Сотрудники":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"],"Операции":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"],"Как считается":["кабинет Яндекс.Go за апрель–август 2026; тетради подотчёта, касса 2025–2026","вручную","нет даты"]},"Лицензии и подписки":{"Лицензии и подписки":["выписка по текущему счёту в долларах за 01.01.2026–31.12.2026, операции «Покупка с нашей карты в чужом устройстве»","вручную","28.09.2026"],"Сводка":["та же выписка, сформирована 28.09.2026","вручную","28.09.2026"],"Расходы на ИИ":["та же выписка, сформирована 28.09.2026","вручную","28.09.2026"],"Сервисы":["та же выписка, сформирована 28.09.2026","вручную","28.09.2026"],"Операции":["та же выписка, сформирована 28.09.2026","вручную","28.09.2026"],"Как считается":["та же выписка, сформирована 28.09.2026","вручную","28.09.2026"]},"Оргструктура · ШР":{"Оргструктура · ШР":["срез оргдерева Планфикса и ФОТ 2026 в org.bin","вручную","24.09.2026"],"Департаменты":["срез оргдерева Планфикса в org.bin","вручную","24.09.2026"],"Численность и бюджет":["численность того же среза; сумма и доля бюджета в org.bin не пересчитываются","вручную","24.09.2026"]},"Регламенты":{"Регламенты":["файл regs.bin, сборка 4.15.20","вручную","19.10.2026"],"Главная":["файл regs.bin","вручную","нет даты"],"01. Общий регламент ЗОЛОТОГРУПП":["файл regs.bin","вручную","21.09.2026"],"02. Регламент Проектного департамента":["файл regs.bin","вручную","19.10.2026"],"03. Регламент Производственного департамента":["файл regs.bin","вручную","19.10.2026"],"04. Регламент Аналитики бета":["файл regs.bin","вручную","нет даты"],"05. Регламент Дизайна бета":["файл regs.bin","вручную","нет даты"],"06. Технический гайд":["файл regs.bin","вручную","19.09.2026"],"07. ПланФикс":["файл regs.bin; редакция сверена с интерфейсом Планфикса 16.10.2026 и с выгрузкой системы от 23.08.2026","вручную","16.10.2026"],"08. Чек-лист аналитика":["файл regs.bin","вручную","нет даты"],"09. Чек-лист дизайнера бета":["файл regs.bin","вручную","нет даты"],"10. Чек-лист ТМ":["файл regs.bin","вручную","нет даты"],"11. Чек-лист РП":["файл regs.bin","вручную","нет даты"],"12. Зоны ответственности РП/ТМ":["файл regs.bin","вручную","19.10.2026"],"13. Выезд на объект":["файл regs.bin","вручную","нет даты"],"16. Роли, сокращения и словарь":["файл regs.bin","вручную","нет даты"],"17. Организационная структура":["файл regs.bin","вручную","нет даты"],"19. Купленные шрифты":["файл regs.bin","вручную","нет даты"],"20. Полезные ссылки":["файл regs.bin","вручную","нет даты"],"21. Библиотека":["файл regs.bin","вручную","нет даты"],"22. Схема проезда в офис":["файл regs.bin","вручную","нет даты"]},"Реестр промтов":{"Реестр промтов":["файл prompts.bin, редакция 27","вручную","17.09.2026"],"Промты":["файл prompts.bin","вручную","17.09.2026"],"Документ по шаблону":["файл prompts.bin","вручную","17.09.2026"]},"Названия файлов":{"Названия файлов":["файл names.bin, формула REG_CORP_file-naming","вручную","нет даты"],"Генератор":["файл names.bin, формула REG_CORP_file-naming","вручную","нет даты"],"Шпаргалка":["файл names.bin, формула REG_CORP_file-naming","вручную","нет даты"]},"Оргструктура · 9 подразделений":{"Оргструктура · 9 подразделений":["файл orgdoc.bin","вручную","нет даты"],"Отделы":["файл orgdoc.bin","вручную","нет даты"],"Численность":["файл orgdoc.bin","вручную","нет даты"],"Бэк-офис":["файл orgdoc.bin","вручную","нет даты"]},"Уроки ИИ":{"Уроки ИИ":["файл orgdoc.bin","вручную","нет даты"],"Урок 1":["файл orgdoc.bin","вручную","нет даты"],"Урок 2":["файл orgdoc.bin","вручную","нет даты"],"Урок 3":["файл orgdoc.bin","вручную","нет даты"],"Разбор":["файл orgdoc.bin","вручную","нет даты"]},"Тесты":{"Тесты":["файл orgdoc.bin","вручную","нет даты"],"Тест":["файл orgdoc.bin","вручную","нет даты"],"Эталонные ответы":["файл orgdoc.bin","вручную","нет даты"],"Итоги":["таблица Google 1XZBelOhEQbTrMepBcABhJhmttmfV_jIyMufCDBSR8-E, лист gid 906830995","вручную","нет даты"],"Матрица":["файл orgdoc.bin","вручную","нет даты"]},"Руководители проектов":{"Руководители проектов":["выгрузка договоров и этапов Планфикса, отчёт 426568 «1.4. на какой тег потрачены часы на проекте», отчёт по задачам, ФОТ 2026, файл ЗП.xlsx","вручную","26.09.2026"],"Сводка":["та же выгрузка, собрано 26.09.2026","вручную","26.09.2026"],"Проекты по РП":["та же выгрузка, собрано 26.09.2026","вручную","26.09.2026"],"Метод":["та же выгрузка, собрано 26.09.2026","вручную","26.09.2026"]},"Премии и переработки":{"Премии и переработки":["премии по KPI Планфикса","вручную","нет даты"],"KPI":["премии по KPI Планфикса","вручную","нет даты"],"План и факт":["премии по KPI Планфикса","вручную","нет даты"],"Переработки":["премии по KPI Планфикса","вручную","нет даты"]},"Длительность работы сотрудников":{"Длительность работы сотрудников":["лист «Сотрудники» таблицы «КАДРЫ ОБЩАЯ», столбец G; ведомость ЗП с января 2023","вручную","19.10.2026"],"Сводка":["лист «Сотрудники» таблицы «КАДРЫ ОБЩАЯ»; ведомость ЗП","вручную","19.10.2026"],"По отделам":["лист «Сотрудники» таблицы «КАДРЫ ОБЩАЯ»; ведомость ЗП","вручную","19.10.2026"],"Приходы и уходы":["лист «Сотрудники» таблицы «КАДРЫ ОБЩАЯ»; ведомость ЗП","вручную","19.10.2026"],"Все сотрудники":["лист «Сотрудники» таблицы «КАДРЫ ОБЩАЯ»; ведомость ЗП","вручную","19.10.2026"],"Как считается":["лист «Сотрудники» таблицы «КАДРЫ ОБЩАЯ»; ведомость ЗП","вручную","19.10.2026"]},"Калькулятор КП":{"Калькулятор КП":["файл kp.bin","вручную","нет даты"],"Проектирование":["файл kp.bin","вручную","нет даты"],"Смета":["файл kp.bin","вручную","нет даты"],"Часы на проект":["файл kp.bin; копия для РП — kp-hours.bin","вручную","нет даты"]},"Свод навигации":{"Свод навигации":["файл navsum.bin","вручную","нет даты"],"Навигация":["файл navsum.bin","вручную","нет даты"],"Проекты":["файл navsum.bin","вручную","нет даты"]},"Производства":{"Производства":["таблица подрядчиков 1W5cVRe3D5L-Q64ym7P9GrpT-H37BDg8Hod377-WdEL4; объём заказов — блок #prod-orders страницы","сб 24.10, 23:00","19.10.2026"],"Подрядчики":["таблица подрядчиков 1W5cVRe3D5L-Q64ym7P9GrpT-H37BDg8Hod377-WdEL4","сб 24.10, 23:00","19.10.2026"],"Удалённые подрядчики":["последний снимок той же таблицы, блок #prod-sheet","сб 24.10, 23:00","19.10.2026"],"Конкуренты":["таблица Google 1dbiD7vnvpzRK_c0g_UoKWSGv6AdmJzdl3mVNjBOATcI, лист gid 1590865742","вручную","нет даты"]},"Хроники проектирования и производства":{"Хроники проектирования и производства":["страница hroniki.bin; вкладка просрочек этим прогоном не пересобирается","сб 24.10, 23:00","22.10.2026"],"Хроника совещаний":["отчёт 426514 «Хроники производства»","сб 24.10, 23:00","22.10.2026"],"Просрочки":["прежний срез ovd в hroniki.bin; отчёт 426578 «Просрочки проектирования и производства» эту вкладку не собирает","вручную","03.10.2026"],"Этапы и часы":["отчёт 426568 «1.4. на какой тег потрачены часы на проекте», сохранение 20.10.2026; отчёт 426592 «Причины правок», сохранение 19.10.2026","сб 24.10, 23:00","30.09.2026"]},"Подписки, платежи и техника":{"Подписки, платежи и техника":["лист платежей 10zPqqN66Exe6I1h0UzuaKAV9NWCR_nW_hXhXE16C2Q4; лист техники 1NnQqYjYpaCSMgS1Rt1nNpT405tE_kcj7Do7KO1jY4fU","сб 24.10, 23:00","12.10.2026"],"Платежи":["лист платежей 10zPqqN66Exe6I1h0UzuaKAV9NWCR_nW_hXhXE16C2Q4","сб 24.10, 23:00","12.10.2026"],"Техника":["лист техники 1NnQqYjYpaCSMgS1Rt1nNpT405tE_kcj7Do7KO1jY4fU","сб 24.10, 23:00","12.10.2026"]},"Посещаемость офиса":{"Посещаемость офиса":["выгрузка СКУД, календари и кадры","вручную","16.10.2026"],"Работающие":["выгрузка СКУД, календари и кадры","вручную","нет даты"],"Уволенные":["выгрузка СКУД, календари и кадры","вручную","нет даты"],"Как считается":["выгрузка СКУД, календари и кадры","вручную","нет даты"]}};
+const ZGSECNAME={week:'Недельная рассылка',pult:'Пульт ПланФикса',fin:'Финансы',fot:'ФОТ',kassa:'Касса',taxi:'Такси и доставка',lic:'Лицензии и подписки',org:'Оргструктура · ШР',regs:'Регламенты',prompts:'Реестр промтов',names:'Названия файлов',orgdoc:'Оргструктура · 9 подразделений',lessons:'Уроки ИИ',tests:'Тесты',rp:'Руководители проектов',prem:'Премии и переработки',ten:'Длительность работы сотрудников',kp:'Калькулятор КП',navsum:'Свод навигации',prod:'Производства',hroniki:'Хроники проектирования и производства',subs:'Подписки, платежи и техника',ofis:'Посещаемость офиса'};
+const ZGPULT={sum:'Сводка',bd:'BD воронка',people:'Люди',stages:'Этапы и правки',prod:'Производство',deb:'Дебиторка',exp:'Расходы',con:'Контракты',mnt:'Монтаж',docs:'Документы',verif:'Верификация'};
+const ZGHRON={chron:'Хроника совещаний',ovd:'Просрочки',hours:'Этапы и часы',work:'Этапы и часы',stages:'Этапы и часы',rework:'Этапы и часы'};
+function zgNorm(s){
+ return String(s||'').toLowerCase().replace(/ё/g,'е').replace(/[«»"']/g,'').replace(/\s+/g,' ').trim();
+}
+function zgLookup(secName, name){
+ const book=ZGPROV[secName];
+ if(!book) return null;
+ if(name&&book[name]) return book[name];
+ const n=zgNorm(name);
+ if(!n) return book[secName]||null;
+ const num=n.match(/^(\d{2})\b/);
+ if(num){
+  const hit=Object.keys(book).find(k=>zgNorm(k).startsWith(num[1]));
+  if(hit) return book[hit];
+ }
+ let best=null, bl=0;
+ Object.keys(book).forEach(key=>{
+  if(key===secName) return;
+  const k=zgNorm(key);
+  if(!k) return;
+  if(k===n){ best=book[key]; bl=1000; return; }
+  if(n.includes(k)&&k.length>bl){ best=book[key]; bl=k.length; }
+  else if(k.includes(n)&&n.length>6&&n.length>bl){ best=book[key]; bl=n.length; }
+ });
+ return best||book[secName]||null;
+}
+function zgOwnFrame(doc){
+ try{ return doc.defaultView&&doc.defaultView.frameElement; }catch(e){ return null; }
+}
+function zgSelected(doc, sel){
+ return [...doc.querySelectorAll(sel)].find(el=>el.getAttribute('aria-selected')==='true'||el.getAttribute('aria-current')==='true'||el.getAttribute('aria-current')==='page'||el.classList.contains('on')||el.classList.contains('active'));
+}
+function zgOpenBits(doc, sec){
+ let id='', label='', hsub='';
+ if(sec==='pult'){
+  const b=zgSelected(doc,'#tabs [data-tab]');
+  id=b?b.getAttribute('data-tab')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='hroniki'){
+  const b=zgSelected(doc,'#tabs [data-view]');
+  id=b?b.getAttribute('data-view')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='prod'){
+  const b=zgSelected(doc,'#prod-tabs [data-prod]');
+  id=b?b.getAttribute('data-prod')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='org'){
+  const b=zgSelected(doc,'nav.nav button[data-go]');
+  id=b?b.getAttribute('data-go')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='regs'||sec==='lessons'||sec==='tests'||sec==='orgdoc'){
+  const b=doc.querySelector('nav.side a.doc.on, nav.side a.doc[aria-current="page"], nav.side a.on');
+  id=b?b.getAttribute('data-go')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='week'){
+  const b=zgSelected(doc,'#weeks [data-w0], nav.weeks [data-w0]');
+  id=b?b.getAttribute('data-w0')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='rp'){
+  const b=zgSelected(doc,'.rp-tabs button[data-pane]');
+  id=b?b.getAttribute('data-pane')||'':'';
+  label=zgPlain(b);
+ }else if(sec==='subs'){
+  const b=doc.querySelector('nav.side a.doc.on, nav.tabs button[aria-selected="true"], #zg-stack .zg-sub button[aria-selected="true"]');
+  label=zgPlain(b);
+ }else{
+  const b=zgSelected(doc,'#tabs [data-t], #tabs [data-tab], #tabs [data-kp], nav.tabs button, nav.nav button, div.tabs [data-tab], div.tabs button');
+  id=b?(b.getAttribute('data-t')||b.getAttribute('data-tab')||b.getAttribute('data-kp')||''):'';
+  label=zgPlain(b);
+ }
+ if((sec==='pult'&&id==='hours')||(sec==='hroniki'&&id==='hours')){
+  let inner=doc;
+  if(sec==='pult'){
+   const frame=doc.querySelector('#view iframe.zg-hron');
+   try{ inner=frame&&frame.contentDocument||null; }catch(e){ inner=null; }
+  }
+  const pressed=inner&&inner.querySelector('[data-hsub][aria-pressed="true"]');
+  if(pressed){ hsub=pressed.getAttribute('data-hsub')||''; label=zgPlain(pressed)||label; }
+ }
+ return {id, label, hsub};
+}
+function zgTabWhen(doc, sec, bits){
+ const id=bits.id, hsub=bits.hsub;
+ if(sec==='hroniki'||(sec==='pult'&&(id==='chron'||id==='ovd'||id==='hours'))){
+  const pack=sec==='hroniki'?{CHRON:zgJson(doc,'CHRON')||{},RWRAW:zgJson(doc,'RWRAW')||{},DATA:zgJson(doc,'DATA')||{}}:parentHronPack();
+  const CH=pack.CHRON||{}, RW=pack.RWRAW||{}, meta=(pack.DATA||{}).meta||{};
+  const key=id==='hours'?(hsub||'work'):id;
+  if(key==='chron') return zgWhen(CH.built)||zgWhen(doc.documentElement&&doc.documentElement.dataset.zgBuilt);
+  if(key==='ovd') return zgWhen(CH.ovd&&CH.ovd.built);
+  if(key==='rework') return zgWhen(RW&&RW.t592)||zgNewestWhen([RW.s568, RW.s592]);
+  if(key==='work'||key==='stages'||key==='hours') return zgWhen(meta&&(meta.anchor||meta.f12_to||meta.generated));
+ }
+ const btn=sec==='pult'?zgSelected(doc,'#tabs [data-tab]'):null;
+ const stamped=btn&&btn.querySelector('.zg-tabdate');
+ const fromBtn=stamped?zgWhen(stamped.textContent):'';
+ return fromBtn;
+}
+/* Правило — стоячий слот с main (.github/workflows/refresh.yml), без календарной даты.
+   вт и чт 10:50 публикует хронику совещаний, просрочки хроник и просрочки пульта; сб 23:00 публикует их снова, плюс финансы, подрядчиков, подписки и письмо.
+   вт 20:00 пересчитывает часы внутри week.bin, отдельной вкладки у этого слота нет.
+   Графики «Этапы и часы» сборщик не переписывает. Суббота 14:00 отчёты не выкладывает. */
+function zgRule(sec, bits){
+ const id=(bits&&bits.id)||'', hsub=(bits&&bits.hsub)||'', label=(bits&&bits.label)||'';
+ const both='вт и чт 10:50, сб 23:00', sat='сб 23:00', hand='вручную';
+ if(sec==='hroniki'||(sec==='pult'&&(id==='chron'||id==='ovd'||id==='hours'))){
+  const view=sec==='pult'?id:(id||'chron');
+  if(view==='chron'||view==='ovd') return both;
+  if(view==='hours') return hsub==='rework'?both:hand;
+  return both;
+ }
+ if(sec==='fin'||sec==='subs'||sec==='week') return sat;
+ if(sec==='prod') return (id==='comp'||/конкурент/i.test(label))?hand:sat;
+ return hand;
+}
+function zgProvFor(sec, bits){
+ const id=bits.id, hsub=bits.hsub, label=bits.label||'';
+ if(sec==='pult'&&(id==='chron'||id==='ovd'||id==='hours')){
+  const key=id==='hours'?(hsub||'hours'):id;
+  return zgLookup('Хроники проектирования и производства', ZGHRON[key]||ZGHRON[id]);
+ }
+ if(sec==='hroniki'){
+  const key=id==='hours'?(hsub||'hours'):id;
+  return zgLookup('Хроники проектирования и производства', ZGHRON[key]||label||id);
+ }
+ if(sec==='pult'&&ZGPULT[id]) return zgLookup('Пульт ПланФикса', ZGPULT[id]);
+ if(sec==='week'&&id) return zgLookup('Недельная рассылка', 'Архив недель');
+ if(sec==='org'&&/числен|бюджет/i.test(label)) return zgLookup('Оргструктура · ШР', 'Численность и бюджет');
+ if(sec==='org'&&label) return zgLookup('Оргструктура · ШР', 'Департаменты');
+ if(sec==='prod'){
+  const name=id==='gone'?'Удалённые подрядчики':id==='comp'?'Конкуренты':id==='list'?'Подрядчики':label;
+  return zgLookup('Производства', name);
+ }
+ const secName=ZGSECNAME[sec];
+ if(!secName) return null;
+ return zgLookup(secName, label)||zgLookup(secName, secName);
+}
 function hronikiWhen(doc){
  if(!doc||!doc.documentElement) return '';
  const tab=doc.querySelector('#tabs [role="tab"][aria-selected="true"]');
@@ -988,24 +1134,46 @@ function frameOf(doc){
  }
  return null;
 }
-function sectionStampText(doc, sec){
+function captionWhen(doc, sec){
  if(sec==='hroniki'){
   const when=hronikiWhen(doc);
-  if(when) return 'обновлено '+when;
+  if(when) return when;
   const m=String(NOTE.hroniki||'').match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/);
-  return m?('обновлено '+m[1]):(NOTE.hroniki||'');
+  return m?m[1]:'';
  }
  if(sec==='pult'){
-  const when=(doc.documentElement&&doc.documentElement.dataset.zgBuilt)||visibleHronWhen(doc);
-  if(when) return 'обновлено '+when;
-  return NOTE.pult||'';
+  const bits=zgOpenBits(doc,'pult');
+  if(bits.id==='chron'||bits.id==='ovd'||bits.id==='hours'){
+   let inner=null;
+   try{
+    const frame=doc.querySelector('iframe.zg-hron');
+    inner=frame&&frame.contentDocument;
+   }catch(e){}
+   const when=inner&&hronikiWhen(inner);
+   if(when) return when;
+  }
+  const built=doc.documentElement&&doc.documentElement.dataset.zgBuilt;
+  if(built) return built;
+  const vis=visibleHronWhen(doc);
+  if(vis) return vis;
  }
- return NOTE[sec]||'';
+ const m=String(NOTE[sec]||'').match(/(\d{2}\.\d{2}\.\d{4}(?:,\s*\d{2}:\d{2})?)/);
+ return m?m[1]:'';
+}
+function sectionStampText(doc, sec){
+ const bits=zgOpenBits(doc, sec);
+ let row=zgProvFor(sec, bits);
+ if(!row) row=['нет источника','вручную',''];
+ let src=(row[0]||'').trim();
+ let rule=zgRule(sec, bits);
+ if(!src||src==='нет источника') src='нет источника';
+ if(!rule||src==='нет источника') rule='вручную';
+ const when=captionWhen(doc, sec);
+ return (when?('обновлено '+when):'нет даты')+' · '+src+' · '+rule;
 }
 function syncSectionStamp(doc, frame){
  if(!doc) return;
  const sec=(frame&&frame.dataset.sec)||'';
- if(sec!=='pult'&&sec!=='fin'&&sec!=='week'&&sec!=='hroniki') return;
  const box=doc.querySelector('.zg-plaque');
  if(!box) return;
  let stamp=box.querySelector('.zg-stamp');
@@ -1018,6 +1186,13 @@ function syncSectionStamp(doc, frame){
  }
  const text=sectionStampText(doc, sec);
  if(stamp.textContent!==text) stamp.textContent=text;
+ if(frame&&!frame.hidden){
+  const swn=document.getElementById('swn');
+  if(swn){
+   if(swn.textContent!==text) swn.textContent=text;
+   swn.classList.add('zg-prov');
+  }
+ }
  /* дата среза уже в шапке вкладки — в строке под ней вторую не пишем */
  if(sec==='hroniki') doc.querySelectorAll('.srcline').forEach(el=>{
   const next=el.innerHTML.replace(/\s*—\s*(?:<b>)?\d{2}\.\d{2}\.\d{2,4}(?:<\/b>)?/,'');
@@ -1082,7 +1257,7 @@ function dressFrame(doc, frame){
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .meta,html body :is(#zg-stack,#zg-tail) .zg-plaque .hdright .meta{font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-align:right!important;color:#1d1d1b!important;margin:0!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-family:"Zoloto Display","Stratos",sans-serif!important;font-size:40px!important;font-weight:400!important;line-height:1.1!important;letter-spacing:.01em!important;margin:0 0 12px!important;color:#1d1d1b!important;position:static!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-family:"Stratos",-apple-system,sans-serif!important;font-size:18px!important;line-height:1.45!important;font-weight:400!important;margin:0!important;max-width:70ch;color:#1d1d1b!important}',
-  'html body :is(#zg-stack,#zg-tail) .zg-plaque .zg-stamp{grid-column:1!important;margin:16px 0 0!important;font:400 13px/1.3 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.04em!important;color:#1d1d1b!important}',
+  'html body :is(#zg-stack,#zg-tail) .zg-plaque .zg-stamp{grid-column:1!important;margin:16px 0 0!important;max-width:78ch;font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-transform:none!important;color:#1d1d1b!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-modebox{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:9!important;pointer-events:auto!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-mode{appearance:none!important;background:#fff!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;font:400 14px/1 "Stratos",-apple-system,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:10px 14px!important;margin:0!important;cursor:pointer!important;position:relative!important;z-index:10!important;pointer-events:auto!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-mode[aria-expanded="true"],html body :is(#zg-stack,#zg-tail) .zg-mode[aria-pressed="true"]{background:#1d1d1b!important;color:#fff!important}',
@@ -1199,9 +1374,7 @@ function dressFrame(doc, frame){
  if(h1.textContent!==pair[0]) h1.textContent=pair[0];
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];
  rpWeekBar(doc, stack, slot, sec);
- let stamp=box.querySelector('.zg-stamp');
- if(sec==='pult'||sec==='fin'||sec==='week'||sec==='hroniki') syncSectionStamp(doc, frame);
- else if(stamp) stamp.remove();
+ syncSectionStamp(doc, frame);
  let corner=box.querySelector('.zg-corner');
  if(!corner){ corner=doc.createElement('div'); corner.className='zg-corner'; box.appendChild(corner); }
  const parked=el=>el&&el.closest('.zg-plaque');

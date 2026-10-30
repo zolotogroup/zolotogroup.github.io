@@ -299,6 +299,8 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 
 <style id="zg-guide">
 b,strong{font-weight:400}
+/* «Группы», «Отпечаток», «Выйти» — вплотную друг к другу, зазор 8 px (22 px общего зазора − 14 px); остальные кнопки как были */
+@media(min-width:761px){html.open .top :is(.biobtn,.exitbtn){margin-left:-14px!important}}
 .menubtn{display:none}
 .headmenu{display:none}
 @media(max-width:760px){

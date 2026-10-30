@@ -299,19 +299,31 @@ html.open:has(.zg-head-search.on) .note{margin-left:auto}
 
 <style id="zg-guide">
 b,strong{font-weight:400}
-.top .logo img{height:26px!important;width:auto}
-html.open .top{position:sticky;top:0;z-index:40;background:var(--ground)}
+html,body{overflow-x:hidden}
+.top{background:var(--ground)}
+.top .logo{min-width:0;max-width:100%}
+.top .logo img{height:26px!important;width:auto;max-width:100%}
+html.open .top{position:sticky;top:0;z-index:40;background:var(--ground);box-shadow:0 0 0 100vw var(--ground)}
 .top .note{display:none!important}
 html.open:not([data-mode="home"]) .homebtn{display:inline-flex!important}
+html.open .top :is(.homebtn,.testbtn,.animbtn,.grpbtn,.biobtn,.exitbtn,.vidbtn,.menubtn){height:44px!important;min-height:44px;box-sizing:border-box;font-size:16.5px!important;line-height:1}
+html.open .top .viewsw{height:44px!important;min-height:44px;box-sizing:border-box}
+html.open .top .viewsw button{height:44px!important;min-height:44px;box-sizing:border-box;font-size:16.5px!important}
 .home .eb{font:400 11px/1.6 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 .home .eb::after{width:56px;height:3px;background:var(--accent);margin-top:8px}
 .home h1{font:400 40px/1.12 var(--dspl);letter-spacing:.01em}
+.lock h1{font:400 40px/1.12 var(--dspl)!important;letter-spacing:.01em}
+.lock #lksub,.lock .pub i{font-size:13px!important}
+.lock :is(button,#lkb,#pubback){font-size:16.5px!important}
+.sw button{font-size:16.5px!important}
+.sw button i{font-size:11px!important}
+.gh-t{font-size:16.5px!important;line-height:1.3}
 .home .lead{font:300 16.5px/1.55 var(--sans);max-width:68ch}
 @media(max-width:560px){.home .lead{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}}
 .home .cards{gap:14px}
 html:not(.zg-anim):not(.zg-list) .home .card{position:relative;aspect-ratio:auto;min-height:180px;padding:18px 18px 64px;gap:8px;background:var(--paper);color:var(--ink);border:1px solid var(--ink);box-shadow:none;transform:none;text-decoration:none}
 html:not(.zg-anim):not(.zg-list) .home .card .t,html:not(.zg-anim):not(.zg-list) .home .cards.three .t,html:not(.zg-anim):not(.zg-list) .home .card[data-go="hroniki"] .t{font:400 18px/1.24 var(--dspl)!important;letter-spacing:.03em;margin:0}
-html:not(.zg-anim):not(.zg-list) .home .card .d{font:300 13px/1.5 var(--sans);color:var(--muted);margin:8px 0 0}
+html:not(.zg-anim):not(.zg-list) .home .card .d{font:300 16.5px/1.55 var(--sans);color:var(--ink);margin:8px 0 0}
 html:not(.zg-anim):not(.zg-list) .home .card .k{flex-wrap:nowrap;min-width:0;font:400 11px/1.6 var(--mono);letter-spacing:.1em}
 html:not(.zg-anim):not(.zg-list) .home .card .k span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html:not(.zg-anim):not(.zg-list) .home .card .idx{font:400 11px/1.6 var(--mono);letter-spacing:.1em;color:var(--muted)}
@@ -319,7 +331,7 @@ html:not(.zg-list) .home .card .zg-pico{display:flex!important;align-items:cente
 html:not(.zg-list) .home .card .zg-pico svg{width:34px;height:34px}
 html:not(.zg-list) .home .card .zg-pico::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--accent);flex:none}
 html.zg-list .home .card .idx,html.zg-list .home .card .zg-pico,html.zg-list .home .card .stale{display:none!important}
-html:not(.zg-anim):not(.zg-list) .home .card .tags span{font:400 10.5px/1.6 var(--mono);letter-spacing:.1em;padding:5px 10px;background:transparent;border:0}
+html:not(.zg-anim):not(.zg-list) .home .card .tags span{font:400 11px/1.6 var(--mono);letter-spacing:.1em;padding:5px 10px;background:transparent;border:0}
 html:not(.zg-anim):not(.zg-list) .home .card .stale{border:1px solid var(--grey)}
 html:not(.zg-anim):not(.zg-list) .home .card .go{position:absolute;right:16px;bottom:16px;box-sizing:border-box;width:40px;height:40px;margin:0!important;padding:0!important;border:1px solid var(--ink)!important;display:flex;align-items:center;justify-content:center;background:var(--paper)}
 html:not(.zg-anim):not(.zg-list) .home .card .go span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -328,12 +340,12 @@ html:not(.zg-anim):not(.zg-list) .home .card:hover{background:var(--ink)!importa
 html:not(.zg-anim):not(.zg-list) .home .card:hover .d,html:not(.zg-anim):not(.zg-list) .home .card:hover .idx,html:not(.zg-anim):not(.zg-list) .home .card:hover .k{color:#fff}
 html:not(.zg-anim):not(.zg-list) .home .card:hover .go{background:var(--accent);border-color:var(--accent)!important;color:var(--ink)}
 html:not(.zg-anim):not(.zg-list) .home .card:hover .tags span{color:#fff;border-color:#fff}
-.stale{display:inline-block;font:400 10.5px/1.6 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--grey);color:var(--muted);background:transparent}
+.stale{display:inline-block;font:400 11px/1.6 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--grey);color:var(--muted);background:transparent}
 .stale.ok{background:var(--teal);color:#fff;border-color:var(--teal)}
 .stale.due{background:var(--orange);color:#1d1d1b;border-color:var(--orange)}
 .vid{order:5;position:relative;display:none}
 html.open .vid{display:block}
-.vidbtn{appearance:none;height:34px;padding:0 12px;border:1px solid var(--on);background:transparent;color:var(--on);font:400 15px/1 var(--sans);cursor:pointer}
+.vidbtn{appearance:none;height:44px;padding:0 12px;border:1px solid var(--on);background:transparent;color:var(--on);font:400 16.5px/1 var(--sans);cursor:pointer;box-sizing:border-box}
 .vidbtn[aria-expanded="true"],.vidbtn:hover{background:var(--paper);color:var(--ink)}
 .vidpop{position:absolute;right:0;top:calc(100% + 6px);z-index:50;background:var(--paper);color:var(--ink);border:1px solid var(--ink);padding:12px;display:flex;flex-direction:column;gap:8px;min-width:180px}
 .vidpop[hidden]{display:none}
@@ -341,7 +353,7 @@ html.open .vid{display:block}
 .vidpop button:hover{background:var(--ink);color:#fff}
 .vidsw{display:flex;flex-wrap:wrap;gap:6px}
 .vidswatch{width:28px!important;height:28px!important;padding:0!important}
-.sqnav{display:none;position:static;flex-wrap:nowrap;gap:4px;width:100%;max-width:1280px;margin:0 auto;padding:8px 32px 4px;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.sqnav{display:none;position:static;flex-wrap:nowrap;gap:4px;width:100%;max-width:1280px;margin:0 auto;padding:8px 32px 10px;box-sizing:border-box;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;background:var(--ground);box-shadow:0 0 0 100vw var(--ground);z-index:35}
 html.open:not([data-mode="home"]) .sqnav{display:flex}
 .sq{flex:0 0 30px;width:30px;height:30px;box-sizing:border-box;padding:0;border:1px solid #1d1d1b;background:#1d1d1b;color:#fff;font:400 11px/1 var(--mono);cursor:pointer}
 .sq.cur{outline:2px solid var(--accent);outline-offset:1px}
@@ -357,9 +369,30 @@ html.open:not([data-mode="home"]) .sqnav{display:flex}
 .whoface h2{margin:0;font:400 23px/1.32 var(--dspl);letter-spacing:.02em}
 .whor{margin:6px 0 0;font:300 16.5px/1.55 var(--sans)}
 .whoc{margin:8px 0 0;font:400 11px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.menubtn{display:none}
+.headmenu{display:none}
+@media(max-width:760px){
+ html:not(.zg-anim):not(.zg-list) .home .card .k{flex-direction:column;align-items:flex-start;gap:4px;white-space:normal}
+ html:not(.zg-anim):not(.zg-list) .home .card .k span{white-space:normal;overflow:visible;text-overflow:clip;max-width:100%}
+ html.open .top{flex-wrap:nowrap!important;align-items:center;height:56px;max-height:56px;min-height:0;padding:6px 12px!important;gap:8px!important;overflow:visible;box-sizing:border-box}
+ html.open .top::before,html.open .top::after{display:none!important}
+ html.open .top .logo{order:1;flex:0 1 auto}
+ html.open .top .logo img{height:auto!important;max-height:26px!important;width:auto;max-width:100%}
+ html.open .top .homebtn{order:2;flex:0 0 auto}
+ html.open .menubtn{display:inline-flex!important;order:3;margin-left:auto;width:44px;align-items:center;justify-content:center;padding:0}
+ html.open .top > :not(.logo):not(#homebtn):not(#menubtn):not(#headmenu){display:none!important}
+ .headmenu{position:absolute;left:0;right:0;top:100%;z-index:45;background:var(--ground);border-bottom:1px solid var(--ink);padding:8px 12px 12px;display:flex;flex-direction:column;align-items:stretch;gap:8px;box-sizing:border-box;box-shadow:0 0 0 100vw var(--ground)}
+ .headmenu[hidden],.headmenu [hidden]{display:none!important}
+ .headmenu :is(.testbtn,.animbtn,.grpbtn,.biobtn,.exitbtn,.vid){display:flex!important;width:100%;margin:0!important}
+ .headmenu .vid{position:static}
+ .headmenu .vidbtn{width:100%;justify-content:center}
+ .headmenu .vidpop{position:static;top:auto;right:auto;min-width:0;width:100%}
+ .headmenu .viewsw{display:flex!important;width:100%;height:44px!important;margin:0!important}
+ .headmenu .viewsw button{flex:1 1 50%;height:44px!important;font-size:16.5px!important}
+ .headmenu :is(.testbtn,.animbtn,.grpbtn,.biobtn,.exitbtn,.vidbtn){height:44px!important;min-height:44px;box-sizing:border-box;justify-content:center;font-size:16.5px!important}
+ html.open:not([data-mode="home"]) .headmenu :is(.testbtn,.animbtn,.viewsw,.grpbtn){display:none!important}
+}
 @media(max-width:560px){
- html.open .top :is(.homebtn,.testbtn,.animbtn,.viewsw,.grpbtn,.biobtn,.exitbtn,.vidbtn){height:44px!important;min-height:44px}
- html.open .top .viewsw button{min-height:44px;height:44px!important}
  .who{grid-template-columns:1fr}
  .who .lkback{display:none}
 }
@@ -386,6 +419,8 @@ html.open:not([data-mode="home"]) .sqnav{display:flex}
 <div class="vid" id="vid"><button class="vidbtn" id="vidbtn" type="button" aria-expanded="false" aria-controls="vidpop">Вид</button><div class="vidpop" id="vidpop" hidden></div></div>
 <button class="biobtn" id="biobtn" type="button" hidden>Отпечаток</button>
 <button class="exitbtn" id="exitbtn" type="button" title="Закрыть доступ и вернуться к вводу пароля">Выйти</button>
+<button class="menubtn" id="menubtn" type="button" aria-expanded="false" aria-controls="headmenu">☰</button>
+<div class="headmenu" id="headmenu" hidden></div>
 <div class="zg-head-search" id="zg-head-search" hidden></div>
 </div>
 <nav class="sqnav" id="sqnav" aria-label="Разделы" hidden></nav>
@@ -1355,10 +1390,10 @@ function dressFrame(doc, frame){
   'main,nav.side{zoom:1!important}',
   'html body #zg-stack{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0;width:100%!important;max-width:100%!important;min-width:0;margin:0!important;padding:0!important;box-sizing:border-box;position:relative!important;z-index:4!important}',
   'html body #zg-stack.zg-inset{box-sizing:border-box!important;width:100%!important;max-width:min(1280px,100%)!important;margin-left:auto!important;margin-right:auto!important;padding:0 32px!important}',
-  'html body #zg-stack .zg-sub{display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;align-items:flex-end!important;align-self:flex-start!important;gap:0!important;width:auto!important;max-width:100%!important;margin:0 0 14px 0!important;padding:0!important;background:transparent!important;border:0!important;position:relative!important;z-index:40!important;pointer-events:auto!important;left:auto!important;top:auto!important;transform:none!important;overflow:visible!important}',
+  'html body #zg-stack .zg-sub{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:flex-end!important;align-self:stretch!important;gap:0!important;width:100%!important;max-width:100%!important;margin:0 0 14px 0!important;padding:0 0 2px!important;background:transparent!important;border:0!important;position:relative!important;z-index:40!important;pointer-events:auto!important;left:auto!important;top:auto!important;transform:none!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:thin!important}',
   'html body .home-btn,html body #zg-stack .home-btn,html body #zg-stack .zg-sub button.home-btn,html body #zg-stack .sec-topbar>button[data-home],html body #zg-stack button[data-home].home-btn{display:none!important}',
   'html body #zg-stack .sec-topbar.zg-sub:not(:has(.subtabs)),html body .sec-topbar:not(:has(.subtabs)){display:none!important}',
-  'html body #zg-stack .subtabs,html body #zg-stack .zg-sub .seg:not(.thsw){display:flex!important;flex-wrap:wrap!important;align-items:flex-end!important;gap:0!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;position:relative!important;z-index:41!important;pointer-events:auto!important}',
+  'html body #zg-stack .subtabs,html body #zg-stack .zg-sub .seg:not(.thsw){display:flex!important;flex-wrap:nowrap!important;align-items:flex-end!important;gap:0!important;margin:0!important;padding:0 0 2px!important;background:transparent!important;border:0!important;position:relative!important;z-index:41!important;pointer-events:auto!important;overflow-x:auto!important;overflow-y:hidden!important;max-width:100%!important;scrollbar-width:thin!important}',
   'html body #zg-stack .zg-fin{position:relative!important;z-index:40!important;pointer-events:auto!important}',
   'html body #zg-stack .zg-sub button,html body #zg-stack .zg-sub a{appearance:none!important;background:transparent!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-bottom:0!important;border-radius:0!important;box-shadow:none!important;font:400 14px/1.2 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.04em!important;text-transform:uppercase!important;padding:12px 14px!important;margin:0 -1px 0 0!important;text-decoration:none!important;flex:none!important;position:relative!important;z-index:41!important;pointer-events:auto!important;cursor:pointer!important}',
   'html body #zg-stack.zg-oneline .zg-sub{flex-wrap:nowrap!important;width:100%!important}',
@@ -1373,7 +1408,7 @@ function dressFrame(doc, frame){
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .thsw button:last-child,html body :is(#zg-stack,#zg-tail) .zg-plaque #theme button:last-child{border-right:0!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque [data-th][aria-pressed="true"],html body :is(#zg-stack,#zg-tail) .zg-plaque .thsw button.on{background:#b7cd00!important;color:#1d1d1b!important;box-shadow:none!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .meta,html body :is(#zg-stack,#zg-tail) .zg-plaque .hdright .meta{font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-align:right!important;color:#1d1d1b!important;margin:0!important}',
-  'html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-family:"Zoloto Display","Stratos",sans-serif!important;font-size:40px!important;font-weight:400!important;line-height:1.1!important;letter-spacing:.01em!important;margin:0 0 12px!important;color:#1d1d1b!important;position:static!important}',
+  'html body h1,html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-family:"Zoloto Display","Stratos",sans-serif!important;font-size:40px!important;font-weight:400!important;line-height:1.12!important;letter-spacing:.01em!important;margin:0 0 12px!important;position:static!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-family:"Stratos",-apple-system,sans-serif!important;font-size:18px!important;line-height:1.45!important;font-weight:400!important;margin:0!important;max-width:70ch;color:#1d1d1b!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .zg-stamp{grid-column:1!important;margin:16px 0 0!important;max-width:78ch;font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-transform:none!important;color:#1d1d1b!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-modebox{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:9!important;pointer-events:auto!important}',
@@ -1384,7 +1419,7 @@ function dressFrame(doc, frame){
   'html body :is(#zg-stack,#zg-tail) .zg-swatch{appearance:none!important;width:28px!important;height:28px!important;padding:0!important;margin:0!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;cursor:pointer!important;position:relative!important;z-index:11!important;pointer-events:auto!important;flex:none!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-swatch[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #fff, inset 0 0 0 4px #1d1d1b!important}',
   '.zg-src-title,html body header.zg-src-title,html body .hd.zg-src-title{display:none!important}',
-  '@media(max-width:800px){html body #zg-stack.zg-inset{padding:0 16px!important}html body :is(#zg-stack,#zg-tail) .zg-plaque{min-height:180px;padding:18px 16px!important;grid-template-columns:1fr!important}html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-size:30px!important}html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-size:16px!important}html body :is(#zg-stack,#zg-tail) .zg-corner{grid-column:1!important;grid-row:auto!important;align-items:flex-start!important;max-width:none!important}html body #zg-stack.zg-oneline .zg-sub{flex-wrap:wrap!important}html body .split,html body .access-grid{grid-template-columns:minmax(0,1fr)!important}html body .split>*,html body .plate{min-width:0!important}html body .plate{overflow-x:auto}html body #roles.roles,html body .psearch{flex-wrap:wrap!important}html body #roles.roles .role{flex:1 1 150px!important;min-width:0!important}}'
+  '@media(max-width:800px){html body #zg-stack.zg-inset{padding:0 16px!important}html body :is(#zg-stack,#zg-tail) .zg-plaque{min-height:180px;padding:18px 16px!important;grid-template-columns:1fr!important}html body :is(#zg-stack,#zg-tail) .zg-plaque h1,html body h1{font-size:40px!important}html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-size:16.5px!important}html body :is(#zg-stack,#zg-tail) .zg-corner{grid-column:1!important;grid-row:auto!important;align-items:flex-start!important;max-width:none!important}html body .split,html body .access-grid{grid-template-columns:minmax(0,1fr)!important}html body .split>*,html body .plate{min-width:0!important}html body .plate{overflow-x:auto}html body #roles.roles,html body .psearch{flex-wrap:wrap!important}html body #roles.roles .role{flex:1 1 150px!important;min-width:0!important}}'
  ].join('');
  const __gs=getComputedStyle(document.documentElement);
  const __bg=(__gs.getPropertyValue('--ground')||'#73b3c3').trim();
@@ -1402,6 +1437,9 @@ function dressFrame(doc, frame){
  if(['prod','week'].indexOf(frame&&frame.dataset.sec)>=0) css+='html body{padding-bottom:0!important}';
  if((frame&&frame.dataset.sec)==='subs') css+='html body main{display:block!important;width:100%!important;max-width:1280px!important;margin-left:auto!important;margin-right:auto!important;padding:18px 32px 48px!important;box-sizing:border-box!important}html body #zg-stack{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}html body #zg-tail{width:100%!important;max-width:none!important;margin:28px 0 0!important}html body.zg-tablock #lockcontent,html body.zg-tablock .tabs,html body.zg-tablock .pane{display:none!important}#zg-tabgate{max-width:420px;margin:48px auto;padding:32px;border:1px solid #1d1d1b;background:#fff;box-sizing:border-box;color:#1d1d1b}#zg-tabgate h1{margin:0 0 8px;font:400 32px/1.1 "Zoloto Display","Stratos",sans-serif;color:#1d1d1b!important}#zg-tabgate p{margin:0 0 16px;font:400 15px/1.4 "Stratos",sans-serif;color:#1d1d1b!important}#zg-tabgate .row{display:flex;border:1px solid #1d1d1b}#zg-tabgate input{flex:1;min-width:0;height:46px;border:0;padding:0 14px;font:400 18px/1 "Aeroport Mono",ui-monospace,monospace;letter-spacing:.12em;background:#fff;color:#1d1d1b}#zg-tabgate button{height:46px;padding:0 18px;border:0;border-left:1px solid #1d1d1b;background:#b7cd00;color:#1d1d1b;font:400 15px/1 "Stratos",sans-serif;cursor:pointer}#zg-tabgate .err{margin:12px 0 0;color:#e30c13!important;font:400 13px/1.3 "Aeroport Mono",ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase}@media(max-width:760px){html body main{padding-left:16px!important;padding-right:16px!important}}';
  if((frame&&frame.dataset.sec)==='hroniki') css+='html body .ovsub:not(.wbctl){width:auto!important;max-width:100%!important;display:block!important}html body .ovsub:not(.wbctl)>.seg,html body .periodbar>.seg{display:inline-flex!important;width:max-content!important;max-width:100%!important;flex:none!important;flex-wrap:nowrap!important}html body .ovsub:not(.wbctl)>.seg button,html body .periodbar>.seg button{flex:0 0 auto!important;width:auto!important;min-width:0!important}';
+ css+='html body .secsw,html body nav.tabs,html body .tabsrow,html body .tabs,html body .seg:not(.fill){flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;max-width:100%!important;scrollbar-width:thin}html body .thsw,html body #theme{display:none!important}html body .kpi,html body .kpi .v,html body .kpi .d,html body .kpi .l{background:#fff!important;color:#1d1d1b!important}html body .tile .n{display:flex!important;flex-wrap:nowrap!important;align-items:baseline!important;gap:6px!important;white-space:nowrap!important}html body .tile .n small{display:inline!important;white-space:nowrap!important}';
+ if(['fin','fot','kassa','taxi','lic','org'].indexOf(frame&&frame.dataset.sec)>=0) css+='html body #zg-stack .zg-sub:not(.zg-fin) button[aria-selected="true"],html body #zg-stack .zg-sub:not(.zg-fin) button[aria-pressed="true"],html body #zg-stack .zg-sub:not(.zg-fin) button.on,html body #zg-stack .zg-sub:not(.zg-fin) button.active{background:#1d1d1b!important;color:#fff!important;box-shadow:none!important;border-color:#1d1d1b!important}';
+ if((frame&&frame.dataset.sec)==='prem') css+='html body #zg-prem-bar{display:flex!important;flex-wrap:nowrap!important;align-items:stretch!important;gap:0!important;overflow-x:auto!important;background:#1d1d1b!important;color:#fff!important;margin:0 0 14px!important;max-width:100%!important}html body #zg-stack #zg-prem-bar .tabs,html body #zg-stack #zg-prem-bar .seg{background:transparent!important;margin:0!important;border:0!important;overflow-x:visible!important}html body #zg-stack #zg-prem-bar button{color:#fff!important;border-color:transparent!important;background:transparent!important;box-shadow:none!important}html body #zg-stack #zg-prem-bar button.on,html body #zg-stack #zg-prem-bar button[aria-selected="true"],html body #zg-stack #zg-prem-bar button[aria-pressed="true"],html body #zg-stack #zg-prem-bar button.active{background:#fff!important;color:#1d1d1b!important;box-shadow:none!important}';
  if(st.textContent!==css) st.textContent=css;
  if(window.liftSmall) liftSmall(doc);
  if(!st.isConnected) (doc.head||doc.documentElement).appendChild(st);
@@ -1454,7 +1492,7 @@ function dressFrame(doc, frame){
  let stack=doc.getElementById('zg-stack');
  if(!stack){ stack=doc.createElement('div'); stack.id='zg-stack'; }
  if(stack.parentElement!==slot||slot.firstElementChild!==stack) slot.insertBefore(stack, slot.firstChild);
- menus.forEach(m=>{ keepClass(m,'zg-sub'); if(m.parentElement!==stack) stack.appendChild(m); });
+ menus.forEach(m=>{ if(m.closest&&m.closest('#zg-prem-bar')) return; keepClass(m,'zg-sub'); if(m.parentElement!==stack) stack.appendChild(m); });
  stack.querySelectorAll('.home-btn,button.home-btn').forEach(el=>el.remove());
  const FINNAV=[['fin','Финансы'],['fot','ФОТ'],['kassa','Касса'],['taxi','Такси'],['lic','Лицензии'],['org','Оргструктура']];
  const sec=(frame&&frame.dataset.sec)||'';
@@ -1493,6 +1531,29 @@ function dressFrame(doc, frame){
  const h1=box.querySelector('h1'), lead=box.querySelector('.lead');
  if(h1.textContent!==pair[0]) h1.textContent=pair[0];
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];
+ doc.querySelectorAll('h1').forEach(el=>{ if(el!==h1) el.hidden=true; });
+ if(sec==='prem'){
+  const sheet=[...doc.querySelectorAll('.tabs')].find(el=>/ЗП|Премии \(/.test(el.textContent||'') && !el.closest('#zg-prem-bar'));
+  const quarters=[...doc.querySelectorAll('.seg')].find(el=>/Весь год/.test(el.textContent||'') && !el.classList.contains('thsw') && !el.closest('#zg-prem-bar'));
+  let bar=doc.getElementById('zg-prem-bar');
+  if((sheet||quarters) && !bar){
+   bar=doc.createElement('div');
+   bar.id='zg-prem-bar';
+   const host=sheet||quarters;
+   host.replaceWith(bar);
+  }
+  if(bar){
+   if(sheet && sheet.parentElement!==bar) bar.appendChild(sheet);
+   if(quarters && quarters.parentElement!==bar) bar.appendChild(quarters);
+  }
+ }
+ doc.querySelectorAll('.thsw,#theme').forEach(el=>el.style.setProperty('display','none','important'));
+ if(['fin','fot','kassa','taxi','lic','org'].indexOf(sec)>=0){
+  doc.querySelectorAll('.tabpane > div').forEach(el=>{
+   const text=(el.innerText||'').replace(/\s+/g,'').trim();
+   if(!text && !el.querySelector('img,svg,canvas,table,button')) el.remove();
+  });
+ }
  rpWeekBar(doc, stack, slot, sec);
  syncSectionStamp(doc, frame);
  let corner=box.querySelector('.zg-corner');
@@ -2182,33 +2243,33 @@ function watchFrame(frame){
 const PAGE_GROUND={
  home:['#73b3c3','#1d1d1b'],
  pult:['#bf5939','#fff'],
+ week:['#bf5939','#fff'],
  fin:['#436595','#fff'],
- fot:['#bd3070','#fff'],
- kassa:['#1e7f81','#fff'],
- taxi:['#8a5989','#fff'],
- lic:['#73b3c3','#1d1d1b'],
- org:['#bf5939','#fff'],
- week:['#bd3070','#fff'],
- regs:['#1e7f81','#fff'],
- fonts:['#436595','#fff'],
- links:['#1e7f81','#fff'],
- srcdata:['#8a5989','#fff'],
- books:['#73b3c3','#1d1d1b'],
- route:['#bf5939','#fff'],
- prompts:['#1e7f81','#fff'],
- names:['#8a5989','#fff'],
+ fot:['#436595','#fff'],
+ kassa:['#436595','#fff'],
+ taxi:['#436595','#fff'],
+ lic:['#436595','#fff'],
+ org:['#1e7f81','#fff'],
+ regs:['#bd3070','#fff'],
+ fonts:['#bd3070','#fff'],
+ links:['#bd3070','#fff'],
+ srcdata:['#bd3070','#fff'],
+ books:['#bd3070','#fff'],
+ prompts:['#bd3070','#fff'],
+ names:['#bd3070','#fff'],
  orgdoc:['#8a5989','#fff'],
  lessons:['#8a5989','#fff'],
  tests:['#8a5989','#fff'],
  rp:['#8a5989','#fff'],
- prem:['#9caa28','#1d1d1b'],
+ prem:['#8a5989','#fff'],
  ten:['#8a5989','#fff'],
- kp:['#9caa28','#1d1d1b'],
- navsum:['#73b3c3','#1d1d1b'],
- prod:['#8a5989','#fff'],
- subs:['#1e7f81','#fff'],
  ofis:['#8a5989','#fff'],
- hroniki:['#bf5939','#fff']
+ hroniki:['#9caa28','#1d1d1b'],
+ navsum:['#9caa28','#1d1d1b'],
+ prod:['#9caa28','#1d1d1b'],
+ kp:['#9caa28','#1d1d1b'],
+ subs:['#73b3c3','#1d1d1b'],
+ route:['#73b3c3','#1d1d1b']
 };
 const GUIDE_GROUNDS=[
  ['#9caa28','#1d1d1b','Лайм'],
@@ -2225,7 +2286,8 @@ window.zgPick=GROUND_PICK;
 function applyGround(k){
  const pick=GROUND_PICK[k];
  const mono=['#f3f3f1','#1d1d1b'];
- const g=pick&&pick.bg&&!pick.bw?[pick.bg,pick.on]:mono;
+ const page=PAGE_GROUND[k]||mono;
+ const g=pick&&pick.bw?mono:(pick&&pick.bg?[pick.bg,pick.on]:(pick&&pick.bw===false?page:mono));
  const root=document.documentElement;
  root.style.setProperty('--ground',g[0]);
  root.style.setProperty('--groundc',g[0]);
@@ -2238,9 +2300,7 @@ window.zgPaint=function(sec,opt){
  const cur=GROUND_PICK[sec]||{};
  if(opt.toggleBw){
   const bw=!cur.bw;
-  if(bw) GROUND_PICK[sec]={bg:cur.bg||'',on:cur.on||'',bw:true,open:false};
-  else if(cur.bg) GROUND_PICK[sec]={bg:cur.bg,on:cur.on,bw:false,open:false};
-  else delete GROUND_PICK[sec];
+  GROUND_PICK[sec]={bg:cur.bg||'',on:cur.on||'',bw:bw,open:false};
  }else if(opt.togglePalette){
   const open=!cur.open;
   GROUND_PICK[sec]={bg:cur.bg||'',on:cur.on||'',bw:false,open:open};
@@ -2615,16 +2675,25 @@ const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const b64=bytes=>{const u=new Uint8Array(bytes);let s='';for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);};
 const rnd=n=>crypto.getRandomValues(new Uint8Array(n));
 function bioLoad(){try{return JSON.parse(localStorage.getItem('zgBio')||'')}catch(e){return null}}
+let heldPw='';
+let heldKey=null;
 function paintBio(){
  const go=document.getElementById('biogo');
  const btn=document.getElementById('biobtn');
  const rec=bioLoad();
- let pw='';
- try{pw=sessionStorage.getItem('zltpw3')||''}catch(e){}
  if(go) go.hidden=!rec;
- if(btn){btn.hidden=!pw;btn.classList.toggle('on',!!rec)}
+ if(btn){btn.hidden=!heldPw;btn.classList.toggle('on',!!rec)}
 }
-function remember(pw){try{sessionStorage.setItem('zltpw3',pw)}catch(e){}paintBio()}
+function remember(pw){
+ heldPw=pw||'';
+ try{sessionStorage.removeItem('zltpw2');sessionStorage.removeItem('zltpw3')}catch(e){}
+ paintBio();
+}
+function forgetPw(){
+ heldPw='';
+ heldKey=null;
+ try{sessionStorage.removeItem('zltpw2');sessionStorage.removeItem('zltpw3')}catch(e){}
+}
 async function enrollBio(pw){
  const salt=rnd(32);
  const cred=await navigator.credentials.create({publicKey:{
@@ -2807,6 +2876,7 @@ async function unlock(pw){
  }
  if(!pay) pay=office;
  if(!pay) throw new Error('bad');
+ heldKey=kek;
  window.__zgGroup=pay.g||'';
  (function(g){ const ACC={rp:'#295faa',pd:'#295faa',office:'#60c4dd',office0:'#60c4dd',om:'#60c4dd',bd:'#e74310',tech:'#009295'}; document.documentElement.style.setProperty('--accent', ACC[g]||'#b7cd00'); })(pay.g||'');
  window.__zgSubsOK=SUBSOK(office)||SUBSOK(pay);
@@ -2865,7 +2935,7 @@ async function unlock(pw){
  eb.textContent='Выйти';
  eb.title='Закрыть доступ и вернуться к открытым разделам';
  eb.onclick=()=>{
-  try{sessionStorage.removeItem('zltpw2');sessionStorage.removeItem('zltpw3')}catch(e){}
+  forgetPw();
   try{location.replace(location.pathname+location.search)}catch(e){location.reload()}
  };
  const back=window.__zgBack||'';
@@ -2884,8 +2954,7 @@ document.getElementById('peek').onclick=()=>{const on=$p.style.webkitTextSecurit
 document.getElementById('pubback').onclick=()=>enterGuest();
 document.getElementById('biobtn').onclick=async()=>{
  const btn=document.getElementById('biobtn');
- let pw='';
- try{pw=sessionStorage.getItem('zltpw3')||''}catch(e){}
+ const pw=heldPw;
  if(!pw) return;
  try{await enrollBio(pw)}
  catch(e){
@@ -2951,12 +3020,7 @@ window.addEventListener('hashchange',()=>{
 });
 (async()=>{
  window.__zgPubReady=loadPublic();
- let saved='';
- try{saved=sessionStorage.getItem('zltpw3')||''}catch(e){}
- if(saved){
-  try{ await unlock(saved); remember(saved); return; }
-  catch(e){ try{sessionStorage.removeItem('zltpw3')}catch(e2){} }
- }
+ try{sessionStorage.removeItem('zltpw2');sessionStorage.removeItem('zltpw3')}catch(e){}
  document.documentElement.classList.remove('open','guest','booting');
  const sub=document.getElementById('lksub'); if(sub) sub.textContent='Свой пароль — свои разделы';
  const b=document.getElementById('lkb'); if(b) b.disabled=false;

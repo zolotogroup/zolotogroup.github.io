@@ -1365,14 +1365,8 @@ function dressFrame(doc, frame){
  }
  let box=doc.querySelector('.zg-plaque');
  if(!box){ box=doc.createElement('div'); box.className='zg-plaque'; box.innerHTML='<h1></h1><p class="lead"></p><div class="zg-corner"></div>'; }
- if(sec==='subs'){
-  const sheet=doc.querySelector('section.doc')||host;
-  let tail=doc.getElementById('zg-tail');
-  if(!tail){ tail=doc.createElement('div'); tail.id='zg-tail'; }
-  if(tail.parentElement!==sheet) sheet.appendChild(tail);
-  if(box.parentElement!==tail) tail.appendChild(box);
-  doc.querySelectorAll('.dochead').forEach(el=>{ if(!el.closest('#zg-tail')) keepClass(el,'zg-src-title'); });
- }else if(box.parentElement!==stack) stack.appendChild(box);
+ if(sec==='subs') doc.querySelectorAll('.dochead').forEach(el=>keepClass(el,'zg-src-title'));
+ if(box.parentElement!==stack) stack.appendChild(box);
  const h1=box.querySelector('h1'), lead=box.querySelector('.lead');
  if(h1.textContent!==pair[0]) h1.textContent=pair[0];
  if(lead.textContent!==pair[1]) lead.textContent=pair[1];

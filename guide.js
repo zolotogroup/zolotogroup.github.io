@@ -27,10 +27,40 @@ window.zgLockHint=function(){
  const p=x=>String(x).padStart(2,'0');
  return 'Данные на '+p(n.getUTCDate())+'.'+p(n.getUTCMonth()+1)+'.'+n.getUTCFullYear();
 };
+function sqName(card,id){
+ const title=card&&card.querySelector('.t');
+ if(!title) return id;
+ const raw=title.innerHTML.replace(/<br\s*\/?>/gi,' ');
+ const box=document.createElement('span');
+ box.innerHTML=raw;
+ return (box.textContent||'').replace(/\s+/g,' ').trim()||id;
+}
+function hideSqTip(){
+ const tip=document.getElementById('sqtip');
+ if(tip) tip.hidden=true;
+}
+function showSqTip(btn){
+ const tip=document.getElementById('sqtip');
+ if(!tip||!btn) return;
+ tip.textContent=btn.getAttribute('aria-label')||btn.title||'';
+ tip.hidden=false;
+ const r=btn.getBoundingClientRect();
+ const w=tip.offsetWidth, h=tip.offsetHeight;
+ let left=r.left+r.width/2-w/2;
+ left=Math.max(8, Math.min(left, window.innerWidth-w-8));
+ let top=r.bottom+6;
+ if(top+h>window.innerHeight-8) top=Math.max(8, r.top-h-6);
+ tip.style.left=left+'px';
+ tip.style.top=top+'px';
+}
 window.paintSquares=function(){
  const nav=document.getElementById('sqnav');
  if(!nav) return;
  const cur=window.__zgSec||'home';
+ const home=cur==='home'||document.documentElement.dataset.mode==='home'||!document.documentElement.classList.contains('open');
+ hideSqTip();
+ nav.hidden=home;
+ if(home){ nav.replaceChildren(); return; }
  nav.replaceChildren();
  let i=0;
  ORDER.forEach(id=>{
@@ -38,17 +68,23 @@ window.paintSquares=function(){
   if(!card) return;
   i++;
   const open=card.style.display!=='none'&&!card.hidden;
+  const name=sqName(card,id);
   const b=document.createElement('button');
   b.type='button';
   b.className='sq'+(open?'':' shut')+(cur===id?' cur':'');
   b.textContent=String(i).padStart(2,'0');
-  const title=card.querySelector('.t');
-  b.title=title?title.textContent.replace(/\s+/g,' ').trim():id;
+  b.title=name;
+  b.setAttribute('aria-label', name);
   b.setAttribute('aria-current', cur===id?'page':'false');
-  if(!open){ b.disabled=true; b.setAttribute('aria-disabled','true'); }
+  if(!open) b.setAttribute('aria-disabled','true');
   else b.onclick=()=>{ if(typeof show==='function') show(id); };
   nav.appendChild(b);
  });
+ const on=nav.querySelector('.sq.cur');
+ if(on){
+  const nr=nav.getBoundingClientRect(), r=on.getBoundingClientRect();
+  if(r.left<nr.left||r.right>nr.right) nav.scrollLeft+=r.left-nr.left-(nr.width-r.width)/2;
+ }
 };
 window.paintWho=function(){
  const box=document.getElementById('who');
@@ -172,16 +208,23 @@ function fillVid(pop){
  }
 }
 function boot(){
- mount('lkback'); mount('byeback');
- const strip=document.getElementById('byestrip');
- if(strip&&!strip.querySelector('svg')) strip.innerHTML=tileSvg(6,1,28,4,'mark');
- const sub=document.getElementById('lksub');
- if(sub && !sub.dataset.lock) sub.textContent=window.zgLockHint();
- const bye=document.getElementById('byebtn');
- if(bye) bye.onclick=()=>{
-  document.documentElement.classList.remove('bye');
-  const p=document.getElementById('pw'); if(p) p.focus();
- };
+ const nav=document.getElementById('sqnav');
+ if(nav&&!nav.dataset.wired){
+  nav.dataset.wired='1';
+  const over=ev=>{
+   const b=ev.target.closest&&ev.target.closest('.sq');
+   if(b&&nav.contains(b)) showSqTip(b);
+  };
+  nav.addEventListener('mouseover', over);
+  nav.addEventListener('focusin', over);
+  nav.addEventListener('mouseout', ev=>{
+   const next=ev.relatedTarget&&ev.relatedTarget.closest&&ev.relatedTarget.closest('.sq');
+   if(!next||!nav.contains(next)) hideSqTip();
+  });
+  nav.addEventListener('focusout', ev=>{ if(!nav.contains(ev.relatedTarget)) hideSqTip(); });
+  nav.addEventListener('scroll', hideSqTip, {passive:true});
+  window.addEventListener('scroll', hideSqTip, {passive:true});
+ }
  const vid=document.getElementById('vidbtn');
  const pop=document.getElementById('vidpop');
  if(vid&&pop){
@@ -196,9 +239,6 @@ function boot(){
    if(!pop.hidden && !(ev.target.closest&&ev.target.closest('#vid'))){ pop.hidden=true; vid.setAttribute('aria-expanded','false'); }
   });
  }
- const pw=document.getElementById('pw');
- const err=document.getElementById('lkerr');
- if(pw&&err) pw.addEventListener('input', ()=>{ err.textContent=''; err.hidden=true; });
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

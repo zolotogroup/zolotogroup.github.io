@@ -317,7 +317,6 @@ html.open .top .viewsw button{height:44px!important;min-height:44px;box-sizing:b
 .lock :is(button,#lkb,#pubback){font-size:16.5px!important}
 .sw button{font-size:16.5px!important}
 .sw button i{font-size:11px!important}
-.gh-t{font-size:16.5px!important;line-height:1.3}
 .home .lead{font:300 16.5px/1.55 var(--sans);max-width:68ch}
 @media(max-width:560px){.home .lead{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}}
 .home .cards{gap:14px}
@@ -397,9 +396,59 @@ html.open:not([data-mode="home"]) .sqnav{display:flex}
  .who .lkback{display:none}
 }
 </style>
+<style id="zg-hub">
+/* Хаб по гайду цифровых форм v4: один слой поверх старых. Заголовки групп, карточки, теги, шапка. */
+/* шапка: сплошной фон и линия 1 px снизу, чтобы прокрученный текст не резался посередине строки */
+html.open .top{border-bottom:1px solid var(--on);box-shadow:none!important}
+/* заголовок группы: пиктограмма 40 px + Zoloto Display 32, под ним линия 1 px вместо полосы 12 px */
+html.zg-groups .home .gh{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"icon title" "bar bar";align-items:center;column-gap:14px;row-gap:14px;margin:8px 0 0;font:400 32px/1.12 var(--dspl)!important;letter-spacing:.01em;text-transform:none;color:var(--on)}
+html.zg-groups .home .gh .gh-t{font:inherit!important;line-height:inherit!important}
+html.zg-groups .home .gh .zg-pico{width:40px!important;height:40px!important;margin:0!important;color:var(--on)}
+html.zg-groups .home .gh .zg-pico::after{display:none!important}
+html.zg-groups .home .gh::after{height:1px!important;background:var(--on)}
+/* сетка карточек */
+html:not(.zg-anim):not(.zg-list) .home .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px!important;align-items:stretch}
+/* карточка: белая плашка, рамка 1 px, без пустых низов */
+html:not(.zg-anim):not(.zg-list) .home .card{display:flex!important;flex-direction:column;justify-content:flex-start;min-height:0!important;aspect-ratio:auto!important;padding:22px 24px 20px!important;gap:0!important}
+html:not(.zg-anim):not(.zg-list) .home .card>div:first-child{display:flex;flex-direction:column;gap:0;min-width:0}
+html:not(.zg-anim):not(.zg-list) .home .card>div:last-child{margin-top:auto;padding-top:20px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;min-width:0}
+html:not(.zg-anim):not(.zg-list) .home .card .idx{order:-2;margin:0 0 10px}
+html:not(.zg-anim):not(.zg-list) .home .card .zg-pico{order:-1;margin:0 0 14px!important}
+html:not(.zg-anim):not(.zg-list) .home .card .zg-pico svg{width:30px!important;height:30px!important}
+/* надзаголовок: категория слева, дата справа, моно 11 */
+html:not(.zg-anim):not(.zg-list) .home .card .k{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8px;font:400 11px/1.5 var(--mono)!important;letter-spacing:.1em;text-transform:uppercase}
+/* заголовок крупнее описания: Zoloto Display 23, описание Stratos 15 */
+html:not(.zg-anim):not(.zg-list) .home .card .t,html:not(.zg-anim):not(.zg-list) .home .cards.three .t,html:not(.zg-anim):not(.zg-list) .home .card[data-go="hroniki"] .t{font:400 23px/1.2 var(--dspl)!important;letter-spacing:.02em!important;margin:0!important;white-space:normal!important;overflow:visible!important}
+html:not(.zg-anim):not(.zg-list) .home .card .d,html:not(.zg-anim):not(.zg-list) .home .cards.three .d{font:300 15px/1.5 var(--sans)!important;color:var(--ink);margin:10px 0 0!important;white-space:normal!important;max-width:60ch}
+/* теги — метки-контур серым, группой; стрелка 40 px в той же строке */
+html:not(.zg-anim):not(.zg-list) .home .card .tags{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+html:not(.zg-anim):not(.zg-list) .home .card .tags span:not(.stale){font:400 10.5px/1 var(--mono)!important;letter-spacing:.1em;text-transform:uppercase;padding:5px 8px!important;border:1px solid var(--grey)!important;background:transparent;color:inherit;margin:0}
+html:not(.zg-anim):not(.zg-list) .home .card .go{position:static!important;flex:none;width:40px;height:40px;margin:0!important}
+html:not(.zg-anim):not(.zg-list) .home .card:hover .tags span{border-color:rgba(255,255,255,.5)!important}
+@media(max-width:1000px){html:not(.zg-anim):not(.zg-list) .home .cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+ html:not(.zg-anim):not(.zg-list) .home .cards{grid-template-columns:1fr}
+ html:not(.zg-anim):not(.zg-list) .home .card{padding:18px 18px 16px!important}
+ html:not(.zg-anim):not(.zg-list) .home .card .k{flex-direction:column;align-items:flex-start;gap:2px}
+ html:not(.zg-anim):not(.zg-list) .home .card .t{font-size:21px!important}
+ html.zg-groups .home .gh{font-size:24px!important;column-gap:10px}
+ html.zg-groups .home .gh .zg-pico{width:30px!important;height:30px!important}
+}
+/* статусы свежести: цвет из гайда (бирюзовый — готово, оранжевый — срок), серый контур — без даты */
+html:not(.zg-anim):not(.zg-list) .home .card .tags .stale{font:400 10.5px/1 var(--mono)!important;letter-spacing:.1em;padding:5px 8px!important;margin:0}
+html:not(.zg-anim):not(.zg-list) .home .card .tags .stale.due{background:var(--orange)!important;border:1px solid var(--orange)!important;color:#fff!important}
+html:not(.zg-anim):not(.zg-list) .home .card .tags .stale.ok{background:var(--teal)!important;border:1px solid var(--teal)!important;color:#fff!important}
+html:not(.zg-anim):not(.zg-list) .home .card .tags .stale:not(.ok):not(.due){border:1px solid var(--grey)!important;color:var(--muted)}
+/* логотип — полная форма с дескриптором, как было до правок: 64 px на входе, 46 px в открытом пульте, 40 px на телефоне */
+.top .logo img{height:64px!important;max-height:none!important;width:auto!important;max-width:100%!important}
+html.open .top .logo img{height:46px!important;max-height:none!important}
+@media(max-width:760px){html.open .top .logo img{height:40px!important;max-height:none!important}}
+/* кнопки шапки на десктопе: 34 px, Stratos 14, рамка 1 px со всех сторон (на телефоне они в меню и остаются 44 px) */
+@media(min-width:761px){html.open .top :is(.homebtn,.testbtn,.animbtn,.grpbtn,.biobtn,.exitbtn,.vidbtn){height:34px!important;min-height:34px!important;font-size:14px!important;padding:0 12px!important;border:1px solid currentColor!important;box-sizing:border-box!important;align-items:center}html.open .top .viewsw{height:34px!important;min-height:34px!important;box-sizing:border-box!important;align-items:stretch}html.open .top .viewsw button{height:auto!important;min-height:0!important;font-size:14px!important;padding:0 12px!important}}
+</style>
 
 <div class="top">
-<a class="logo" id="logo" title="На главную"><img src="brand/logo.svg" alt="ЗОЛОТО ГРУПП — агентство стандартов навигации и визуальной среды"></a>
+<a class="logo" id="logo" title="На главную"><img src="brand/logo-horizontal.svg" alt="ЗОЛОТО ГРУПП — агентство стандартов навигации и визуальной среды"></a>
 <button class="homebtn" id="homebtn" type="button">← Все разделы</button>
 <div class="sw" role="tablist" aria-label="Разделы">
 <button role="tab" data-s="fin" aria-selected="true" id="b-fin">Финансы <i>все счета</i></button>

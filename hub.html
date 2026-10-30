@@ -408,16 +408,33 @@ function zoomImage(src,alt){
  if(!lb){
   lb=document.createElement('div');
   lb.id='zg-zoom';
-  lb.style.cssText='position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;background:rgba(29,29,27,.88);cursor:zoom-out';
+  lb.style.cssText='position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:24px 24px 84px;box-sizing:border-box;background:rgba(29,29,27,.88);cursor:zoom-out';
   const im=document.createElement('img');
-  im.style.cssText='max-width:100%;max-height:100%;object-fit:contain;background:#fff';
-  lb.appendChild(im);
+  im.style.cssText='max-width:100%;max-height:calc(100vh - 132px);object-fit:contain;background:#fff';
+  const bar=document.createElement('div');
+  bar.style.cssText='position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center;gap:8px;z-index:1';
+  const save=document.createElement('a');
+  save.style.cssText='background:#b7cd00;color:#1d1d1b;border:1px solid #1d1d1b;font:400 15px/1 "Stratos",sans-serif;padding:12px 16px;cursor:pointer;text-decoration:none';
+  save.textContent='Сохранить';
+  const close=document.createElement('button');
+  close.type='button';
+  close.style.cssText='background:#fff;color:#1d1d1b;border:1px solid #1d1d1b;font:400 15px/1 "Stratos",sans-serif;padding:12px 16px;cursor:pointer';
+  close.textContent='Закрыть';
+  close.addEventListener('click',e=>{ e.stopPropagation(); zoomImage(); });
+  save.addEventListener('click',e=>e.stopPropagation());
+  bar.append(save,close);
+  lb.append(im,bar);
   document.body.appendChild(lb);
   lb.addEventListener('click',()=>zoomImage());
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') zoomImage(); });
  }
- lb.firstChild.src=src;
- lb.firstChild.alt=alt||'';
+ const im=lb.querySelector('img');
+ const save=lb.querySelector('a');
+ im.src=src;
+ im.alt=alt||'';
+ const name=((alt||'схема').replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'').slice(0,60)||'схема')+'.webp';
+ save.href=src;
+ save.download=name;
  lb.style.display='flex';
 }
 // In a srcdoc frame "#id" resolves against hub.html, so an in-page link the section's own script didn't take loads the hub into the frame.
@@ -1211,10 +1228,14 @@ function dressFrame(doc, frame){
  if(!doc.zgFlushHook){ doc.zgFlushHook=true; doc.addEventListener('load',e=>{ if(e.target&&e.target.tagName==='IFRAME') flushEmbed(e.target); },true); }
  if(frame&&frame.dataset.sec==='hroniki') doc.documentElement.classList.add('zg-keep-ink');
  // The regs frame is as tall as its content, so its own fixed lightbox centres far below the screen.
- if(frame&&frame.dataset.sec==='regs'&&!doc.zgZoomHook){
+ if(frame&&(frame.dataset.sec==='regs'||frame.dataset.sec==='route')&&!doc.zgZoomHook){
   doc.zgZoomHook=true;
   doc.addEventListener('click',e=>{
-   const img=e.target.closest&&e.target.closest('figure.fig img,.maps img,.offmap img,.shot img,.pfshot img,.stmap img');
+   let img=e.target.closest&&e.target.closest('figure.fig img,.maps img,.offmap img,.shot img,.pfshot img,.stmap img');
+   if(!img){
+    const fig=e.target.closest&&e.target.closest('figure.offmap');
+    img=fig&&fig.querySelector('img');
+   }
    if(!img) return;
    e.preventDefault(); e.stopPropagation();
    zoomImage(img.currentSrc||img.src,img.alt);

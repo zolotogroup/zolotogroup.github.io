@@ -361,6 +361,7 @@ b,strong{font-weight:400}
 <button class="card" type="button" data-go="pult" style="display:none"><div><div class="k"><span>ПланФикс</span><span id="h-pult"></span></div><p class="t">Пульт<br>ПланФикса</p><p class="d">Контракты, дебиторка, люди и часы, производство, просрочки — всё по отчётам ПланФикса.</p></div><div><div class="tags"><span>Сводка</span><span>BD воронка</span><span>Дебиторка</span><span>Этапы и часы</span><span>Производство</span><span>Просрочки</span><span>Хроники</span></div><div class="go" style="margin-top:18px"><span>Открыть пульт</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="fin" style="display:none"><div><div class="k"><span>ПланФакт</span><span id="h-fin"></span></div><p class="t">Финансы<br>2026</p><p class="d">Поступления и выплаты по всем счетам, ФОТ, наличные и комиссия за пополнение кассы, оргструктура.</p></div><div><div class="tags"><span>Финансы</span><span>ФОТ</span><span>Касса</span><span>Такси</span><span>Лицензии</span><span>Оргструктура</span></div><div class="go" style="margin-top:18px"><span>Открыть финансы</span><b>→</b></div></div></button>
 <button class="card" type="button" data-go="week" style="display:none"><div><div class="k"><span>Рассылка</span><span id="h-week">Неделя 43</span></div><p class="t">Недельная<br>рассылка</p><p class="d" id="week-desc">Письмо по вашей роли за закрытую неделю: задачи, сроки, просрочки, ссылки в ПланФикс.</p></div><div><div class="tags"><span id="week-scope">Ваша роль</span><span>Архив недель</span></div><div class="go" style="margin-top:18px"><span>Открыть рассылку</span><b>→</b></div></div></button>
+<button class="card" type="button" data-go="svodka" data-href="https://claude.ai/artifact/KFpuRW6tq62gmiaLkyFRJW" style="display:none"><div><div class="k"><span>Telegram</span><span>каждый час</span></div><p class="t">Сводка ZG<br>по рабочим чатам</p><p class="d">Автосводка рабочих чатов Telegram и записей встреч: что решили, кто что делает и к какому сроку. Открывается в Claude.</p></div><div><div class="tags"><span>Чаты</span><span>Встречи</span><span>Задачи</span></div><div class="go" style="margin-top:18px"><span>Открыть сводку</span><b>↗</b></div></div></button>
 </div>
 <div class="cards three">
 <button class="card" type="button" data-go="regs"><div><div class="k"><span>Документы</span></div><p class="t">Регламенты</p><p class="d">Свод регламентов ЗОЛОТОГРУПП: зоны ответственности, дизайн, делопроизводство, именование файлов.</p></div><div><div class="tags"><span>Свод</span><span>Аттестация</span><span>Номер сборки</span></div><div class="go" style="margin-top:18px"><span>Открыть регламенты</span><b>→</b></div></div></button>
@@ -2231,7 +2232,7 @@ function listBreaks(on){
  });
 }
 const HOME_SETS={
- week:['week','pult','fin'],
+ week:['week','svodka','pult','fin'],
  people:['orgdoc','rp','ten','ofis','prem','lessons','tests'],
  rules:['regs','fonts','links','srcdata','books','prompts','names'],
  work:['hroniki','navsum','prod','kp'],
@@ -2245,7 +2246,7 @@ function foldRows(){
   r.style.display=vis?'':'none';
  });
 }
-const CARD_ORDER=['week','pult','fin','regs','fonts','links','srcdata','books','prompts','names','orgdoc','lessons','tests','rp','prem','ten','kp','navsum','prod','hroniki','subs','route','ofis'];
+const CARD_ORDER=['week','svodka','pult','fin','regs','fonts','links','srcdata','books','prompts','names','orgdoc','lessons','tests','rp','prem','ten','kp','navsum','prod','hroniki','subs','route','ofis'];
 function layCards(){
  if(document.documentElement.classList.contains('zg-groups')){ foldRows(); return; }
  const rows=[...document.querySelectorAll('.home>.cards')];
@@ -2661,7 +2662,7 @@ function paintAccess(AL){
  document.querySelectorAll('.home .card').forEach(c=>{
   const n=LVLSEC[c.dataset.go]||0;
   const ok=!AL||AL.indexOf(n)>=0;
-  const showCard=/^(fonts|links|srcdata|books|route)$/.test(c.dataset.go)?true:c.dataset.go==='subs'?(!!window.__zgSubsOK||!AL):(n===10?ok&&!!PAGES.rp:n===11?ok&&!!PAGES.prem:n===12?ok&&!!PAGES.ten:ok);
+  const showCard=c.dataset.go==='svodka'?window.__zgRoleId==='gd':/^(fonts|links|srcdata|books|route)$/.test(c.dataset.go)?true:c.dataset.go==='subs'?(!!window.__zgSubsOK||!AL):(n===10?ok&&!!PAGES.rp:n===11?ok&&!!PAGES.prem:n===12?ok&&!!PAGES.ten:ok);
   c.hidden=!showCard;
   c.style.display=showCard?'':'none';
  });
@@ -2676,6 +2677,7 @@ function paintAccess(AL){
   const note=NOTE[b.dataset.s]; if(note) b.title=note;
  });
  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{
+  if(b.dataset.href){ window.open(b.dataset.href,'_blank','noopener'); return; }
   if(b.dataset.go==='week'){
    window.__zgWeekRole=window.__zgLetters==='all'?'':(window.__zgRoleId||'');
    if(frames.week){frames.week.remove();delete frames.week;}

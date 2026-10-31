@@ -89,7 +89,7 @@ window.liftSmall=function(doc){
   doc.__zgLiftMo.observe(doc.body,{childList:true,subtree:true});
  }
 };
-const MENU_IDS=['testbtn','animbtn','viewsw','grpbtn','biobtn','exitbtn'];
+const MENU_IDS=['testbtn','pfbtn','animbtn','viewsw','grpbtn','biobtn','exitbtn'];
 function layoutHead(){
  const top=document.querySelector('.top');
  const menu=document.getElementById('headmenu');

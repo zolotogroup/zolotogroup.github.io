@@ -1020,7 +1020,7 @@ function mpTabsFor(mp){
  /* РП — только «Неделя РП» по своим МП; заместителю со своими МП — портфель и список тоже */
  return window.__zgHubG==='rp'?['week']:['portfolio','list','week'];
 }
-const MP_HIDE='<style>.mast,.nav,header.mast{display:none!important}html,body{background:transparent!important}body>.wrap,body>main{max-width:none!important;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important;padding-top:24px!important}#view>section .legend,.legend{position:static!important}.tlh,.ptl .hrow{top:var(--zg-pin,0px)!important}</style>';
+const MP_HIDE='<style>.mast,.nav,header.mast{display:none!important}html,body{background:transparent!important}body>.wrap,body>main{max-width:none!important;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important;padding-top:16px!important}#view>section .legend,.legend{position:static!important}.tlh,.ptl .hrow{top:var(--zg-pin,0px)!important}</style>';
 /* в МП «липнет» только строка дат графика: фрейм МП во всю высоту, поэтому верх считаем по прокрутке хаба и раздела */
 function mpPin(){
  const fr=window.__zgMpFr; if(!fr||!fr.isConnected) return;
@@ -1049,6 +1049,11 @@ async function mpShow(doc, tab){
   let html='';
   try{ html=await mpPage(file); }catch(e){}
   if(!html){ box.innerHTML='<p class="zg-mp-wait">Не удалось открыть данные МП.</p>'; return; }
+  /* «Приёмка истекла»: фильтр берёт те же МП, что и счётчик (в комплекте исправлено, до пересборки — здесь) */
+  html=html.split('L=L.filter(d=>!F.f||A.get(d.mp.id).fl[F.f]);').join('L=L.filter(d=>{if(!F.f)return true;const f=A.get(d.mp.id).fl;return F.f==="acc"?!!(f.acc||f.accA||f.actno):!!f[F.f];});');
+  /* хаб всегда светлый — тёмная тема системы МП не перекрашивает */
+  html=html.replace(/prefers-color-scheme\s*:\s*dark/gi,'prefers-color-scheme:zg-off');
+  html=html.replace(/<head>/i,'<head><meta name="color-scheme" content="light"><script>(function(m){window.matchMedia=function(q){return m.call(window,String(q).replace(/dark/gi,"zg-off"))}})(window.matchMedia)<\/script>');
   html=html.replace(/<\/head>/i, MP_HIDE+'</head>');
   if(file==='main'&&tab) html=html.replace(/<head>/i,'<head><script>try{if(!location.hash)location.hash="#'+tab+'"}catch(e){}<\/script>');
   fr=doc.createElement('iframe');
@@ -1097,6 +1102,10 @@ function rpWeekBar(doc, stack, slot, sec){
   const mpBox=doc.createElement('div');
   mpBox.id='zg-rp-mp';
   mpBox.hidden=true;
+  /* МП — такой же белый лист под вкладками, как таблицы «По месяцам» */
+  const mpCss=doc.createElement('style');
+  mpCss.textContent='#zg-rp-mp{background:#fff;padding:8px 32px 28px;margin-top:16px;box-sizing:border-box}@media(max-width:760px){#zg-rp-mp{padding:4px 16px 20px}}';
+  doc.head.appendChild(mpCss);
   stack.insertAdjacentElement('afterend', mpBox);
  }
  if(!doc.getElementById('zg-rp-oct')){

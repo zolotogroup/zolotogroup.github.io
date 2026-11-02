@@ -1053,20 +1053,21 @@ async function mpShow(doc, tab){
   html=html.split('L=L.filter(d=>!F.f||A.get(d.mp.id).fl[F.f]);').join('L=L.filter(d=>{if(!F.f)return true;const f=A.get(d.mp.id).fl;return F.f==="acc"?!!(f.acc||f.accA||f.actno):!!f[F.f];});');
   /* хаб всегда светлый — тёмная тема системы МП не перекрашивает */
   html=html.replace(/prefers-color-scheme\s*:\s*dark/gi,'prefers-color-scheme:zg-off');
-  html=html.replace(/<head>/i,'<head><meta name="color-scheme" content="light"><script>(function(m){window.matchMedia=function(q){return m.call(window,String(q).replace(/dark/gi,"zg-off"))}})(window.matchMedia)<\/script>');
+  html=html.replace(/<head>/i,'<head><meta name="color-scheme" content="light"><script>(function(m){window.matchMedia=function(q){return m.call(window,String(q).replace(/dark/gi,"zg-off"))}})(window.matchMedia);window.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a||e.defaultPrevented)return;var h=a.getAttribute("href")||"";if(h.charAt(0)==="#"){if(a.target)return;e.preventDefault();if(h!=="#")location.hash=h;return}if(/^https?:/i.test(h)&&(!a.target||a.target==="_self")){e.preventDefault();window.open(h,"_blank","noopener")}})<\/script>');
   html=html.replace(/<\/head>/i, MP_HIDE+'</head>');
   if(file==='main'&&tab) html=html.replace(/<head>/i,'<head><script>try{if(!location.hash)location.hash="#'+tab+'"}catch(e){}<\/script>');
   fr=doc.createElement('iframe');
-  fr.dataset.file=file; fr.title='Мастер-проекты'; fr.style.cssText='display:block;width:100%;border:0;min-height:600px;background:transparent';
+  fr.dataset.file=file; fr.dataset.tab=tab||''; fr.title='Мастер-проекты'; fr.style.cssText='display:block;width:100%;border:0;min-height:600px;background:transparent';
   box.replaceChildren(fr);
   fr.srcdoc=html;
   fr.addEventListener('load',()=>{
    mpFit(fr); mpPinWatch(fr);
-   try{ const w=fr.contentWindow; w.addEventListener('hashchange',()=>setTimeout(()=>mpFit(fr),60)); new w.ResizeObserver(()=>mpFit(fr)).observe(fr.contentDocument.body); }catch(e){}
+   try{ const w=fr.contentWindow; w.addEventListener('hashchange',()=>setTimeout(()=>{ mpFit(fr); if(/^#mp-/.test(w.location.hash)){ try{ fr.scrollIntoView({block:'start'}); }catch(e){} } },60)); new w.ResizeObserver(()=>mpFit(fr)).observe(fr.contentDocument.body); }catch(e){}
    if(file==='main'&&doc.__zgRpTab&&doc.__zgRpTab!=='pay'){ try{ fr.contentWindow.location.hash='#'+doc.__zgRpTab; }catch(e){} }
   });
  }else if(file==='main'){
-  try{ if(fr.contentWindow.location.hash!=='#'+tab) fr.contentWindow.location.hash='#'+tab; }catch(e){}
+  /* хеш ставим только при смене вкладки — переходы внутри МП (#mp-…) не сбиваем */
+  try{ if(fr.dataset.tab!==tab){ fr.dataset.tab=tab; if(fr.contentWindow.location.hash!=='#'+tab) fr.contentWindow.location.hash='#'+tab; } }catch(e){}
   setTimeout(()=>{ mpFit(fr); mpPin(); },80);
  }
 }

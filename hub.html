@@ -1067,7 +1067,9 @@ async function mpShow(doc, tab){
   });
  }else if(file==='main'){
   /* хеш ставим только при смене вкладки — переходы внутри МП (#mp-…) не сбиваем */
-  try{ if(fr.dataset.tab!==tab){ fr.dataset.tab=tab; if(fr.contentWindow.location.hash!=='#'+tab) fr.contentWindow.location.hash='#'+tab; } }catch(e){}
+  /* клик по вкладке (в т.ч. уже открытой) — назад к её списку из карточки МП */
+  const force=doc.__zgRpForce; doc.__zgRpForce=0;
+  try{ if(force||fr.dataset.tab!==tab){ fr.dataset.tab=tab; if(fr.contentWindow.location.hash!=='#'+tab) fr.contentWindow.location.hash='#'+tab; } }catch(e){}
   setTimeout(()=>{ mpFit(fr); mpPin(); },80);
  }
 }
@@ -1089,7 +1091,7 @@ function rpWeekBar(doc, stack, slot, sec){
   tabs.forEach(t=>{
    const b=doc.createElement('button');
    b.type='button'; b.dataset.rpTab=t; b.textContent=t==='months'?'По месяцам':MP_TABS[t];
-   b.addEventListener('click',()=>{ doc.__zgRpTab=t; rpApplyWeek(doc); });
+   b.addEventListener('click',()=>{ doc.__zgRpTab=t; doc.__zgRpForce=1; rpApplyWeek(doc); });
    top.appendChild(b);
   });
   const row=box.querySelector('.zg-rp-months');

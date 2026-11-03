@@ -2544,7 +2544,38 @@ function showLock(back){
  const err=document.getElementById('lkerr'); if(err) err.textContent=back?'Этот раздел закрыт паролем':'';
  const b=document.getElementById('lkb'); if(b) b.disabled=false;
 }
+/* Раздел в адресе без побочных эффектов readHash: им решаем, пушить историю или только поправить хеш. */
+function sectionHere(){
+ const h=(location.hash||'').slice(1);
+ if(!h) return 'home';
+ if(h==='week'||h.startsWith('week/')) return 'week';
+ if(h==='regs'||h.startsWith('regs/')) return 'regs';
+ const num=/^0*(\d{1,2})$/.exec(h);
+ if(num&&ADDRSEC[+num[1]]) return ADDRSEC[+num[1]];
+ if(/^(fonts|links|srcdata|books|route)$/.test(h)) return h;
+ const old={fonts:'fonts',links:'links',lib:'books',map:'route'};
+ const sm=/^sprav(?:\/([a-z]+))?/.exec(h);
+ if(sm){ const k=old[(sm[1]||'').split(':')[0]]; if(k) return k; }
+ if(LVLSEC[h]||h==='home') return h;
+ return 'home';
+}
+function sectionAddr(k){
+ const base=location.pathname+location.search;
+ if(k==='home') return base;
+ return base+(k==='week'&&window.__zgWeekRole?'#week/'+window.__zgWeekRole:'#'+k);
+}
+/* Смена раздела — новый шаг, чтобы «Назад» в браузере вернуло предыдущий. Тот же раздел или отказ в доступе адрес только поправляют. */
+function rememberSection(k, asked){
+ try{
+  const next=sectionAddr(k);
+  const cur=location.pathname+location.search+location.hash;
+  if(cur===next) return;
+  if(asked!==k||sectionHere()===k) history.replaceState({zg:k},'',next);
+  else history.pushState({zg:k},'',next);
+ }catch(e){}
+}
 function show(k){
+ const asked=k;
  const src=PAGEOF[k]||k;
  if(k==='subs'&&!window.__zgSubsOK){ showLock('subs'); return; }
  if(k!=='subs'&&k!=='home'&&LVLSEC[k]&&MAXLVL&&MAXLVL.indexOf(LVLSEC[k])<0){
@@ -2589,7 +2620,7 @@ function show(k){
   if(k==='regs'&&window.__zgRegsAt){ const at=window.__zgRegsAt; window.__zgRegsAt=''; regsGo(frames[k],at); }
   if(k==='week'&&window.__zgWeekAt){ const at=window.__zgWeekAt; window.__zgWeekAt=null; weekGo(frames[k],at.id); }
  }
- try{const __hash=k==='home'?location.pathname+location.search:(k==='week'&&window.__zgWeekRole?'#week/'+window.__zgWeekRole:'#'+k);history.replaceState(null,'',__hash)}catch(e){}
+ rememberSection(k, asked);
  window.scrollTo(0,0);
 }
 window.zgShow=show;
@@ -3040,16 +3071,31 @@ $f.onsubmit=async ev=>{
  try{ await unlock(pw); remember(pw); }
  catch(e){ $e.textContent='Пароль не подходит'; $b.disabled=false; }
 };
-window.addEventListener('hashchange',()=>{
- const dest=readHash();
- const n=LVLSEC[dest];
- if(!document.documentElement.classList.contains('open')){
-  if(document.documentElement.classList.contains('guest')){ if(n) showLock(dest); else enterGuest(); return; }
-  return;
- }
- if(dest==='week'&&frames.week){frames.week.remove();delete frames.week;}
- show(dest);
-});
+let __zgHist=0;
+function followHistory(){
+ if(__zgHist) return;
+ __zgHist=1;
+ try{
+  const dest=readHash();
+  const n=LVLSEC[dest];
+  const root=document.documentElement;
+  /* Экран «раздел закрыт» снимает open. «Назад» должно вернуть тот раздел, что в адресе, а не открыть главную поверх истории. */
+  if(!root.classList.contains('open')){
+   if(LVL==='guest'&&!root.classList.contains('guest')) return;
+   if(root.classList.contains('guest')){ if(n){ showLock(dest); return; } }
+   else if(dest==='subs'&&!window.__zgSubsOK){ showLock('subs'); return; }
+   else if(dest!=='home'&&n&&MAXLVL&&MAXLVL.indexOf(n)<0){ showLock(dest); return; }
+   root.classList.add('open');
+   root.classList.remove('booting');
+   show(dest);
+   return;
+  }
+  if(dest==='week'&&frames.week){frames.week.remove();delete frames.week;}
+  show(dest);
+ }finally{ __zgHist=0; }
+}
+window.addEventListener('hashchange', followHistory);
+window.addEventListener('popstate', followHistory);
 (async()=>{
  window.__zgPubReady=loadPublic();
  try{sessionStorage.removeItem('zltpw2');sessionStorage.removeItem('zltpw3')}catch(e){}

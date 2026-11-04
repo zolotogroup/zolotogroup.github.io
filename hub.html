@@ -1002,11 +1002,14 @@ async function mpOpen(pw){
  return null;
 }
 const MP_HTML={};
-async function mpPage(name){
+async function mpPage(name,again){
  const mp=window.__zgMP, f=mp&&mp.f&&mp.f[name];
  if(!f) return '';
  if(MP_HTML[name]) return MP_HTML[name];
- const box=await (await fetch(f.u,{cache:'no-store'})).json();
+ /* раздел пересобирается каждый день: старые файлы удаляются — если хаб открыт давно, перечитываем mp.html тем же паролем */
+ const res=await fetch(f.u,{cache:'no-store'});
+ if(!res.ok){ if(again||!window.__zgWeekPw) throw new Error('mp '+res.status); const fresh=await mpOpen(window.__zgWeekPw); if(!fresh) throw new Error('mp slot'); window.__zgMP=fresh; return mpPage(name,true); }
+ const box=await res.json();
  const k=await crypto.subtle.importKey('raw',ub(f.k),'AES-GCM',false,['decrypt']);
  const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(box.iv)},k,ub(box.ct));
  return MP_HTML[name]=await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
@@ -2905,7 +2908,7 @@ function paintAccess(AL){
   if(sc&&PAGES&&PAGES.svodka){
    const mine=window.__zgRoleId==='gd';
    const ks=sc.querySelector('.k span'); if(ks) ks.textContent=mine?'Сводка ГД':'Сводка';
-   const t=sc.querySelector('.t'); if(t) t.innerHTML=mine?'Моя<br>сводка':'Сводка<br>команды';
+   const t=sc.querySelector('.t'); if(t) t.innerHTML=mine?'Моя сводка':'Сводка команды';
    const d=sc.querySelector('.d'); if(d) d.textContent=mine?'Чаты, встречи и задачи: решения, сроки и что относится к вам.':'Встречи, отделы и проектные чаты. Без решений и вопросов генеральному директору.';
    const tags=sc.querySelector('.tags'); if(tags) tags.innerHTML=mine?'<span>Чаты</span><span>Встречи</span><span>Задачи</span><span>Мне</span>':'<span>Встречи</span><span>Отделы</span><span>Чаты</span>';
    const go=sc.querySelector('.go span'); if(go) go.textContent=mine?'Открыть мою сводку':'Открыть сводку команды';

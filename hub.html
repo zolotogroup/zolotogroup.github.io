@@ -1041,6 +1041,45 @@ function mpPinWatch(fr){
 function mpFit(fr){
  try{ const d=fr.contentDocument; if(!d||!d.documentElement) return; const was=fr.style.height; fr.style.height='0px'; const h=Math.max(d.documentElement.scrollHeight,d.body?d.body.scrollHeight:0); fr.style.height=h?h+'px':was; }catch(e){}
 }
+/* «Неделя РП»: порядок свёрток. «График моих МП» собирается отдельно и остаётся первым.
+   «Работа над проектом» с вкладки убрана. Сборка МП каждый день пишет старый набор;
+   здесь порядок и состав правятся при открытии. */
+function mpWeekBlocks(html){
+ const order=["Мои МП — состояние","По договору — формальные сроки","Хроника моих МП — 14 дней","Поручения со встреч","Встречи на 7 дней","Чаты моих МП — обещания","Утренняя сводка для Telegram"];
+ const drop=new Set(["Работа над проектом"]);
+ const key="const items=[";
+ const at=html.indexOf(key);
+ if(at<0) return html;
+ const start=at+key.length;
+ let i=start, depth=1, inStr=false, esc=false, q="";
+ for(;i<html.length&&depth;i++){
+  const c=html[i];
+  if(inStr){ if(esc) esc=false; else if(c==="\\") esc=true; else if(c===q) inStr=false; continue; }
+  if(c==='"'||c==="'"){ inStr=true; q=c; continue; }
+  if(c==="[") depth++;
+  else if(c==="]") depth--;
+ }
+ if(depth) return html;
+ const body=html.slice(start,i-1), parts=[];
+ let d=0, s=0, st=false, es=false, qq="";
+ for(let k=0;k<body.length;k++){
+  const c=body[k];
+  if(st){ if(es) es=false; else if(c==="\\") es=true; else if(c===qq) st=false; continue; }
+  if(c==='"'||c==="'"){ st=true; qq=c; continue; }
+  if(c==="["||c==="("||c==="{") d++;
+  else if(c==="]"||c===")"||c==="}") d--;
+  else if(c===","&&!d){ parts.push(body.slice(s,k)); s=k+1; }
+ }
+ parts.push(body.slice(s));
+ const title=p=>{ const m=p.match(/^\s*\[\s*"((?:\\.|[^"\\])*)"/); return m?JSON.parse('"'+m[1]+'"'):""; };
+ const rows=parts.map(p=>p.trim()).filter(Boolean).filter(p=>!drop.has(title(p)));
+ const left=new Map(rows.map(p=>[title(p),p]));
+ const next=[];
+ order.forEach(name=>{ if(left.has(name)){ next.push(left.get(name)); left.delete(name); } });
+ rows.forEach(p=>{ const t=title(p); if(left.has(t)){ next.push(p); left.delete(t); } });
+ if(next.length!==rows.length) return html;
+ return html.slice(0,start)+next.join(",\n  ")+html.slice(i-1);
+}
 async function mpShow(doc, tab){
  const box=doc.getElementById('zg-rp-mp'); if(!box) return;
  let fr=box.querySelector('iframe');
@@ -1052,6 +1091,7 @@ async function mpShow(doc, tab){
   if(!html){ box.innerHTML='<p class="zg-mp-wait">Не удалось открыть данные МП.</p>'; return; }
   /* «Приёмка истекла»: фильтр берёт те же МП, что и счётчик (в комплекте исправлено, до пересборки — здесь) */
   html=html.split('L=L.filter(d=>!F.f||A.get(d.mp.id).fl[F.f]);').join('L=L.filter(d=>{if(!F.f)return true;const f=A.get(d.mp.id).fl;return F.f==="acc"?!!(f.acc||f.accA||f.actno):!!f[F.f];});');
+  if(file==='main') html=mpWeekBlocks(html);
   /* хаб всегда светлый — тёмная тема системы МП не перекрашивает */
   html=html.replace(/prefers-color-scheme\s*:\s*dark/gi,'prefers-color-scheme:zg-off');
   html=html.replace(/<head>/i,'<head><meta name="color-scheme" content="light"><script>(function(m){window.matchMedia=function(q){return m.call(window,String(q).replace(/dark/gi,"zg-off"))}})(window.matchMedia);window.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(!a||e.defaultPrevented)return;var h=a.getAttribute("href")||"";if(h.charAt(0)==="#"){if(a.target)return;e.preventDefault();if(h!=="#")location.hash=h;return}if(/^https?:/i.test(h)&&(!a.target||a.target==="_self")){e.preventDefault();window.open(h,"_blank","noopener")}})<\/script>');

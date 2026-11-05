@@ -3224,5 +3224,78 @@ document.addEventListener('drop', e=>{
  const b=document.getElementById('lkb'); if(b) b.disabled=false;
 })();
 </script>
+<style id="zg-unify-hub">
+/* Единый каркас хаба: 1200 px, без дубля «Данные на…» в верхней строке */
+html body .top:not(#zg-x),html body .home:not(#zg-x){max-width:1200px!important;margin-left:auto!important;margin-right:auto!important;padding-left:16px!important;padding-right:16px!important;box-sizing:border-box!important}
+html body #fr>iframe:not([hidden]){display:block;max-width:1200px!important;margin-left:auto!important;margin-right:auto!important}
+html.open body #swn{display:none!important}
+html body .top #testbtn,html body .top #pfbtn,html body .top #animbtn{background:transparent!important;border-color:transparent!important;text-decoration:underline;text-underline-offset:3px;opacity:.75}
+</style>
+<script id="zg-unify-js">
+(function(){
+var SEC_CSS='html body #zg-stack{display:flex!important;flex-direction:column!important}'
++'html body #zg-stack>.zg-plaque{order:-1!important}'
++'html body .zg-corner>:not(.zg-modebox){display:none!important}'
++'html body .zg-plaque .zg-stamp:empty{display:none!important}'
++'html body{font-size:16px}'
++'html body .zg-sx{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent)}'
++'html body .zg-sx.zg-sxe{-webkit-mask-image:none;mask-image:none}';
+var PER={
+ regs:'@media (max-width:1000px){html body nav.side{display:none!important}html body section.doc,html body section.doc.on{margin-left:0!important;width:auto!important;max-width:none!important;flex:1 1 auto!important}}',
+ tests:'html body #sub-tests td,html body #sub-tests th,html body table.t td{font-family:inherit}',
+ subs:''
+};
+function fitBig(doc){
+ var w=doc.defaultView;if(!w)return;
+ var els=doc.body?doc.body.querySelectorAll('b,strong,span,div,p,h2,h3,.num,.v,.val,.big'):[];
+ for(var i=0;i<els.length;i++){var el=els[i];
+  if(el.childElementCount>2)continue;var t=(el.textContent||'').trim();if(!t||t.length>18)continue;
+  var cs=w.getComputedStyle(el);var fs=parseFloat(cs.fontSize);if(fs<34)continue;
+  var p=el.parentElement;while(p&&p.clientWidth===0)p=p.parentElement;if(!p)continue;
+  var n=0;while(p.scrollWidth>p.clientWidth+1&&n<6){var cur=parseFloat(w.getComputedStyle(el).fontSize);if(cur<=20)break;el.style.setProperty('font-size',Math.max(20,cur*0.88)+'px','important');n++;}
+ }
+}
+function widen(doc){
+ var w=doc.defaultView;if(!w||!doc.body)return;
+ var els=doc.body.querySelectorAll(':scope>div,:scope>main,:scope>section,:scope>*>div,:scope>*>main,:scope>*>section,:scope>*>*>div,:scope>*>*>main');
+ for(var i=0;i<els.length;i++){var el=els[i];if(el.closest('.zg-plaque'))continue;
+  var cs=w.getComputedStyle(el);var mw=parseFloat(cs.maxWidth);
+  if(mw>=600&&mw<1180&&cs.marginLeft===cs.marginRight&&parseFloat(cs.marginLeft)>0)el.style.setProperty('max-width','none','important');}
+}
+function scrollHints(doc){
+ var w=doc.defaultView;if(!w||!doc.body)return;
+ doc.querySelectorAll('.zg-sub,nav,[role=tablist],.tabs,.tabsrow').forEach(function(n){
+  var ox=w.getComputedStyle(n).overflowX;var o=(ox==='auto'||ox==='scroll')&&n.scrollWidth>n.clientWidth+4;
+  n.classList.toggle('zg-sx',o);
+  if(o&&!n.__zgS){n.__zgS=1;n.addEventListener('scroll',function(){n.classList.toggle('zg-sxe',n.scrollLeft+n.clientWidth>=n.scrollWidth-4)},{passive:true});}
+ });
+}
+function unify(doc,frame){
+ if(!doc||!doc.documentElement)return;
+ var sec=(frame&&frame.dataset&&frame.dataset.sec)||'';
+ var st=doc.getElementById('zg-unify');
+ if(!st){st=doc.createElement('style');st.id='zg-unify';(doc.head||doc.documentElement).appendChild(st);}
+ var css=SEC_CSS+(PER[sec]||'');
+ if(st.textContent!==css)st.textContent=css;
+ if(st.nextSibling){(doc.head||doc.documentElement).appendChild(st);}
+ if(!doc.__zgLight){doc.__zgLight=1;try{var bs=doc.querySelectorAll('.zg-corner button');for(var i=0;i<bs.length;i++){if(/Светлая/.test(bs[i].textContent)){bs[i].click();break;}}}catch(e){}}
+ var now=Date.now();if(doc.__zgT&&now-doc.__zgT<800)return;doc.__zgT=now;
+ try{widen(doc)}catch(e){} try{fitBig(doc)}catch(e){} try{scrollHints(doc)}catch(e){}
+}
+if(typeof window.dressFrame==='function'){var _d=window.dressFrame;window.dressFrame=function(doc,frame){var r=_d.apply(this,arguments);try{unify(doc,frame)}catch(e){}return r};}
+if(typeof window.sectionStampText==='function'){var _s=window.sectionStampText;window.sectionStampText=function(doc,sec){
+ var t='';try{t=_s(doc,sec)}catch(e){}
+ if(sec==='svodka'){try{var a=doc.getElementById('zgin').contentWindow.__zgAsOf;if(a)return 'Данные на '+String(a).replace(/\s*МСК\s*$/,'')+' МСК · Telegram и встречи';}catch(e){}}
+ if(/^Дата не указана/.test(t))return '';
+ var p=t.split(' · ');var head=p.shift();var src=p.join(' · ');
+ src=src.replace(/\([^)]*(?:REST|\/user|gid)[^)]*\)/gi,'').replace(/\bgid\s*\d+/gi,'').replace(/[A-Za-z0-9_-]{24,}/g,'').replace(/\s{2,}/g,' ').replace(/[\s;,:·]+$/,'').trim();
+ if(src.length>70)src=src.slice(0,68).replace(/\s+\S*$/,'')+'…';
+ return src?head+' · '+src:head;
+};}
+window.addEventListener('resize',function(){document.querySelectorAll('#fr>iframe').forEach(function(f){try{var d=f.contentDocument;if(d){d.__zgT=0;unify(d,f)}}catch(e){}})});
+window.zgUnify=unify;
+})();
+</script>
+
 <script src="guide.js"></script>
 </body></html>

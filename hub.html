@@ -3373,6 +3373,9 @@ function unify(doc,frame){
  if(st.nextSibling){(doc.head||doc.documentElement).appendChild(st);}
  if(!doc.__zgLight){doc.__zgLight=1;try{var bs=doc.querySelectorAll('.zg-plaque button');for(var i=0;i<bs.length;i++){if(/Светлая/.test(bs[i].textContent)){bs[i].click();break;}}}catch(e){}}
  try{fixStack(doc,sec)}catch(e){}
+ if(!doc.__zgRe){doc.__zgRe=1;[250,700,1500,3000].forEach(function(t){setTimeout(function(){try{doc.__zgT=0;unify(doc,frame)}catch(e){}},t)});
+  try{var RO=doc.defaultView.ResizeObserver||window.ResizeObserver,tm=0;new RO(function(){clearTimeout(tm);tm=setTimeout(function(){try{unify(doc,frame)}catch(e){}},120)}).observe(doc.body||doc.documentElement)}catch(e){}
+  try{doc.defaultView.addEventListener('load',function(){doc.__zgT=0;unify(doc,frame)})}catch(e){}}
  var now=Date.now();if(doc.__zgT&&now-doc.__zgT<800)return;doc.__zgT=now;
  try{hideTheme(doc)}catch(e){} if(sec!=='svodka'){try{widen(doc)}catch(e){} try{gutter(doc,sec)}catch(e){}} try{fitBig(doc)}catch(e){} if(sec==='links'){try{linksFix(doc)}catch(e){}} try{zgTiles(doc,sec)}catch(e){} if(sec==='books'){try{fitSpines(doc)}catch(e){}} if(sec==='regs'){try{regsFix(doc)}catch(e){}} try{scrollHints(doc)}catch(e){}
 }

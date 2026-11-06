@@ -3245,7 +3245,7 @@ var SEC_CSS='html body #zg-stack{display:flex!important;flex-direction:column!im
 +'html body .zg-sx{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent)}'
 +'html body .zg-sx.zg-sxe{-webkit-mask-image:none;mask-image:none}';
 var PER={
- regs:'@media (max-width:1000px){html body nav.side{display:none!important}html body section.doc,html body section.doc.on{margin-left:0!important;width:auto!important;max-width:none!important;flex:1 1 auto!important}}',
+ regs:'html body section.doc:not(#doc00) .dochead h1.zg-src-title:not(#zg-x):not(#zg-y){display:block!important;margin:6px 0 4px!important;font-size:clamp(26px,3.4vw,38px)!important;line-height:1.12!important}html body .zg-docsel{display:none}@media (max-width:1000px){html body .zg-docsel:not(#zg-x){display:block;margin:0 0 14px}html body .zg-docsel select{width:100%;font:inherit;font-size:15px;padding:11px 36px 11px 12px;border:1.5px solid #1d1d1b;border-radius:10px;background:#fff url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%278%27%3E%3Cpath d=%27M1 1l5 5 5-5%27 fill=%27none%27 stroke=%27%231d1d1b%27 stroke-width=%272%27/%3E%3C/svg%3E") no-repeat right 14px center;-webkit-appearance:none;appearance:none;color:#1d1d1b}html body nav.side{display:none!important}html body section.doc,html body section.doc.on{margin-left:0!important;width:auto!important;max-width:none!important;flex:1 1 auto!important}}',
  tests:'html body #sub-tests td,html body #sub-tests th,html body table.t td{font-family:inherit}',
  subs:'',
  fonts:'html body section.doc:not(#zg-x){padding-left:0!important;padding-right:0!important;max-width:none!important;margin-left:0!important;margin-right:0!important}',
@@ -3353,6 +3353,16 @@ function linksFix(doc){
  var w=doc.createTreeWalker(doc.body,4),n;
  while(n=w.nextNode()){var v=n.nodeValue;if(/Библиотека компании|библиотека готового/.test(v))n.nodeValue=v.replace(/Библиотека компании/g,'Шаблоны и примеры').replace('библиотека готового','шаблоны и примеры');}
 }
+function regsFix(doc){
+ var side=doc.querySelector('nav.side');if(!side)return;var links=[].slice.call(side.querySelectorAll('a[data-go]'));
+ links.forEach(function(a){var m=a.textContent.match(/Редакция\s*(\d\d\.\d\d\.\d{4})/);var s=doc.getElementById('doc'+a.dataset.go);if(!m||!s)return;var h=s.querySelector('.dochead');if(!h||/Редакция/.test(h.textContent))return;var r=doc.createElement('div');r.className='rev zg-rev';r.textContent='Редакция '+m[1];h.appendChild(r);});
+ var box=doc.querySelector('.zg-docsel');
+ if(!box){var st=doc.getElementById('zg-stack');var host=st?st.parentNode:doc.querySelector('main');if(!host)return;box=doc.createElement('div');box.className='zg-docsel';var sel=doc.createElement('select');sel.setAttribute('aria-label','Документ');
+  links.forEach(function(a){var o=doc.createElement('option');o.value=a.dataset.go;o.textContent=a.textContent.replace(/Редакция.*$/,'').replace(/бета\s*$/,'').replace(/\s+/g,' ').trim();sel.appendChild(o);});
+  sel.addEventListener('change',function(){var a=side.querySelector('a[data-go="'+sel.value+'"]');if(a)a.click();try{doc.defaultView.scrollTo(0,0)}catch(e){}});
+  box.appendChild(sel);host.insertBefore(box,st?st.nextSibling:host.firstChild);}
+ var on=doc.querySelector('section.doc.on');var sl=box.querySelector('select');if(on&&sl&&sl.value!==on.id.slice(3))sl.value=on.id.slice(3);
+}
 function unify(doc,frame){
  if(!doc||!doc.documentElement)return;
  var sec=(frame&&frame.dataset&&frame.dataset.sec)||'';
@@ -3364,7 +3374,7 @@ function unify(doc,frame){
  if(!doc.__zgLight){doc.__zgLight=1;try{var bs=doc.querySelectorAll('.zg-plaque button');for(var i=0;i<bs.length;i++){if(/Светлая/.test(bs[i].textContent)){bs[i].click();break;}}}catch(e){}}
  try{fixStack(doc,sec)}catch(e){}
  var now=Date.now();if(doc.__zgT&&now-doc.__zgT<800)return;doc.__zgT=now;
- try{hideTheme(doc)}catch(e){} if(sec!=='svodka'){try{widen(doc)}catch(e){} try{gutter(doc,sec)}catch(e){}} try{fitBig(doc)}catch(e){} if(sec==='links'){try{linksFix(doc)}catch(e){}} try{zgTiles(doc,sec)}catch(e){} if(sec==='books'){try{fitSpines(doc)}catch(e){}} try{scrollHints(doc)}catch(e){}
+ try{hideTheme(doc)}catch(e){} if(sec!=='svodka'){try{widen(doc)}catch(e){} try{gutter(doc,sec)}catch(e){}} try{fitBig(doc)}catch(e){} if(sec==='links'){try{linksFix(doc)}catch(e){}} try{zgTiles(doc,sec)}catch(e){} if(sec==='books'){try{fitSpines(doc)}catch(e){}} if(sec==='regs'){try{regsFix(doc)}catch(e){}} try{scrollHints(doc)}catch(e){}
 }
 if(typeof window.dressFrame==='function'){var _d=window.dressFrame;window.dressFrame=function(doc,frame){var r=_d.apply(this,arguments);try{unify(doc,frame)}catch(e){}return r};}
 if(typeof window.sectionStampText==='function'){var _s=window.sectionStampText;window.sectionStampText=function(doc,sec){

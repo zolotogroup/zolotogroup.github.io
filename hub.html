@@ -1279,21 +1279,21 @@ function zgTabWhen(doc, sec, bits){
  return fromBtn;
 }
 /* Правило — стоячий слот с main (.github/workflows/refresh.yml), без календарной даты.
-   вт и чт 10:50 публикует хронику совещаний, просрочки хроник и просрочки пульта; сб 23:00 публикует их снова, плюс финансы, подрядчиков, подписки и письмо.
+   вт и чт 09:40 публикует хронику совещаний и следом просрочки пульта; 10:40 — просрочки хроник. сб 23:00 публикует их снова, плюс финансы, подрядчиков, подписки и письмо.
    вт 20:00 пересчитывает часы внутри week.bin, отдельной вкладки у этого слота нет.
    Графики «Этапы и часы», вкладки «Сводка», «BD» и «Люди» публикуются в субботу в 23:00.
    Суббота 14:00 отчёты не выкладывает.
    «Просрочки» пульта — блоки OVMP, OVDOC, OVEMP, EMPM. «Сводка» своего отчёта не имеет: часы и люди на ней берутся из 426554 и 426568. */
 function zgRule(sec, bits){
  const id=(bits&&bits.id)||'', hsub=(bits&&bits.hsub)||'', label=(bits&&bits.label)||'';
- const both='вт и чт 10:50, сб 23:00', sat='сб 23:00', hand='вручную';
- if(sec==='pult'&&id==='ovd') return both;
+ const brief='вт и чт 09:40, сб 23:00', ovd='вт и чт 10:40, сб 23:00', sat='сб 23:00', hand='вручную';
+ if(sec==='pult'&&id==='ovd') return brief;
  if(sec==='pult'&&(id==='sum'||id==='bd'||id==='people'||id==='stages')) return sat;
  if(sec==='hroniki'||(sec==='pult'&&(id==='chron'||id==='hours'))){
   const view=sec==='pult'?id:(id||'chron');
-  if(view==='chron'||view==='ovd') return both;
-  if(view==='hours') return hsub==='rework'?both:sat;
-  return both;
+  if(view==='ovd') return ovd;
+  if(view==='hours') return hsub==='rework'?brief:sat;
+  return brief;
  }
  if(sec==='fin'||sec==='subs'||sec==='week'||sec==='orgdoc') return sat;
  if(sec==='prod') return (id==='comp'||/конкурент/i.test(label))?hand:sat;

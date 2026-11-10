@@ -1,0 +1,83 @@
+name: pages
+
+# The branch-source "pages build and deployment" workflow calls
+# actions/deploy-pages@v5 with timeout 600000. The action refuses a longer
+# timeout and cancels the deployment when that clock runs out, so a sync that
+# is still in progress never goes live. This workflow uploads the same full
+# site (checkout of the commit, artifact path `.`) and waits the sync out.
+# A second job resumes a deployment that is still syncing. Neither job cancels
+# it. The site is updated only after Pages reports success.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_id: ${{ steps.pages.outputs.artifact_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          submodules: recursive
+      - name: Upload artifact
+        id: pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  watch:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      result: ${{ steps.watch.outputs.result }}
+      deployment_id: ${{ steps.watch.outputs.deployment_id }}
+      page_url: ${{ steps.watch.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+      - name: Wait for the current deployment
+        id: watch
+        env:
+          PAGES_MODE: watch
+          PAGES_WAIT_SEC: "720"
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/pages-deploy.sh
+
+  finish:
+    needs: [build, watch]
+    if: needs.watch.result == 'success' && needs.watch.outputs.result != 'live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment:
+      name: github-pages
+      url: ${{ steps.finish.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+      - name: Resume or deploy the full artifact
+        id: finish
+        env:
+          PAGES_MODE: finish
+          PAGES_WAIT_SEC: "3000"
+          PAGES_DEPLOYMENT_ID: ${{ needs.watch.outputs.deployment_id }}
+          PAGES_ARTIFACT_ID: ${{ needs.build.outputs.artifact_id }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/pages-deploy.sh

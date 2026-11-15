@@ -1409,6 +1409,136 @@ function frameOf(doc){
  }
  return null;
 }
+const PULT_REPORTS={
+ sum:['426554','426568'],bd:['426440'],people:['426554'],stages:['426568'],hours:['426568'],
+ prod:['426448','426570','426548'],deb:['426450'],exp:['426548'],con:['426408'],
+ mnt:['426406'],docs:['426454','426588'],verif:['426436','426522'],
+ ovd:['426580','426582','426586','426590'],chron:['426514']
+};
+function monthish(s){ return /\d|янв|фев|мар|апр|ма[йя]|июн|июл|авг|сен|окт|ноя|дек/i.test(s||''); }
+function provDate(sec, bits){
+ const row=zgProvFor(sec, bits||{id:'',label:'',hsub:''});
+ const d=row&&String(row[2]||'').trim();
+ if(!d||d==='нет даты') return '';
+ return d;
+}
+function sectionPhrase(sec){
+ const n=String(NOTE[sec]||'').trim();
+ return monthish(n)?n:'';
+}
+function hubTabWhen(sec){
+ const dates=[...String(NOTE[sec]||'').matchAll(/(\d{2})\.(\d{2})\.(\d{4})(?:,\s*\d{2}:\d{2})?/g)];
+ if(dates.length){
+  const later=dates.slice().sort((a,b)=>(a[3]+a[2]+a[1]).localeCompare(b[3]+b[2]+b[1])).pop();
+  return later[0];
+ }
+ const prov=provDate(sec,{id:'',label:'',hsub:''});
+ if(prov&&/\d{2}\.\d{2}\.\d{4}/.test(prov)) return prov;
+ return sectionPhrase(sec)||prov;
+}
+function shortWhen(when){
+ const s=String(when||'').replace(/\s*МСК$/,'').trim();
+ if(!s) return '';
+ const all=[...s.matchAll(/(\d{2})\.(\d{2})\.(\d{4})(?:,\s*\d{2}:\d{2})?/g)];
+ if(all.length>1){
+  const later=all.slice().sort((a,b)=>(a[3]+a[2]+a[1]).localeCompare(b[3]+b[2]+b[1])).pop();
+  return later[0];
+ }
+ if(all.length===1) return all[0][0];
+ return s.length>48?s.slice(0,46)+'…':s;
+}
+function freshWhen(doc, ids){
+ const F=readJson(doc,'FRESH')||{};
+ let best='', stamp='';
+ (ids||[]).forEach(id=>{
+  const raw=F[id]; if(!raw) return;
+  const m=String(raw).match(/(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}:\d{2}))?/);
+  if(!m) return;
+  const key=m[3]+m[2]+m[1]+(m[4]||'');
+  if(key>best){ best=key; stamp=m[1]+'.'+m[2]+'.'+m[3]+(m[4]?', '+m[4]:''); }
+ });
+ return stamp;
+}
+function pultWhen(doc, id){
+ if(id==='chron'){ const ch=readJson(doc,'CHRON'); if(ch&&ch.built) return ch.built; }
+ if(id==='hours'){ const h=readJson(doc,'H426'); if(h&&h.asof) return h.asof; }
+ if(id==='bd'){ const b=readJson(doc,'BD3'); if(b&&b.built) return b.built; }
+ if(id==='deb'){ const f=freshWhen(doc,['426450']); if(f) return f; }
+ return freshWhen(doc, PULT_REPORTS[id]||[]);
+}
+function hronikiButtonWhen(doc, id){
+ const ch=readJson(doc,'CHRON')||{};
+ const rw=readJson(doc,'RWRAW')||{};
+ const meta=(readJson(doc,'DATA')||{}).meta||{};
+ if(id==='rework') return rw.t592||'';
+ if(id==='ovd') return (ch.ovd&&ch.ovd.built)||'';
+ if(id==='chron') return ch.built||'';
+ if(id==='work'||id==='stages'||id==='hours'){
+  const iso=meta.anchor||meta.f12_to||'';
+  const a=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if(a) return a[3]+'.'+a[2]+'.'+a[1];
+  return meta.generated||'';
+ }
+ return '';
+}
+function putTabDate(btn, when){
+ const text=shortWhen(when);
+ let el=btn.querySelector(':scope > .zg-tabdate');
+ if(!text){ if(el) el.remove(); return; }
+ if(!el){ el=btn.ownerDocument.createElement('span'); el.className='zg-tabdate'; btn.appendChild(el); }
+ if(el.textContent!==text) el.textContent=text;
+}
+function buttonWhen(doc, sec, btn){
+ const id=btn.getAttribute('data-tab')||btn.getAttribute('data-view')||btn.getAttribute('data-t')||btn.getAttribute('data-prod')||btn.getAttribute('data-kp')||btn.getAttribute('data-rp-tab')||'';
+ const hsub=btn.getAttribute('data-hsub')||'';
+ const w0=btn.getAttribute('data-w0')||'';
+ if(sec==='rp'){
+  if(id==='graf') return grafUpdated(doc);
+  if(w0==='2026-09') return '26.09.2026';
+  if(w0==='2026-10') return 'октябрь 2026';
+  return '';
+ }
+ if(hsub) return hronikiButtonWhen(doc, hsub);
+ if(sec==='hroniki') return hronikiButtonWhen(doc, id);
+ if(sec==='pult'&&(id==='chron'||id==='hours')){
+  const inner=(()=>{ try{ const f=doc.querySelector('iframe.zg-hron'); return f&&f.contentDocument; }catch(e){ return null; } })();
+  const embedded=inner&&hronikiButtonWhen(inner, id);
+  if(embedded) return embedded;
+  return pultWhen(doc, id);
+ }
+ if(sec==='pult') return pultWhen(doc, id);
+ const bits={id, label:zgPlain(btn), hsub};
+ const own=provDate(sec, bits);
+ const root=provDate(sec,{id:'',label:'',hsub:''});
+ if(own&&/\d{2}\.\d{2}\.\d{4}/.test(own)&&own!==root) return own;
+ return hubTabWhen(sec);
+}
+function paintSubtabDates(doc, sec){
+ if(!doc||!sec) return;
+ const sel=sec==='pult'?'#tabs [data-tab]':sec==='hroniki'?'#tabs [data-view], [data-hsub]':sec==='prod'?'#prod-tabs [data-prod]':sec==='rp'?'#zg-rp-tabs button':sec==='org'?'nav.nav button[data-go]':'#tabs [data-t], #tabs [data-tab], #tabs [data-kp], nav.tabs button[role="tab"], .tabs > button[data-pane], nav.nav button[data-go], nav.side a.doc, nav.side a[data-go]';
+ doc.querySelectorAll(sel).forEach(btn=>{ if(btn.closest('.zg-fin')) return; putTabDate(btn, buttonWhen(doc, sec, btn)); });
+ doc.querySelectorAll('.zg-fin button[data-s]').forEach(btn=>putTabDate(btn, hubTabWhen(btn.dataset.s)));
+}
+function paintHubDates(){
+ document.querySelectorAll('.sw button[data-s], .home .card[data-go]').forEach(el=>{
+  const key=el.dataset.s||el.dataset.go;
+  let when=hubTabWhen(key);
+  if(key==='svodka'&&typeof PAGES!=='undefined'&&PAGES){
+   const html=PAGES.svodka||PAGES.svodkap||'';
+   const m=String(html).match(/generatedAtLabel(?:"|&quot;):\s*(?:"|&quot;)([^"&]+)/);
+   if(m) when=m[1];
+  }
+  const text=shortWhen(when);
+  if(!text) return;
+  if(el.classList.contains('card')){
+   const k=el.querySelector('.k'); if(!k) return;
+   let s=k.querySelector('.zg-carddate');
+   if(!s){ s=document.createElement('span'); s.className='zg-carddate'; s.style.cssText='margin-left:auto;font:400 12px/1.2 "Aeroport Mono",ui-monospace,monospace;letter-spacing:.02em'; k.appendChild(s); }
+   if(s.textContent!==text) s.textContent=text;
+  }else putTabDate(el, text);
+ });
+}
+
 function captionWhen(doc, sec){
  if(sec==='hroniki'){
   const when=hronikiWhen(doc);
@@ -1431,15 +1561,27 @@ function captionWhen(doc, sec){
   if(built) return built;
   const vis=visibleHronWhen(doc);
   if(vis) return vis;
+  const pw=pultWhen(doc, bits.id);
+  if(pw) return pw;
  }
  if(sec==='paycal'){
   const src=doc.querySelector('.mast, header.mast');
   const snap=((src&&src.textContent)||'').match(/Снимок ПланФикса\s+(\d{2}\.\d{2}\.\d{4})/);
   if(snap) return snap[1];
  }
- const m=String(NOTE[sec]||'').match(/(\d{2}\.\d{2}\.\d{4}(?:,\s*\d{2}:\d{2})?)/);
- return m?m[1]:'';
+ if(sec==='rp'){
+  if(doc.__zgRpTab==='graf'){ const g=grafUpdated(doc); if(g) return g; }
+  const week=doc.__zgRpWeek||window.__zgRpWeek||'';
+  if(week==='2026-10') return 'октябрь 2026';
+  if(week==='2026-09') return '26.09.2026';
+ }
+ const bits=zgOpenBits(doc, sec);
+ const own=provDate(sec, bits);
+ const root=provDate(sec,{id:'',label:'',hsub:''});
+ if(own&&/\d{2}\.\d{2}\.\d{4}/.test(own)&&own!==root) return own;
+ return hubTabWhen(sec);
 }
+
 function sectionStampText(doc, sec){
  const bits=zgOpenBits(doc, sec);
  const row=zgProvFor(sec, bits);
@@ -1453,7 +1595,7 @@ function sectionStampText(doc, sec){
   if(m){
    const y=m[3].length===2?'20'+m[3]:m[3];
    head='Данные на '+m[1]+'.'+m[2]+'.'+y+(m[4]?', '+m[4]+' МСК':' МСК');
-  }else head='Данные на '+when;
+  }else head=String(when);
  }
  return head+' · '+src;
 }
@@ -1473,6 +1615,7 @@ function syncSectionStamp(doc, frame){
  const grafWhen=sec==='rp'&&doc.__zgRpTab==='graf'?grafUpdated(doc):'';
  const text=grafWhen?'Данные на '+grafWhen:sectionStampText(doc, sec);
  if(stamp.textContent!==text) stamp.textContent=text;
+ try{ paintSubtabDates(doc, sec); }catch(e){}
  if(frame&&!frame.hidden&&!(sec==='rp'&&doc.__zgRpTab&&doc.__zgRpTab!=='months')){
   const swn=document.getElementById('swn');
   if(swn){
@@ -1549,6 +1692,7 @@ function dressFrame(doc, frame){
   'html body h1,html body :is(#zg-stack,#zg-tail) .zg-plaque h1{font-family:"Zoloto Display","Stratos",sans-serif!important;font-size:40px!important;font-weight:400!important;line-height:1.12!important;letter-spacing:.01em!important;margin:0 0 12px!important;position:static!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .lead{font-family:"Stratos",-apple-system,sans-serif!important;font-size:18px!important;line-height:1.45!important;font-weight:400!important;margin:0!important;max-width:70ch;color:#1d1d1b!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-plaque .zg-stamp{grid-column:1!important;margin:16px 0 0!important;max-width:78ch;font:400 13px/1.35 "Aeroport Mono",ui-monospace,Menlo,monospace!important;letter-spacing:.02em!important;text-transform:none!important;color:#1d1d1b!important}',
+  'html body .zg-tabdate{display:block!important;margin-top:3px!important;font-size:10px!important;line-height:1.2!important;letter-spacing:0!important;text-transform:none!important;font-weight:400!important;opacity:.75!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-modebox{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:8px!important;position:relative!important;z-index:9!important;pointer-events:auto!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-mode{appearance:none!important;background:#fff!important;color:#1d1d1b!important;border:1px solid #1d1d1b!important;border-radius:0!important;box-shadow:none!important;font:400 14px/1 "Stratos",-apple-system,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:10px 14px!important;margin:0!important;cursor:pointer!important;position:relative!important;z-index:10!important;pointer-events:auto!important}',
   'html body :is(#zg-stack,#zg-tail) .zg-mode[aria-expanded="true"],html body :is(#zg-stack,#zg-tail) .zg-mode[aria-pressed="true"]{background:#1d1d1b!important;color:#fff!important}',
@@ -2983,6 +3127,7 @@ function paintAccess(AL){
  const hh=document.getElementById('h-hroniki'); if(hh){ const m=String(NOTE.hroniki||'').match(/(\d{2}\.\d{2}\.\d{4},\s*\d{2}:\d{2})/); hh.textContent=m?m[1]:''; }
  const hf=document.getElementById('h-fin'); if(hf) hf.textContent=NOTE.fin.split(' · ')[0];
  const hw=document.getElementById('h-week'); if(hw) hw.textContent='Неделя 46 · 09.11–13.11';
+ try{ paintHubDates(); }catch(e){}
  paintLead();
  requestAnimationFrame(evenCards);
 }

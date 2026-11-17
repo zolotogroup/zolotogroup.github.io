@@ -54,6 +54,7 @@ window.liftSmall=function(doc){
    const fw0=cs.fontWeight;
    if(fw0==='bold'||fw0==='600'||fw0==='700'||Number(fw0)>=600) e.style.setProperty('font-weight','400','important');
    if(!own) continue;
+   if(e.closest('.zg-sub,nav.tabs,nav.weeks,nav.nav,.tabsrow,.sec-topbar')) continue;
    const px=parseFloat(cs.fontSize);
    if(px){
     const next=snapPx(px, e.tagName);

@@ -1156,7 +1156,7 @@ function rpWeekBar(doc, stack, slot, sec){
  if(rr){ if(rr['2026-09']) RP_SEP_ROWS=rr['2026-09']; if(rr['2026-10']) RP_OCT_ROWS=rr['2026-10']; }
  if(!doc.getElementById('zg-rp-tabs')){
   /* вкладки раздела: «По месяцам» (если пароль открывает таблицы месяцев) и вкладки МП по роли */
-  const tabs=(rr?['months']:[]).concat(mpTabsFor(window.__zgMP));
+  const tabs=mpTabsFor(window.__zgMP).concat(rr?['months']:[]); /* «По месяцам» — последней вкладкой */
   if(!tabs.length) tabs.push('months');
   const gdAt=tabs.indexOf('gd');
   tabs.splice(gdAt<0?tabs.length:gdAt,0,'graf');

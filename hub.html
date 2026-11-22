@@ -511,18 +511,22 @@ function hookAnchors(doc, frame){
 }
 const RP_MONTHS=[
  {id:'2026-09', label:'Сентябрь 2026'},
- {id:'2026-10', label:'Октябрь 2026'}
+ {id:'2026-10', label:'Октябрь 2026'},
+ {id:'2026-11', label:'Ноябрь 2026'}
 ];
-const RP_SAVED_MONTH='2026-09';
+const RP_SAVED_MONTH='2026-11';
 const RP_SEP_LEAD='ЗП (NET) сентября и портфель из разбора 26.09, 39-я неделя.';
 const RP_OCT_LEAD='ЗП (NET) октября, активные мастер-проекты и портфель по сумме договора.';
 const RP_SEP_NOTE='Мастер-проекты и деньги по РП · разбор 26.09';
 const RP_OCT_NOTE='Мастер-проекты и деньги по РП · октябрь 2026';
+const RP_NOV_LEAD='ЗП (NET) ноября, активные мастер-проекты и портфель по сумме договора.';
+const RP_NOV_NOTE='Мастер-проекты и деньги по РП · ноябрь 2026';
 // Месяцы лежат в оболочке: тело раздела запечатано, ключа портала здесь нет.
 let RP_SEP_ROWS=[];
 let RP_OCT_ROWS=[];
+let RP_NOV_ROWS=[];
 function rpMonthNote(id){
- return id==='2026-10' ? RP_OCT_NOTE : RP_SEP_NOTE;
+ return id==='2026-11' ? RP_NOV_NOTE : id==='2026-10' ? RP_OCT_NOTE : RP_SEP_NOTE;
 }
 function zgRpHeadPaint(){
  const id=window.__zgRpWeek||RP_SAVED_MONTH;
@@ -969,7 +973,7 @@ function grafLeadBreak(doc){
 }
 function rpApplyWeek(doc){
  const id=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_MONTH;
- const september=id!=='2026-10';
+ const september=id==='2026-09', november=id==='2026-11';
  const stack=doc.getElementById('zg-stack');
  if(stack){
   [...stack.children].forEach(el=>{
@@ -985,7 +989,8 @@ function rpApplyWeek(doc){
  const mrow=doc.querySelector('#zg-rp-tabs .zg-rp-months');
  if(mrow) mrow.style.setProperty('display',months&&mrow.childElementCount?'':'none',months&&mrow.childElementCount?'':'important');
  rpSetHidden(doc.getElementById('zg-rp-sep'), !months||!september);
- rpSetHidden(doc.getElementById('zg-rp-oct'), !months||september);
+ rpSetHidden(doc.getElementById('zg-rp-oct'), !months||id!=='2026-10');
+ rpSetHidden(doc.getElementById('zg-rp-nov'), !months||!november);
  const mpb=doc.getElementById('zg-rp-mp');
  if(mpb){ rpSetHidden(mpb, months||graf); if(!months&&!graf) mpShow(doc, tab); }
  const gf=doc.getElementById('gf-root');
@@ -996,7 +1001,7 @@ function rpApplyWeek(doc){
  }
  const lead=doc.querySelector('.zg-plaque .lead');
  if(lead){
-  const text=graf?'Ключевые даты из задач «[График]» мастер-проектов.':months?(september?RP_SEP_LEAD:RP_OCT_LEAD):('Мастер-проекты из ПланФикса'+(window.__zgMP&&window.__zgMP.t?' · данные на '+window.__zgMP.t+' МСК':'')+'.');
+  const text=graf?'Ключевые даты из задач «[График]» мастер-проектов.':months?(september?RP_SEP_LEAD:november?RP_NOV_LEAD:RP_OCT_LEAD):('Мастер-проекты из ПланФикса'+(window.__zgMP&&window.__zgMP.t?' · данные на '+window.__zgMP.t+' МСК':'')+'.');
   if(lead.textContent!==text) lead.textContent=text;
  }
  if(graf) grafLeadBreak(doc);
@@ -1013,7 +1018,7 @@ function rpApplyWeek(doc){
  if(frames.rp && !frames.rp.hidden){
   const note=document.getElementById('swn');
   if(note){
-   const text=graf?(when?'Данные на '+when+' · ПланФикс':'ПланФикс'):months?rpMonthNote(september?RP_SAVED_MONTH:'2026-10'):(window.__zgMP&&window.__zgMP.t?'Данные на '+window.__zgMP.t+' МСК · ПланФикс':'ПланФикс');
+   const text=graf?(when?'Данные на '+when+' · ПланФикс':'ПланФикс'):months?rpMonthNote(id):(window.__zgMP&&window.__zgMP.t?'Данные на '+window.__zgMP.t+' МСК · ПланФикс':'ПланФикс');
    if(note.textContent!==text) note.textContent=text;
   }
  }
@@ -1153,7 +1158,10 @@ function rpWeekBar(doc, stack, slot, sec){
  doc.__zgRpWeek=doc.__zgRpWeek||window.__zgRpWeek||RP_SAVED_MONTH;
  /* таблицы месяцев лежат в зашифрованной странице раздела, а не в оболочке */
  const rr=readJson(doc,'zg-rp-rows');
- if(rr){ if(rr['2026-09']) RP_SEP_ROWS=rr['2026-09']; if(rr['2026-10']) RP_OCT_ROWS=rr['2026-10']; }
+ if(rr){ if(rr['2026-09']) RP_SEP_ROWS=rr['2026-09']; if(rr['2026-10']) RP_OCT_ROWS=rr['2026-10']; if(rr['2026-11']) RP_NOV_ROWS=rr['2026-11']; }
+ /* месяц без таблицы в странице раздела не показываем; выбран такой — открываем последний, где таблица есть */
+ const rpAvail=RP_MONTHS.filter(m=>rr&&rr[m.id]);
+ if(rpAvail.length&&!rpAvail.some(m=>m.id===doc.__zgRpWeek)){ doc.__zgRpWeek=rpAvail[rpAvail.length-1].id; window.__zgRpWeek=doc.__zgRpWeek; }
  if(!doc.getElementById('zg-rp-tabs')){
   /* вкладки раздела: «По месяцам» (если пароль открывает таблицы месяцев) и вкладки МП по роли */
   const tabs=mpTabsFor(window.__zgMP).concat(rr?['months']:[]); /* «По месяцам» — последней вкладкой */
@@ -1172,7 +1180,7 @@ function rpWeekBar(doc, stack, slot, sec){
    top.appendChild(b);
   });
   const row=box.querySelector('.zg-rp-months');
-  if(rr) RP_MONTHS.forEach(m=>{
+  if(rr) RP_MONTHS.filter(m=>rr[m.id]).forEach(m=>{
    const b=doc.createElement('button');
    b.type='button'; b.dataset.w0=m.id; b.textContent=m.label;
    b.addEventListener('click',()=>{ window.__zgRpWeek=m.id; doc.__zgRpWeek=m.id; rpApplyWeek(doc); });
@@ -1191,10 +1199,12 @@ function rpWeekBar(doc, stack, slot, sec){
  if(!doc.getElementById('zg-rp-oct')){
   const sep=rpBuildBoard(doc, 'zg-rp-sep', RP_SEP_ROWS, 'Сентябрь 2026');
   const oct=rpBuildBoard(doc, 'zg-rp-oct', RP_OCT_ROWS, 'Октябрь 2026');
+  const nov=rpBuildBoard(doc, 'zg-rp-nov', RP_NOV_ROWS, 'Ноябрь 2026');
+  stack.insertAdjacentElement('afterend', nov);
   stack.insertAdjacentElement('afterend', oct);
   stack.insertAdjacentElement('afterend', sep);
   [...slot.children].forEach(el=>{
-   if(el.id==='zg-stack'||el.id==='zg-rp-oct'||el.id==='zg-rp-sep'||el.id==='zg-rp-mp'||el.id==='gf-root'||el.tagName==='SCRIPT'||el.tagName==='STYLE'||el.hidden) return;
+   if(el.id==='zg-stack'||el.id==='zg-rp-oct'||el.id==='zg-rp-nov'||el.id==='zg-rp-sep'||el.id==='zg-rp-mp'||el.id==='gf-root'||el.tagName==='SCRIPT'||el.tagName==='STYLE'||el.hidden) return;
    el.dataset.zgRpBody='1';
   });
  }
@@ -1496,6 +1506,7 @@ function buttonWhen(doc, sec, btn){
   if(id==='graf') return grafUpdated(doc);
   if(w0==='2026-09') return '26.09.2026';
   if(w0==='2026-10') return 'октябрь 2026';
+  if(w0==='2026-11') return 'ноябрь 2026';
   return '';
  }
  if(hsub) return hronikiButtonWhen(doc, hsub);
@@ -1594,6 +1605,7 @@ function captionWhen(doc, sec){
  if(sec==='rp'){
   if(doc.__zgRpTab==='graf'){ const g=grafUpdated(doc); if(g) return g; }
   const week=doc.__zgRpWeek||window.__zgRpWeek||'';
+  if(week==='2026-11') return 'ноябрь 2026';
   if(week==='2026-10') return 'октябрь 2026';
   if(week==='2026-09') return '26.09.2026';
  }

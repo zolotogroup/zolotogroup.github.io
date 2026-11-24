@@ -2664,9 +2664,9 @@ function listBreaks(on){
 }
 const HOME_SETS={
  week:['week','svodka','pult','fin'],
- people:['orgdoc','rp','graf','ten','ofis','prem','lessons','tests'],
+ people:['orgdoc','rp','ten','ofis','prem','lessons','tests'],
  rules:['regs','fonts','links','srcdata','books','prompts','names'],
- work:['hroniki','navsum','prod','sdacha','kp'],
+ work:['hroniki','graf','navsum','prod','sdacha','kp'],
  office:['subs','route']
 };
 const homeSeats=new Map();
@@ -2677,7 +2677,7 @@ function foldRows(){
   r.style.display=vis?'':'none';
  });
 }
-const CARD_ORDER=['week','svodka','pult','fin','regs','fonts','links','srcdata','books','prompts','names','orgdoc','lessons','tests','rp','graf','prem','ten','kp','navsum','prod','sdacha','hroniki','subs','route','ofis'];
+const CARD_ORDER=['week','svodka','pult','fin','regs','fonts','links','srcdata','books','prompts','names','orgdoc','lessons','tests','rp','prem','ten','kp','navsum','prod','sdacha','hroniki','graf','subs','route','ofis'];
 function layCards(){
  if(document.documentElement.classList.contains('zg-groups')){ foldRows(); return; }
  const rows=[...document.querySelectorAll('.home>.cards')];

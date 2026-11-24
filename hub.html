@@ -2881,6 +2881,8 @@ function rememberSection(k, asked){
 }
 function show(k){
  const asked=k;
+ { const w=PAGEOF[k]||k, p=window.__zgSec&&window.__zgSec[w];
+   if(p&&!(PAGES&&PAGES[w])){ document.documentElement.style.cursor='progress'; p.then(()=>{ document.documentElement.style.cursor=''; if(!(PAGES&&PAGES[w])) delete window.__zgSec[w]; show(asked); }); return; } }
  if(k==='svodka') TITLES.svodka=window.__zgRoleId==='gd'?'Моя сводка':'Сводка команды';
  if(k==='svodka'&&!(PAGES&&PAGES.svodka)){
   if(document.documentElement.classList.contains('guest')){ showLock('svodka'); return; }
@@ -3298,11 +3300,13 @@ async function unlock(pw){
  (PUB.n||[]).forEach(n=>{ if(PAGES&&PAGES[n]) keep[n]=PAGES[n]; });
  PAGES=keep;
  if(!window.__zgPubKey) await loadPublic();
- await Promise.all(filesFor(AL).map(async name=>{ try{ await loadSec(name, ring); }catch(e){} }));
- if(ring.svodka){ try{ await loadSec('svodka', ring); }catch(e){} }
- if(ring.sdacha){ try{ await loadSec('sdacha', ring); }catch(e){} }
- if(ring.graf){ try{ await loadSec('graf', ring); }catch(e){} }
- if(ring.pf){ try{ await loadSec('pf', ring); }catch(e){} }
+ /* быстрый вход: файлы разделов-карточек расшифровываются в фоне, хаб открывается сразу (show() дожидается нужного файла);
+    до открытия — параллельно только сводка, сдача, графики и ПланФикс (от них зависят карточки) и раздел из адреса */
+ window.__zgSec={};
+ const bgSec=n=>(window.__zgSec[n]=window.__zgSec[n]||loadSec(n, ring).catch(()=>{}));
+ filesFor(AL).forEach(bgSec);
+ const firstSec=(()=>{ const x=(location.hash||'').slice(1).split('/')[0]; return PAGEOF[x]||x; })();
+ await Promise.all(['svodka','sdacha','graf','pf'].filter(n=>ring[n]).map(bgSec).concat(window.__zgSec[firstSec]?[window.__zgSec[firstSec]]:[]));
  if(window.__zgSubsOK&&!PAGES.subs){ try{ await loadSec('subs', ring.subs?ring:await ringOf(office)); }catch(e){} }
  if(!AL||AL.indexOf(10)>=0){
  try{

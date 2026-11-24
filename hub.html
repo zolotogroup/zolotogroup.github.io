@@ -2773,6 +2773,7 @@ const PICO={
 };
 PICO.sdacha=PICO.prod;
 PICO.graf=PICO.week;
+PICO.svodka='<path fill="currentColor" d="M6 6h10v10H6zm14 0h22v10H20zM6 19h10v10H6zm14 0h22v10H20zM6 32h10v10H6zm14 0h22v10H20z"/>';
 function paintPicos(){
  document.querySelectorAll('.home .card[data-go]').forEach(card=>{
   if(card.querySelector(':scope > div > .zg-pico')) return;
@@ -3154,7 +3155,7 @@ function paintAccess(AL){
   if(sc&&PAGES&&PAGES.svodka){
    const mine=window.__zgRoleId==='gd';
    const ks=sc.querySelector('.k span'); if(ks) ks.textContent=mine?'Сводка ГД':'Сводка';
-   const t=sc.querySelector('.t'); if(t) t.innerHTML=mine?'Моя сводка':'Сводка команды';
+   const t=sc.querySelector('.t'); if(t) t.innerHTML=mine?'Моя<br>сводка':'Сводка<br>команды';
    const d=sc.querySelector('.d'); if(d) d.textContent=mine?'Чаты, встречи и задачи: решения, сроки и что относится к вам.':'Встречи, отделы и проектные чаты. Без решений и вопросов генеральному директору.';
    const tags=sc.querySelector('.tags'); if(tags) tags.innerHTML=mine?'<span>Чаты</span><span>Встречи</span><span>Задачи</span><span>Мне</span>':'<span>Встречи</span><span>Отделы</span><span>Чаты</span>';
    const go=sc.querySelector('.go span'); if(go) go.textContent=mine?'Открыть мою сводку':'Открыть сводку команды';

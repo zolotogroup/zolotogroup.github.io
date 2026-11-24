@@ -3760,7 +3760,7 @@ window.zgUnify=unify;
 <script>/* Источники во всех разделах: каждый с новой строки, номер отчёта ПланФикса — ссылка */
 (function(){const RX=/(отч[её]т(?:а|у|ом)?(?: ПланФикса)?\s*№?\s*)(\d{5,7})/g;
 function fmt(el,doc){if(el.dataset.zgsrc)return;el.dataset.zgsrc='1';if(el.querySelector('a,button,input,ul,ol,table,div,p,section'))return;const t=(el.textContent||'').trim();if(t.length<60)return;
- const parts=t.split(/(?<=[;.])\s+(?=[А-ЯЁA-Z«])/);el.textContent='';
+ const parts=t.split(/(?<=;)\s+|(?<=\.)\s+(?=[А-ЯЁA-Z«])/);el.textContent='';
  parts.forEach(p=>{const line=doc.createElement('span');line.style.display='block';line.style.margin='0 0 4px';let last=0;
   p.replace(RX,(m,pre,id,off)=>{line.appendChild(doc.createTextNode(p.slice(last,off)+pre));const a=doc.createElement('a');a.href='https://zlt.planfix.ru/?action=report&id='+id;a.target='_blank';a.rel='noopener';a.textContent=id;a.style.textDecoration='underline';a.style.color='inherit';line.appendChild(a);last=off+m.length;return m;});
   line.appendChild(doc.createTextNode(p.slice(last)));el.appendChild(line);});}

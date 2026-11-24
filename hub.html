@@ -322,6 +322,12 @@ b,strong{font-weight:400}
  .headmenu .viewsw{display:flex!important;width:100%;height:44px!important;margin:0!important}
  .headmenu .viewsw button{flex:1 1 50%;height:44px!important;font-size:16px!important}
  html.open:not([data-mode="home"]) .headmenu :is(.testbtn,.animbtn,.viewsw,.grpbtn){display:none!important}
+ /* компактное меню на телефоне: две колонки, кнопки ниже */
+ .headmenu{display:grid!important;grid-template-columns:1fr 1fr;gap:6px!important;padding:6px 12px 10px!important}
+ .headmenu :is(.testbtn,.animbtn,.grpbtn,.biobtn,.exitbtn,.updbtn):not([hidden]){height:36px!important;min-height:36px!important;font-size:14px!important;padding:0 8px!important}
+ .headmenu .testbtn{border:1px solid var(--on);text-decoration:none!important}
+ .headmenu .viewsw{grid-column:1/-1;height:36px!important}
+ .headmenu .viewsw button{height:36px!important;font-size:14px!important}
 }
 </style>
 <div class="top">
@@ -3287,6 +3293,8 @@ async function unlock(pw){
  window.__zgHubG=pay.g||'';
  window.__zgMP=null;
  try{ window.__zgMP=await mpOpen(pw); }catch(e){}
+ /* данные МП (раздел «Руководители проектов») догружаются в фоне сразу после входа — раздел открывается без ожидания */
+ if(window.__zgMP){ try{ setTimeout(()=>{ mpPage('main').catch(()=>{}); },0); }catch(e){} }
  if(window.__zgMP&&AL&&AL.indexOf(10)<0) AL=AL.concat(10);
  /* хроники группе РП — ключ hroniki в её связке, карточку слот группы не хранит */
  if(pay.g==='rp'&&AL&&AL.indexOf(16)<0) AL=AL.concat(16);

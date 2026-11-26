@@ -3305,6 +3305,8 @@ async function unlock(pw){
  MAXLVL=AL;
  const ring=await ringOf(pay);
  window.__zgPaycal=!!ring.paycal;
+ /* «Контакты заказчиков» — карточка 20 всем, у кого ключ contacts в связке (слот группы карточку не хранит) */
+ if(ring.contacts&&AL&&AL.indexOf(20)<0){ AL=AL.concat(20); MAXLVL=AL; }
  const keep={};
  (PUB.n||[]).forEach(n=>{ if(PAGES&&PAGES[n]) keep[n]=PAGES[n]; });
  PAGES=keep;

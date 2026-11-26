@@ -2889,7 +2889,7 @@ function rememberSection(k, asked){
 function show(k){
  const asked=k;
  { const w=PAGEOF[k]||k, p=window.__zgSec&&window.__zgSec[w];
-   if(p&&!(PAGES&&PAGES[w])){ document.documentElement.style.cursor='progress'; p.then(()=>{ document.documentElement.style.cursor=''; if(!(PAGES&&PAGES[w])) delete window.__zgSec[w]; show(asked); }); return; } }
+   if(p&&!(PAGES&&PAGES[w])){ document.documentElement.style.cursor='progress'; { let z=document.getElementById('zgwait'); if(!z){ z=document.createElement('div'); z.id='zgwait'; z.setAttribute('role','status'); z.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;background:#1d1d1b;color:#fff;font:14px/1.3 sans-serif;padding:10px 16px;box-shadow:0 4px 18px rgba(0,0,0,.25)'; document.body.appendChild(z); } z.textContent='Открываю раздел…'; z.hidden=false; } p.then(()=>{ document.documentElement.style.cursor=''; { const z=document.getElementById('zgwait'); if(z){ if(PAGES&&PAGES[w]) z.hidden=true; else { z.textContent='Раздел не открылся — обновите страницу и войдите заново'; setTimeout(()=>{ z.hidden=true; },5000); } } } if(!(PAGES&&PAGES[w])) delete window.__zgSec[w]; show(asked); }); return; } }
  if(k==='svodka') TITLES.svodka=window.__zgRoleId==='gd'?'Моя сводка':'Сводка команды';
  if(k==='svodka'&&!(PAGES&&PAGES.svodka)){
   if(document.documentElement.classList.contains('guest')){ showLock('svodka'); return; }
